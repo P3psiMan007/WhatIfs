@@ -1,0 +1,59 @@
+name: Upload video to YouTube (private)
+
+# Manual trigger only. This never runs automatically on push - a YouTube
+# upload is a real-world side effect and should always be an explicit
+# action, even though the resulting video is private.
+on:
+  workflow_dispatch:
+    inputs:
+      video_path:
+        description: "Path to the .mp4 file (relative to repo root)"
+        required: true
+      title:
+        description: "Video title"
+        required: true
+      description:
+        description: "Video description"
+        required: false
+        default: ""
+      thumbnail_path:
+        description: "Path to a thumbnail image, relative to repo root (optional)"
+        required: false
+        default: ""
+      tags:
+        description: "Comma-separated tags (optional)"
+        required: false
+        default: ""
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Upload to YouTube (always private)
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          VIDEO_PATH: ${{ github.event.inputs.video_path }}
+          TITLE: ${{ github.event.inputs.title }}
+          DESCRIPTION: ${{ github.event.inputs.description }}
+          THUMBNAIL_PATH: ${{ github.event.inputs.thumbnail_path }}
+          TAGS: ${{ github.event.inputs.tags }}
+        run: |
+          ARGS=(--video "$VIDEO_PATH" --title "$TITLE" --description "$DESCRIPTION")
+          if [ -n "$THUMBNAIL_PATH" ]; then
+            ARGS+=(--thumbnail "$THUMBNAIL_PATH")
+          fi
+          if [ -n "$TAGS" ]; then
+            ARGS+=(--tags "$TAGS")
+          fi
+          python -m youtube_uploader.uploader "${ARGS[@]}"

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Secrets - never commit OAuth credentials or tokens
+client_secret*.json
+*client_secret*.json
+token.json
+*token*.json
+youtube_token.json
+.env
+.env.*
+secrets/
+.secrets/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

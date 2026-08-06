@@ -10,9 +10,11 @@ API v3. Nothing is ever published publicly by this pipeline.
 1. A Google OAuth "Desktop app" client was created in Google Cloud Console
    and its client JSON downloaded.
 2. `python scripts/authorize.py` was run locally. It:
-   - Opens a browser to Google's consent screen requesting only the
-     `youtube.upload` scope (upload videos, set metadata, set thumbnails -
-     nothing broader).
+   - Opens a browser to Google's consent screen requesting three scopes:
+     `youtube.upload` (upload videos, set metadata, set thumbnails),
+     `youtube.readonly` (used only for the one-time verification call
+     below), and `yt-analytics.readonly` (reserved for future analytics
+     features - not currently used by the uploader).
    - Saves the resulting refresh token to a local, gitignored file outside
      the repo (`~/.whatifs-youtube-secrets/youtube_token.json`).
 3. `python scripts/verify_token.py` confirmed the refresh token works via a
@@ -22,9 +24,13 @@ API v3. Nothing is ever published publicly by this pipeline.
 5. The local plaintext token file was deleted after the secrets were
    confirmed stored on GitHub.
 
-To re-authorize (e.g. on a new machine, or if the refresh token is ever
-revoked), re-download the OAuth client JSON from Google Cloud Console and
-re-run `scripts/authorize.py`, then re-run `scripts/verify_token.py`.
+To re-authorize (e.g. on a new machine, if the refresh token is ever
+revoked, or if the required scopes change), re-download the OAuth client
+JSON from Google Cloud Console and re-run `scripts/authorize.py`, then
+re-run `scripts/verify_token.py`. Installed-app refresh tokens carry a
+fixed scope set from consent time - there's no way to add a scope to an
+existing token, so a scope change always means minting a brand new refresh
+token and updating `YOUTUBE_REFRESH_TOKEN` in GitHub Actions secrets.
 
 ### Uploading a video
 
@@ -47,8 +53,10 @@ optional thumbnail path and tags.
 
 ### Design notes
 
-- Scope: `https://www.googleapis.com/auth/youtube.upload` only - the
-  minimum scope covering upload, metadata, and `thumbnails.set`.
+- Scopes granted to the refresh token: `youtube.upload` (functional -
+  everything the uploader does), `youtube.readonly` (verification only),
+  `yt-analytics.readonly` (reserved for future analytics work). The
+  uploader module itself only ever calls `youtube.upload`-scoped endpoints.
 - `youtube_uploader/uploader.py` hard-codes `privacyStatus: "private"` -
   it is not exposed as a caller-overridable parameter, by design.
 - Credentials come from `YOUTUBE_CLIENT_ID` / `YOUTUBE_CLIENT_SECRET` /

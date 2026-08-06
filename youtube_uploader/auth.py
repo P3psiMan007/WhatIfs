@@ -15,6 +15,13 @@ authorization flow additionally requests ``youtube.readonly``, purely so
 that verification step is possible. The uploader pipeline itself
 (uploader.py) never calls any read-only endpoint and would work fine on a
 token that only had ``youtube.upload``.
+
+``yt-analytics.readonly`` (YouTube Analytics API - read-only channel/video
+performance data: views, watch time, etc.) is also requested up front, for
+future analytics features. Installed-app refresh tokens are minted with a
+fixed scope set at consent time and don't support adding scopes to an
+existing token later - any scope change requires re-running the consent
+flow and swapping in the new refresh token (see scripts/authorize.py).
 """
 from __future__ import annotations
 
@@ -24,11 +31,12 @@ from google.oauth2.credentials import Credentials
 
 YOUTUBE_UPLOAD_SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 YOUTUBE_READONLY_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
+YT_ANALYTICS_READONLY_SCOPE = "https://www.googleapis.com/auth/yt-analytics.readonly"
 
-# Scopes requested during the one-time local authorization flow. Includes
-# youtube.readonly on top of the functional upload scope so the post-auth
-# verification step can make a real (harmless) read call.
-AUTHORIZE_SCOPES = YOUTUBE_UPLOAD_SCOPES + [YOUTUBE_READONLY_SCOPE]
+# Scopes requested during the one-time local authorization flow: the
+# functional upload scope, plus youtube.readonly (verification) and
+# yt-analytics.readonly (future analytics use).
+AUTHORIZE_SCOPES = YOUTUBE_UPLOAD_SCOPES + [YOUTUBE_READONLY_SCOPE, YT_ANALYTICS_READONLY_SCOPE]
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 

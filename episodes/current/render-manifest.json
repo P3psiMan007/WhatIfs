@@ -1,9 +1,12 @@
 {
   "episodeId": "20260807-episode",
-  "generatedAt": "2026-08-07T21:33:50.789Z",
-  "githubRunId": "31218928554",
+  "generatedAt": "2026-08-07T23:07:29.206Z",
+  "githubRunId": "31225120874",
   "artifactName": "episode-render",
   "filename": "episode.mp4",
+  "thumbnailFilename": "thumbnail.png",
+  "contactSheetFilename": "contact-sheet.jpg",
+  "first30ContactSheetFilename": "first-30s-contact-sheet.jpg",
   "title": "What If Humans Never Needed Sleep?",
   "description": "A factual thought experiment from What If Explains: What if humans never needed sleep? Sources and caveats are preserved in the episode research ledger.",
   "packages": [
@@ -27,11 +30,12 @@
     }
   ],
   "chosenPackage": "A",
-  "experimentAssignment": "baseline-dark-amber-v1",
+  "experimentAssignment": "baseline-dark-amber-v2",
   "technical": {
     "programs": [],
     "streams": [
       {
+        "codec_name": "h264",
         "width": 1920,
         "height": 1080,
         "r_frame_rate": "30/1",
@@ -41,9 +45,17 @@
       }
     ],
     "format": {
-      "duration": "383.914667",
-      "size": "89086271"
+      "duration": "384.362667",
+      "size": "87601600",
+      "bit_rate": "1823311"
     }
+  },
+  "visualQa": {
+    "syncBasis": "measured-per-scene-audio",
+    "totalBeats": 98,
+    "first30BeatCount": 8,
+    "maxBeatDuration": 6,
+    "averageBeatDuration": 3.914
   },
   "sourceCount": 7
 }

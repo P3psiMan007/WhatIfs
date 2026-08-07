@@ -31,10 +31,16 @@ test('publish-ready states are left to the guarded publisher', () => {
   assert.equal(plan.reason, 'publisher_owned_state');
 });
 
-test('RENDERED is left for independent QA', () => {
-  const plan = planNextAction({ state: {state:'RENDERED', episode_id:'ep1'}, controls, autonomy, topics: [], producerConfigured: true });
+test('RENDERED with publish-grade QA inputs is left for independent QA', () => {
+  const plan = planNextAction({ state: {state:'RENDERED', episode_id:'ep1', production:{qa_inputs_ready:true}}, controls, autonomy, topics: [], producerConfigured: true });
   assert.equal(plan.kind, 'NOOP');
   assert.equal(plan.reason, 'awaiting_qa');
+});
+
+test('RENDERED placeholder output records a precise visual blocker instead of handing off to QA', () => {
+  const plan = planNextAction({ state: {state:'RENDERED', episode_id:'ep1', production:{qa_inputs_ready:false}}, controls, autonomy, topics: [], producerConfigured: true });
+  assert.equal(plan.kind, 'BLOCKED');
+  assert.equal(plan.reason, 'publish_grade_visual_assets_missing');
 });
 
 test('identical runner status is treated as unchanged', () => {

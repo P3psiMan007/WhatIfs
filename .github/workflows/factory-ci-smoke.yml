@@ -1,0 +1,131 @@
+name: Factory CI Smoke (verification branch only)
+
+# TEMPORARY reviewer-owned verification harness. Runs the real factory
+# scripts on a real ubuntu-latest runner against a purely synthetic episode
+# under a temp EPISODE_STATE_PATH / EPISODES_ROOT. It never reads or writes
+# episodes/current/episode-state.json, and never publishes anything.
+on:
+  push:
+    branches: [ci/factory-verification]
+    # Without this the commit-back step below would re-trigger this workflow forever.
+    paths-ignore:
+      - "ci-smoke/results/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: node --version
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+
+  factory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SMOKE_ROOT: ${{ github.workspace }}/.smoke
+      EPISODE_ID: smoke-ep
+      AUDITION_VOICES: af_heart,bm_george
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ffmpeg / ffprobe binaries resolve on Linux
+        run: |
+          node -e "import('./tools/lib/ffmpegBinaries.mjs').then(async m => {
+            const fs = await import('node:fs');
+            console.log('ffmpeg :', m.ffmpegPath, fs.existsSync(m.ffmpegPath));
+            console.log('ffprobe:', m.ffprobePath, fs.existsSync(m.ffprobePath));
+            if (!fs.existsSync(m.ffmpegPath) || !fs.existsSync(m.ffprobePath)) process.exit(1);
+          })"
+
+      - name: Build synthetic episode package
+        run: node ci-smoke/setup.mjs
+
+      - name: Voice auditions (real Kokoro, exercises voice-audition.yml's script)
+        env:
+          EPISODE_STATE_PATH: ${{ github.workspace }}/.smoke/episode-state.json
+          EPISODES_ROOT: ${{ github.workspace }}/.smoke/episodes
+        run: npm run voice:audition
+
+      - name: Select a voice (stands in for the human pick)
+        env:
+          EPISODE_STATE_PATH: ${{ github.workspace }}/.smoke/episode-state.json
+        run: |
+          REV=$(node tools/episode-state.mjs show | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).state_revision))")
+          node tools/episode-state.mjs patch "$REV" smoke-ep ci \
+            '{"production":{"selected_voice":{"provider":"kokoro","model":"onnx-community/Kokoro-82M-v1.0-ONNX","voiceId":"bm_george","speed":1,"language":"en-GB","settings":{}}}}'
+          REV=$((REV+1))
+          node tools/episode-state.mjs transition "$REV" smoke-ep VOICE_SELECTED ci "ci smoke voice pick"
+
+      - name: Full narration (real Kokoro streaming - the missing CI step)
+        env:
+          EPISODE_STATE_PATH: ${{ github.workspace }}/.smoke/episode-state.json
+          EPISODES_ROOT: ${{ github.workspace }}/.smoke/episodes
+        run: npm run voice:narration
+
+      - name: Align scene timings to real narration
+        run: node ci-smoke/align.mjs
+
+      - name: Render episode (real Remotion + headless Chromium, exercises render-episode.yml's script)
+        env:
+          EPISODE_STATE_PATH: ${{ github.workspace }}/.smoke/episode-state.json
+          EPISODES_ROOT: ${{ github.workspace }}/.smoke/episodes
+          RENDER_OUT_DIR: ${{ github.workspace }}/.smoke/out
+        run: npm run render:episode
+
+      - name: Inspect the resulting MP4 with ffprobe
+        run: |
+          node -e "
+          import('./tools/qa/probeMedia.mjs').then(async m => {
+            const p = await m.probeMedia(process.env.SMOKE_ROOT + '/out/smoke-ep-final.mp4');
+            console.log(JSON.stringify({ok:p.ok, format:p.format, streams:p.streams.map(s=>({t:s.codec_type,c:s.codec_name,w:s.width,h:s.height,r:s.r_frame_rate,sr:s.sample_rate,ch:s.channels}))}, null, 2));
+            if (!p.ok) process.exit(1);
+          })"
+          cat "$SMOKE_ROOT/episodes/smoke-ep/qa/smoke-ep-qa-report.json"
+          cat "$SMOKE_ROOT/episode-state.json" | head -c 600
+
+      - name: Commit-back path (exercises the real workflows' git push step, on this branch only)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p ci-smoke/results
+          cp "$SMOKE_ROOT/episodes/smoke-ep/qa/smoke-ep-qa-report.json" ci-smoke/results/
+          cp "$SMOKE_ROOT/episodes/smoke-ep/renders/render-manifest.json" ci-smoke/results/
+          git add ci-smoke/results
+          git diff --cached --quiet || git commit -m "chore(ci): smoke results for ${{ github.sha }} [skip ci]"
+          git push
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-ci-smoke
+          path: |
+            ${{ github.workspace }}/.smoke/out/smoke-ep-final.mp4
+            ${{ github.workspace }}/.smoke/out/smoke-ep-contact-sheet.jpg
+            ${{ github.workspace }}/.smoke/out/smoke-ep-render-log.txt
+            ${{ github.workspace }}/.smoke/episodes/smoke-ep/audio/narration.wav
+            ${{ github.workspace }}/.smoke/episodes/smoke-ep/audio/narration-timing.json
+            ${{ github.workspace }}/.smoke/episodes/smoke-ep/audio/auditions/*.wav
+            ${{ github.workspace }}/.smoke/episodes/smoke-ep/audio/voice-audition-manifest.json
+            ${{ github.workspace }}/.smoke/episodes/smoke-ep/qa/smoke-ep-qa-report.json
+            ${{ github.workspace }}/.smoke/episodes/smoke-ep/renders/render-manifest.json
+          retention-days: 14
+          if-no-files-found: error

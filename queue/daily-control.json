@@ -1,0 +1,13 @@
+{
+  "control_version": "1.0",
+  "revision": 0,
+  "date": "2026-08-08",
+  "pauseAllProduction": false,
+  "pausePublishing": false,
+  "dailyPublishQuota": 1,
+  "publishedToday": 0,
+  "minimumSpacingMinutes": 360,
+  "lastPublicationAt": null,
+  "lastSuccessfulCanaryAt": null,
+  "notes": "Fail closed if this file is missing, stale for the active control date, internally inconsistent, or cannot be revision-safely updated."
+}

@@ -1,0 +1,43 @@
+{
+  "autonomy_version": "1.0",
+  "revision": 0,
+  "autoPublishEnabled": false,
+  "requiredCoreScore": 9,
+  "publishReadyStates": [
+    "QA_PASSED",
+    "AUTO_PUBLISH_READY"
+  ],
+  "requiredGates": [
+    "factual",
+    "package",
+    "retention",
+    "narration",
+    "visual",
+    "technical",
+    "policy",
+    "copyright"
+  ],
+  "canary": {
+    "requiredPrivateUploads": 2,
+    "successfulPrivateUploads": 0,
+    "remainingPrivateUploads": 2,
+    "decrementOnlyAfterVerifiedSuccess": true,
+    "requireProcessingVerification": true,
+    "requireMetadataVerification": true,
+    "requireThumbnailVerification": true,
+    "rerunMachineChecksAfterUpload": true
+  },
+  "publication": {
+    "firstTwoRealVideosPrivacy": "private",
+    "allowPublicOrScheduledOnlyWhenCanaryComplete": true,
+    "requireAutoPublishEnabledForPublicOrScheduled": true,
+    "failClosedOnUncertainty": true
+  },
+  "recording": {
+    "requireVideoId": true,
+    "requireChosenPackage": true,
+    "requirePublicationOrScheduleTime": true,
+    "requireExperimentAssignment": true,
+    "revisionSafeWrites": true
+  }
+}

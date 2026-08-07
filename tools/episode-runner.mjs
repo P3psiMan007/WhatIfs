@@ -5,11 +5,23 @@ import { spawnSync } from 'node:child_process';
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const writeJson = (p, value) => fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
 
+export function resolveProducerCommand({ configured, builtInExists }) {
+  const explicit = String(configured || '').trim();
+  if (explicit) return explicit;
+  return builtInExists ? 'node tools/episode-producer.mjs' : '';
+}
+
+export function extractProducerFailureReason(stderr = '') {
+  const match = String(stderr).match(/PRODUCER_BLOCKED\s+([^:\s]+)/);
+  return match?.[1] || null;
+}
+
 export function planNextAction({ state, controls, autonomy, topics, producerConfigured }) {
   if (controls?.pauseAllProduction === true) return { kind: 'NOOP', reason: 'pauseAllProduction' };
 
   const publisherStates = new Set([...(autonomy?.publishReadyStates || []), 'PUBLISHED']);
   if (publisherStates.has(state?.state)) return { kind: 'NOOP', reason: 'publisher_owned_state' };
+  if (state?.state === 'RENDERED') return { kind: 'NOOP', reason: 'awaiting_qa' };
 
   if (state?.state === 'IDLE' || state?.state === 'ANALYZED') {
     const topic = (topics || []).find((t) => t && t.enabled !== false && !t.consumedAt);
@@ -64,7 +76,10 @@ function main() {
   const controls = readJson(controlsPath);
   const queue = readJson(topicsPath);
   const topics = Array.isArray(queue) ? queue : queue.topics || [];
-  const producerCommand = process.env.EPISODE_PRODUCER_CMD?.trim() || '';
+  const producerCommand = resolveProducerCommand({
+    configured: process.env.EPISODE_PRODUCER_CMD,
+    builtInExists: fs.existsSync('tools/episode-producer.mjs'),
+  });
   const plan = planNextAction({ state, controls, autonomy, topics, producerConfigured: Boolean(producerCommand) });
 
   if (plan.kind === 'NOOP') {
@@ -100,13 +115,17 @@ function main() {
     return;
   }
 
-  const result = spawnSync(producerCommand, { shell: true, stdio: 'inherit', env: process.env });
+  const result = spawnSync(producerCommand, { shell: true, encoding: 'utf8', env: process.env });
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  const after = fs.existsSync(statePath) ? readJson(statePath) : state;
   if (result.status !== 0) {
-    writeStatus(statusPath, { kind: 'BLOCKED', reason: 'producer_failed', episodeId: state.episode_id, state: state.state, stateRevision: state.state_revision, exitCode: result.status });
+    const reason = extractProducerFailureReason(result.stderr) || 'producer_failed';
+    writeStatus(statusPath, { kind: 'BLOCKED', reason, episodeId: after.episode_id, state: after.state, stateRevision: after.state_revision, exitCode: result.status });
     process.exitCode = result.status || 1;
     return;
   }
-  writeStatus(statusPath, { kind: 'PRODUCER_RAN', reason: null, episodeId: state.episode_id, state: state.state, stateRevision: state.state_revision });
+  writeStatus(statusPath, { kind: 'PRODUCER_RAN', reason: null, episodeId: after.episode_id, state: after.state, stateRevision: after.state_revision });
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();

@@ -9,23 +9,37 @@ on:
     paths:
       - "tools/episode-runner.mjs"
       - "tools/episode-runner.test.mjs"
+      - "tools/episode-producer.mjs"
+      - "tools/episode-producer.test.mjs"
       - "tools/episode-state.mjs"
       - "episodes/current/episode-state.json"
+      - "episodes/current/research.md"
+      - "episodes/current/script.md"
+      - "episodes/current/production-input.json"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "queue/topics.json"
       - "queue/runner-status.json"
+      - "package.json"
+      - "video/**"
       - ".github/workflows/episode-factory.yml"
   pull_request:
     paths:
       - "tools/episode-runner.mjs"
       - "tools/episode-runner.test.mjs"
+      - "tools/episode-producer.mjs"
+      - "tools/episode-producer.test.mjs"
       - "tools/episode-state.mjs"
       - "episodes/current/episode-state.json"
+      - "episodes/current/research.md"
+      - "episodes/current/script.md"
+      - "episodes/current/production-input.json"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "queue/topics.json"
       - "queue/runner-status.json"
+      - "package.json"
+      - "video/**"
       - ".github/workflows/episode-factory.yml"
 
 permissions:
@@ -43,8 +57,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Run state and factory tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs
+      - name: Install video dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run state, orchestration, and producer tests
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs
+      - name: Remotion browser/render smoke test
+        run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=10
+      - name: Verify smoke render exists
+        run: test -s /tmp/whatifs-smoke.png
 
   factory:
     if: github.event_name != 'pull_request'
@@ -59,10 +79,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Advance factory and record blockers
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deterministic production dependencies
+        run: |
+          npm install --no-audit --no-fund
+          python -m pip install --disable-pip-version-check edge-tts==7.2.8
+      - name: Advance factory and run built-in producer
         shell: bash
         run: |
-          for pass in 1 2; do
+          for pass in 1 2 3; do
             set +e
             node tools/episode-runner.mjs
             rc=$?
@@ -74,15 +101,30 @@ jobs:
               exit "$rc"
             fi
           done
+      - name: Upload render and narration artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-render
+          path: |
+            dist/episode.mp4
+            public/narration.mp3
+            public/narration.srt
+            episodes/current/render-manifest.json
+            episodes/current/production-input.json
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Persist canonical state changes
         shell: bash
         run: |
           git config user.name "whatifs-episode-factory"
           git config user.email "whatifs-episode-factory@users.noreply.github.com"
           git add episodes/current/episode-state.json queue/topics.json queue/runner-status.json
+          [ -f episodes/current/production-input.json ] && git add episodes/current/production-input.json
+          [ -f episodes/current/render-manifest.json ] && git add episodes/current/render-manifest.json
           if git diff --cached --quiet; then
             echo "No state changes to persist."
             exit 0
           fi
-          git commit -m "chore: advance episode factory state"
+          git commit -m "chore: advance automatic video production"
+          git pull --rebase origin main
           git push

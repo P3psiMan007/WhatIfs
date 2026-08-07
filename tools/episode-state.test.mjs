@@ -6,13 +6,34 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 
 const tool = path.resolve("tools/episode-state.mjs");
-const template = path.resolve("episodes/current/episode-state.json");
+const canonical = JSON.parse(fs.readFileSync(path.resolve("episodes/current/episode-state.json"), "utf8"));
+
+function freshIdleState() {
+  return {
+    ...canonical,
+    episode_id: null,
+    state: "IDLE",
+    state_revision: 0,
+    updated_at: null,
+    updated_by: null,
+    lock: { active: false, locked_at: null, locked_by: null, reason: null },
+    history: [],
+  };
+}
+
 function withState(fn) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "whatif-state-"));
   const p = path.join(dir, "episode-state.json");
-  fs.copyFileSync(template, p);
+  fs.writeFileSync(p, JSON.stringify(freshIdleState(), null, 2) + "\n");
   return fn(p);
 }
+
+test("test fixture stays revision-zero even after canonical production state advances", () => withState((p) => {
+  const s = JSON.parse(fs.readFileSync(p, "utf8"));
+  assert.equal(s.state, "IDLE");
+  assert.equal(s.state_revision, 0);
+  assert.equal(s.episode_id, null);
+}));
 
 test("starts a new selected episode with revision increment", () => withState((p) => {
   execFileSync("node", [tool, "transition", "0", "NEW", "SELECTED", "growth"], { env: { ...process.env, EPISODE_STATE_PATH: p } });

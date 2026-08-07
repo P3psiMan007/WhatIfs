@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whatifexplains.local/episode-package.schema.json",
+  "title": "What If Explains Episode Package",
+  "type": "object",
+  "required": ["episodeId", "pipelineVersion", "title", "premise", "coreParadox", "hookPromise", "targetLengthMinutes", "opportunityScore", "whyThisWins", "researchQuestions", "factRisks", "createdAt", "updatedAt"],
+  "additionalProperties": false,
+  "properties": {
+    "episodeId": {"type": "string", "minLength": 1},
+    "pipelineVersion": {"const": "2.1"},
+    "title": {"type": "string", "minLength": 1},
+    "premise": {"type": "string", "minLength": 1},
+    "coreParadox": {"type": "string", "minLength": 1},
+    "hookPromise": {"type": "string", "minLength": 1},
+    "targetLengthMinutes": {"type": "number", "minimum": 7, "maximum": 10},
+    "opportunityScore": {"type": ["number", "null"]},
+    "whyThisWins": {"type": ["string", "null"]},
+    "researchQuestions": {"type": "array", "items": {"type": "string"}},
+    "factRisks": {"type": "array", "items": {"type": "string"}},
+    "createdAt": {"type": "string"},
+    "updatedAt": {"type": "string"}
+  }
+}

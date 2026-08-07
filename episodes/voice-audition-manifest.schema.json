@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whatifexplains.local/voice-audition-manifest.schema.json",
+  "title": "What If Explains Voice Audition Manifest",
+  "type": "object",
+  "required": ["episodeId", "stateRevision", "hookText", "generatedAt", "candidates"],
+  "additionalProperties": false,
+  "properties": {
+    "episodeId": {"type": "string", "minLength": 1},
+    "stateRevision": {"type": "integer", "minimum": 0},
+    "hookText": {"type": "string", "minLength": 1},
+    "generatedAt": {"type": "string"},
+    "candidates": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["candidateId", "voice", "hookText", "audioPath", "durationSeconds", "generatedAt", "mechanicalChecks"],
+        "additionalProperties": false,
+        "properties": {
+          "candidateId": {"type": "string", "minLength": 1},
+          "voice": {
+            "type": "object",
+            "required": ["provider", "model", "voiceId", "speed", "language", "settings"],
+            "additionalProperties": false,
+            "properties": {
+              "provider": {"const": "kokoro"},
+              "model": {"type": "string", "minLength": 1},
+              "voiceId": {"type": "string", "minLength": 1},
+              "speed": {"type": "number", "exclusiveMinimum": 0},
+              "language": {"type": "string", "minLength": 1},
+              "settings": {"type": "object"}
+            }
+          },
+          "hookText": {"type": "string", "minLength": 1},
+          "audioPath": {"type": "string", "minLength": 1},
+          "durationSeconds": {"type": ["number", "null"]},
+          "generatedAt": {"type": "string"},
+          "mechanicalChecks": {
+            "type": "object",
+            "required": ["fileExists", "nonZeroDuration", "silenceDetected", "clippingDetected", "generationFailed", "detail"],
+            "additionalProperties": false,
+            "properties": {
+              "fileExists": {"enum": ["PASS", "FAIL", "UNVERIFIED"]},
+              "nonZeroDuration": {"enum": ["PASS", "FAIL", "UNVERIFIED"]},
+              "silenceDetected": {"enum": ["PASS", "FAIL", "UNVERIFIED"]},
+              "clippingDetected": {"enum": ["PASS", "FAIL", "UNVERIFIED"]},
+              "generationFailed": {"type": "boolean"},
+              "detail": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

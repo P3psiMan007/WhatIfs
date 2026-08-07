@@ -1,0 +1,14 @@
+{
+  "selected": true,
+  "episodeIdSelectedFrom": "channel-audition-preview-2026-08-07",
+  "selectedAt": "2026-08-07",
+  "voice": {
+    "provider": "kokoro",
+    "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+    "voiceId": "af_heart",
+    "speed": 0.95,
+    "language": "en-US",
+    "settings": {}
+  },
+  "notes": "User selected Voice A (af_heart) after comparing four narrator previews generated from the same hook. Locked as the permanent What If Explains narrator at 0.95 speed; future episodes may still override production.selected_voice explicitly if needed."
+}

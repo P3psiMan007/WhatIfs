@@ -1,0 +1,71 @@
+name: Render Episode
+
+# Manual trigger only - rendering, committing state changes, and consuming
+# significant compute/time are real side effects, always an explicit action.
+# Never publishes to YouTube - see .github/workflows/upload-youtube.yml,
+# which is a separate, always-manual, always-private step.
+on:
+  workflow_dispatch:
+    inputs:
+      episode_id:
+        description: "Episode ID (must be VOICE_READY or QA_FAILED in episodes/current/episode-state.json)"
+        required: true
+      state_revision:
+        description: "Optional: expected state_revision, for audit trail only (the render script always re-reads and re-checks the real revision itself)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # tools/render/render-episode.mjs performs every step in one pass:
+      # validates episode.json/scene-manifest.json against schema, confirms
+      # approved narration.wav exists, bundles the Remotion project, renders
+      # the full 1920x1080 video, finalizes it (ffmpeg faststart remux),
+      # generates a contact sheet, and runs technical QA - see the script
+      # for the exact sequence.
+      - name: Render episode
+        env:
+          EPISODE_ID: ${{ github.event.inputs.episode_id }}
+        run: |
+          echo "Requested state_revision (audit only): ${{ github.event.inputs.state_revision }}"
+          npm run render:episode
+
+      - name: Commit updated episode state and manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add episodes/current/episode-state.json \
+            "episodes/${{ github.event.inputs.episode_id }}/renders/render-manifest.json" \
+            "episodes/${{ github.event.inputs.episode_id }}/qa/${{ github.event.inputs.episode_id }}-qa-report.json"
+          git diff --cached --quiet || git commit -m "chore: episode ${{ github.event.inputs.episode_id }} rendered"
+          git push
+
+      - name: Upload render artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: render-${{ github.event.inputs.episode_id }}
+          path: |
+            out/${{ github.event.inputs.episode_id }}-final.mp4
+            out/${{ github.event.inputs.episode_id }}-render-log.txt
+            out/${{ github.event.inputs.episode_id }}-contact-sheet.jpg
+            episodes/${{ github.event.inputs.episode_id }}/audio/narration.wav
+            episodes/${{ github.event.inputs.episode_id }}/audio/narration-timing.json
+            episodes/${{ github.event.inputs.episode_id }}/renders/render-manifest.json
+            episodes/${{ github.event.inputs.episode_id }}/qa/${{ github.event.inputs.episode_id }}-qa-report.json
+          retention-days: 90
+          if-no-files-found: warn

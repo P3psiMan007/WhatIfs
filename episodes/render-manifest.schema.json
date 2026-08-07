@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whatifexplains.local/render-manifest.schema.json",
+  "title": "What If Explains Render Manifest",
+  "type": "object",
+  "required": ["episodeId", "stateRevision", "renderedAt", "width", "height", "fps", "durationInFrames", "durationSeconds", "videoPath", "narrationPath", "contactSheetPath", "compositionId", "remotionVersion", "gitCommit"],
+  "additionalProperties": false,
+  "properties": {
+    "episodeId": {"type": "string", "minLength": 1},
+    "stateRevision": {"type": "integer", "minimum": 0},
+    "renderedAt": {"type": "string"},
+    "width": {"type": "integer", "minimum": 1},
+    "height": {"type": "integer", "minimum": 1},
+    "fps": {"type": "integer", "minimum": 1},
+    "durationInFrames": {"type": "integer", "minimum": 1},
+    "durationSeconds": {"type": "number", "exclusiveMinimum": 0},
+    "videoPath": {"type": "string", "minLength": 1},
+    "narrationPath": {"type": "string", "minLength": 1},
+    "contactSheetPath": {"type": ["string", "null"]},
+    "compositionId": {"type": "string", "minLength": 1},
+    "remotionVersion": {"type": "string", "minLength": 1},
+    "gitCommit": {"type": ["string", "null"]}
+  }
+}

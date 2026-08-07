@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Episode 1 timing and art-plan tests
-        run: node --test tools/render/applySceneTiming.test.mjs src/video/episodes/brainSleepArtPlan.test.ts
+      - name: Run Episode 1 timing, art-plan, and sound-design tests
+        run: node --test tools/render/applySceneTiming.test.mjs src/video/episodes/brainSleepArtPlan.test.ts tools/audio/episodeSoundDesign.test.mjs
 
       - name: Align scenes to real narration timing
         env:

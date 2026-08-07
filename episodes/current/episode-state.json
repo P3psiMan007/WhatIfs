@@ -1,0 +1,33 @@
+{
+  "pipeline_version": "2.1",
+  "episode_id": null,
+  "state": "IDLE",
+  "state_revision": 0,
+  "updated_at": null,
+  "updated_by": null,
+  "lock": {"active": false, "locked_at": null, "locked_by": null, "reason": null},
+  "growth": {
+    "opportunity_score": null,
+    "why_this_wins": null,
+    "core_paradox": null,
+    "hook_promise": null,
+    "target_length_min": null,
+    "critic_lessons_applied": [],
+    "packages": {"default": null, "b": null, "c": null},
+    "research_questions": [],
+    "fact_risks": []
+  },
+  "production": {
+    "script_words": null,
+    "estimated_duration_min": null,
+    "pronunciation_dictionary": [],
+    "voice_candidates": [],
+    "selected_voice": null,
+    "voice_asset": null,
+    "render_asset": null,
+    "qa_inputs_ready": false
+  },
+  "qa": {"status": null, "scores": {}, "top_issues": [], "required_fixes": [], "user_action_required": null},
+  "analytics": {"last_checked_at": null, "sample_note": null, "metrics": {}, "keep": [], "change": [], "avoid": [], "test_next": [], "ab_test_recommendation": null},
+  "history": []
+}

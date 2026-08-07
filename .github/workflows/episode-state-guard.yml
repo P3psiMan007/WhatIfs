@@ -1,0 +1,29 @@
+name: Episode State Guard
+
+on:
+  pull_request:
+    paths:
+      - "episodes/current/episode-state.json"
+      - "episodes/episode-state.schema.json"
+      - "tools/episode-state.mjs"
+      - "tools/episode-state.test.mjs"
+  push:
+    branches: [main]
+    paths:
+      - "episodes/current/episode-state.json"
+      - "episodes/episode-state.schema.json"
+      - "tools/episode-state.mjs"
+      - "tools/episode-state.test.mjs"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run state tests
+        run: node --test tools/episode-state.test.mjs
+      - name: Parse state JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('episodes/current/episode-state.json','utf8')); console.log('episode-state.json OK')"

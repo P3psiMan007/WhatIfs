@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whatifexplains.local/episode-state.schema.json",
+  "title": "What If Explains Episode State",
+  "type": "object",
+  "required": ["pipeline_version","episode_id","state","state_revision","lock","growth","production","qa","analytics","history"],
+  "properties": {
+    "pipeline_version": {"const": "2.1"},
+    "episode_id": {"type": ["string","null"]},
+    "state": {"enum": ["IDLE","SELECTED","RESEARCH_BLOCKED","RESEARCHED","SCRIPTED","VOICE_BLOCKED","VOICE_AUDITIONS_READY","VOICE_SELECTED","VOICE_READY","RENDERED","QA_FAILED","QA_FAILED_VOICE","QA_PASSED_AWAITING_USER_APPROVAL","PUBLISHED","ANALYZED"]},
+    "state_revision": {"type":"integer","minimum":0},
+    "updated_at": {"type":["string","null"]},
+    "updated_by": {"type":["string","null"]},
+    "lock": {"type":"object"},
+    "growth": {"type":"object"},
+    "production": {"type":"object"},
+    "qa": {"type":"object"},
+    "analytics": {"type":"object"},
+    "history": {"type":"array"}
+  },
+  "additionalProperties": false
+}

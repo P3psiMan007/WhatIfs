@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 13,
-  "updated_at": "2026-08-07T23:25:10.097Z",
+  "state_revision": 14,
+  "updated_at": "2026-08-07T23:27:17.628Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -180,6 +180,14 @@
     {
       "revision": 13,
       "at": "2026-08-07T23:25:10.097Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 14,
+      "at": "2026-08-07T23:27:17.628Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

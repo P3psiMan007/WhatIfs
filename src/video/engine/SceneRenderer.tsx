@@ -29,10 +29,13 @@ export const SceneRenderer: React.FC<SceneRendererProps> = ({
   nowSeconds,
 }) => {
   if (episodeId === "20260807-brain-sleeps-awake") {
+    // Directed episodes use authored 2-5 word callouts inside the illustration
+    // rather than burning the entire narration into the frame. Full accessibility
+    // captions belong in YouTube's caption track; keeping them off the image
+    // protects composition and visual attention.
     return (
       <AbsoluteFill>
         <BrainSleepSceneArt scene={scene} cameraProgress={cameraProgress} revealProgress={revealProgress} />
-        {activeCaptionPhrase && <WordSyncedCaption phrase={activeCaptionPhrase} nowSeconds={nowSeconds} />}
       </AbsoluteFill>
     );
   }

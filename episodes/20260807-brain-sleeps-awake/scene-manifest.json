@@ -2,47 +2,1191 @@
   "episodeId": "20260807-brain-sleeps-awake",
   "fps": 30,
   "scenes": [
-    {"sceneId":"s01","order":0,"narration":{"text":"You probably think sleep is a switch.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"establish-premise","focalSubject":"human beside a giant sleep switch","environment":"bedroom home","props":["switch","moon","sun"],"cameraIntent":"push-in","motionIntent":["prop-enter","subtle-idle"],"caption":"SLEEP = SWITCH?","sfxIntent":"soft toggle click","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"Viewer's binary sleep assumption is established."},
-    {"sceneId":"s02","order":1,"narration":{"text":"You are awake. Then, at some point you cannot remember, the switch flips, and you are asleep.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"same human moving from desk to bed as the switch flips","environment":"home bedroom","props":["clock","bed","switch"],"cameraIntent":"pan-right","motionIntent":["character-gesture","prop-enter"],"caption":"AWAKE → ASLEEP","sfxIntent":"clock tick then click","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The familiar whole-person awake-to-asleep model is visualized."},
-    {"sceneId":"s03","order":2,"narration":{"text":"But your brain does not always work that way.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"switch cracks into many smaller switches inside a brain","environment":"void","props":["question-mark"],"cameraIntent":"push-in","motionIntent":["prop-enter","expression-change"],"caption":"NOT SO SIMPLE","sfxIntent":"small crack","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The binary model is challenged."},
-    {"sceneId":"s04","order":3,"narration":{"text":"In 2026, researchers did something that sounds almost impossible: they made small regions of an awake mouse brain behave as if they were asleep. The mouse stayed awake. It could still move, sense its environment, and respond. But inside selected patches of cortex, neurons began cycling through the slow ON-and-OFF rhythm normally associated with deep non-REM sleep.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"introduce-character","focalSubject":"awake lab mouse with transparent brain and one cortical patch pulsing slow waves","environment":"laboratory","props":["mouse","brain","wave"],"cameraIntent":"push-in","motionIntent":["subtle-idle","prop-enter","camera-follow"],"caption":"AWAKE + SLEEPING?","sfxIntent":"low neural pulse","transitionIn":"dissolve","requiredAssets":[],"newInformation":"The 2026 awake-mouse local-sleep experiment is introduced."},
-    {"sceneId":"s05","order":4,"narration":{"text":"And after thirty minutes of this strange half-state, sleep-deprived mice performed a memory task almost as well as mice that had actually rested.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"reveal-number","focalSubject":"30-minute clock beside two mouse memory-test paths converging","environment":"abstract graph data","props":["clock","chart"],"cameraIntent":"static","motionIntent":["prop-enter"],"caption":"30 MINUTES","sfxIntent":"soft reveal hit","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The induced pattern produced a measurable sleep-related memory benefit."},
-    {"sceneId":"s06","order":5,"narration":{"text":"So if part of a brain can sleep while the rest stays awake, what exactly does ‘being awake’ even mean?","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"split brain hovering over an awake human","environment":"void","props":["question-mark"],"cameraIntent":"pull-out","motionIntent":["subtle-idle","prop-enter"],"caption":"WHAT IS AWAKE?","sfxIntent":"airy question rise","transitionIn":"dissolve","requiredAssets":[],"newInformation":"The episode's central philosophical-scientific question is opened."},
-    {"sceneId":"s07","order":6,"narration":{"text":"To understand why this is so strange, imagine a stadium at night.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"establish-premise","focalSubject":"stadium filled with thousands of glowing neuron-like spectators","environment":"city stadium night","props":[],"cameraIntent":"pull-out","motionIntent":["subtle-idle"],"caption":"IMAGINE A STADIUM","sfxIntent":"distant crowd hum","transitionIn":"match-cut","requiredAssets":[],"newInformation":"A visual metaphor for distributed neural activity is established."},
-    {"sceneId":"s08","order":7,"narration":{"text":"When you are fully awake, billions of neurons are busy strengthening connections, reacting to the world, and changing with experience. Traditional thinking made sleep sound like the stadium closing: lights off, gates locked, everyone goes home.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"stadium lights sequentially shutting off while neural spectators exit","environment":"city stadium night","props":["door"],"cameraIntent":"pan-left","motionIntent":["prop-exit","camera-follow"],"caption":"LIGHTS OUT?","sfxIntent":"stadium lights clicking off","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The simplistic global shutdown model is visualized."},
-    {"sceneId":"s09","order":8,"narration":{"text":"But real sleep is messier. Different brain regions can build up different amounts of sleep pressure depending on how hard they have been working. And when you are severely sleep deprived, small groups of neurons can briefly slip into slow, sleep-like activity even while your behavior still looks awake.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"brain divided into neighborhoods with different fatigue meters; one neighborhood dims","environment":"void","props":["clock"],"cameraIntent":"parallax-drift","motionIntent":["prop-enter","subtle-idle"],"caption":"LOCAL SLEEP","sfxIntent":"one section powers down","transitionIn":"dissolve","requiredAssets":[],"newInformation":"Sleep pressure and sleep-like activity can be local rather than uniform."},
-    {"sceneId":"s10","order":9,"narration":{"text":"That idea is called local sleep.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"reveal-number","focalSubject":"single dim brain patch surrounded by awake bright regions","environment":"void","props":[],"cameraIntent":"push-in","motionIntent":["subtle-idle"],"caption":"LOCAL SLEEP","sfxIntent":"small tonal lock","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The term local sleep is named."},
-    {"sceneId":"s11","order":10,"narration":{"text":"Scientists had already seen versions of it before the 2026 experiment. In sleep-deprived animals, and in evidence from humans, local slow waves can appear during wakefulness. The strange part is that you may not feel the exact moment a circuit checks out. The rest of your brain can keep the performance going while one region becomes less reliable.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"awake office worker while a small brain circuit dozes behind the scenes","environment":"office desk workplace","props":["clock","phone"],"cameraIntent":"push-in","motionIntent":["character-gesture","expression-change"],"caption":"YOU MAY NOT NOTICE","sfxIntent":"brief muffled drop","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"Local sleep can occur without an obvious whole-person transition to sleep."},
-    {"sceneId":"s12","order":11,"narration":{"text":"That may help explain why extreme tiredness can produce absurd mistakes. You can be staring at a screen, technically awake, while the networks you need for a particular task are no longer operating normally.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"tired worker confidently typing nonsense while one brain zone is dim","environment":"office desk workplace","props":["clock"],"cameraIntent":"pan-right","motionIntent":["character-gesture","expression-change"],"caption":"AWAKE… SORT OF","sfxIntent":"wrong-key clack","transitionIn":"match-cut","requiredAssets":[],"newInformation":"Local failure provides an intuitive consequence of sleep deprivation."},
-    {"sceneId":"s13","order":12,"narration":{"text":"But those accidental local sleep events are short and chaotic. The new experiment asked a much more interesting question. What if you could trigger the useful pattern on purpose?","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"chaotic waves straighten into a controlled repeating pattern","environment":"void","props":["question-mark"],"cameraIntent":"push-in","motionIntent":["prop-enter"],"caption":"ON PURPOSE?","sfxIntent":"chaos resolves to pulse","transitionIn":"dissolve","requiredAssets":[],"newInformation":"The story moves from accidental local sleep to controlled induction."},
-    {"sceneId":"s14","order":13,"narration":{"text":"Researchers at the University of Wisconsin-Madison used pulses of light to control specially prepared neurons in sleep-deprived mice. They stimulated small parts of the cortex with a repeating pattern: neurons active, neurons quiet, active, quiet.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"mouse brain cross-section with light pulses driving alternating neuron rows","environment":"laboratory","props":["lightbulb"],"cameraIntent":"push-in","motionIntent":["prop-enter","camera-follow"],"caption":"ON. OFF. ON. OFF.","sfxIntent":"four soft synchronized pulses","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The controlled alternating stimulation pattern is explained."},
-    {"sceneId":"s15","order":14,"narration":{"text":"This was not simply turning the brain down. The timing mattered.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"compare-options","focalSubject":"two wave patterns side by side: flat dimming versus rhythmic ON/OFF","environment":"abstract graph data","props":["chart"],"cameraIntent":"static","motionIntent":["prop-enter"],"caption":"TIMING MATTERED","sfxIntent":"wrong buzz then clean pulse","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The temporal structure, not mere reduced firing, was important."},
-    {"sceneId":"s16","order":15,"narration":{"text":"The alternating ON-and-OFF pattern resembled the slow waves of non-REM sleep. When the researchers used patterns that did not reproduce that rhythm, they did not get the same effect.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"sleep wave overlays the induced wave until they align","environment":"abstract graph data","props":["chart"],"cameraIntent":"push-in","motionIntent":["prop-enter"],"caption":"MATCH THE RHYTHM","sfxIntent":"wave sync tone","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The induced rhythm resembled NREM slow-wave dynamics."},
-    {"sceneId":"s17","order":16,"narration":{"text":"Afterward, the stimulated brain regions behaved as if some of their sleep need had already been paid back. When the mice eventually went to sleep, those areas showed less slow-wave activity than they otherwise would have.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"local brain battery meter partially refilled before the mouse sleeps","environment":"laboratory","props":["chart"],"cameraIntent":"pull-out","motionIntent":["prop-enter","subtle-idle"],"caption":"LESS LOCAL SLEEP NEED","sfxIntent":"soft recharge","transitionIn":"dissolve","requiredAssets":[],"newInformation":"Induced activity reduced later slow-wave need in the targeted regions."},
-    {"sceneId":"s18","order":17,"narration":{"text":"Then came the part that makes this more than a weird brain-wave trick. The team tested tactile memory.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"mouse approaches two floor textures in a memory arena","environment":"laboratory","props":["question-mark"],"cameraIntent":"push-in","motionIntent":["camera-follow"],"caption":"BUT DID IT HELP?","sfxIntent":"small suspense rise","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"A behavioral test is introduced."},
-    {"sceneId":"s19","order":18,"narration":{"text":"Sleep normally helps preserve this kind of learning, so sleep-deprived mice tend to perform worse. But sleep-deprived mice that received the sleep-like stimulation in relevant sensory and motor regions performed roughly like well-rested animals.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"compare-options","focalSubject":"three mice lanes: rested, deprived, deprived plus stimulation; first and third finish together","environment":"abstract graph data","props":["chart"],"cameraIntent":"pan-right","motionIntent":["prop-enter","camera-follow"],"caption":"MEMORY RECOVERED","sfxIntent":"two finish pings","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The measured tactile-memory benefit is shown without overgeneralizing cognition."},
-    {"sceneId":"s20","order":19,"narration":{"text":"A small part of the brain had apparently received at least some of the benefits of sleep without the whole animal going unconscious.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"resolve-paradox","focalSubject":"awake mouse with one glowing restored cortical patch","environment":"void","props":[],"cameraIntent":"push-in","motionIntent":["subtle-idle"],"caption":"REST WITHOUT SLEEPING?","sfxIntent":"soft reveal","transitionIn":"dissolve","requiredAssets":[],"newInformation":"The central paradox is restated at the local-brain level."},
-    {"sceneId":"s21","order":20,"narration":{"text":"That still does not mean scientists have invented a substitute for sleep. The study was in mice, the intervention was invasive, and sleep does far more than maintain one memory task.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"compare-options","focalSubject":"large red boundary line between mouse experiment and sleeping human","environment":"void","props":["arrow"],"cameraIntent":"static","motionIntent":["prop-enter"],"caption":"NOT A SLEEP REPLACEMENT","sfxIntent":"firm stop tick","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The key scientific caveat prevents a misleading human claim."},
-    {"sceneId":"s22","order":21,"narration":{"text":"But nature has already built a much more dramatic version of this idea.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"mouse silhouette match-cuts into a dolphin silhouette","environment":"nature ocean","props":[],"cameraIntent":"pull-out","motionIntent":["camera-follow"],"caption":"NATURE WENT FURTHER","sfxIntent":"water swell","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The story escalates from laboratory local sleep to natural hemispheric sleep."},
-    {"sceneId":"s23","order":22,"narration":{"text":"A dolphin cannot simply become completely unconscious for eight hours. It has to keep swimming. It has to watch its environment. Most importantly, it has to reach the surface to breathe.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"dolphin swimming beneath surface with breath path highlighted","environment":"nature ocean","props":["clock"],"cameraIntent":"pan-right","motionIntent":["camera-follow","subtle-idle"],"caption":"IT HAS TO BREATHE","sfxIntent":"underwater ambience and breath","transitionIn":"dissolve","requiredAssets":[],"newInformation":"The survival pressure behind dolphin sleep adaptation is established."},
-    {"sceneId":"s24","order":23,"narration":{"text":"So dolphins and other whales can sleep one cerebral hemisphere at a time. One side rests; the other remains more alert and helps maintain movement, breathing, and awareness. Later, the roles can switch.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"transparent dolphin head with one brain hemisphere dim and one bright, then swapping","environment":"nature ocean","props":[],"cameraIntent":"push-in","motionIntent":["expression-change","prop-enter"],"caption":"ONE SIDE AT A TIME","sfxIntent":"left-right soft pulse","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"True unihemispheric sleep is explained through a dolphin."},
-    {"sceneId":"s25","order":24,"narration":{"text":"The phrase ‘sleep with one eye open’ is almost literal here. Because the brain’s visual pathways cross, the eye connected to the more awake hemisphere can remain open.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"close-up dolphin with one eye open and crossing eye-to-brain lines","environment":"nature ocean","props":[],"cameraIntent":"push-in","motionIntent":["expression-change"],"caption":"ONE EYE OPEN","sfxIntent":"tiny eye-open tick","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The one-eye-open behavior is tied to hemispheric state."},
-    {"sceneId":"s26","order":25,"narration":{"text":"And dolphins are not the only animals that have turned sleep into a compromise.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"dolphin arcs upward and morphs into a bird wing silhouette","environment":"nature sky","props":[],"cameraIntent":"pull-out","motionIntent":["camera-follow"],"caption":"THEN THERE ARE BIRDS","sfxIntent":"water-to-wind transition","transitionIn":"match-cut","requiredAssets":[],"newInformation":"Escalation moves from ocean mammals to airborne sleep."},
-    {"sceneId":"s27","order":26,"narration":{"text":"Great frigatebirds can remain over the ocean for days at a time. Researchers attached miniature brain-recording devices to the birds and discovered that they can actually sleep while flying.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"introduce-character","focalSubject":"frigatebird gliding over ocean with tiny EEG recorder and sleep waves","environment":"nature ocean sky","props":[],"cameraIntent":"camera-follow","motionIntent":["camera-follow","subtle-idle"],"caption":"SLEEPING IN FLIGHT","sfxIntent":"wind rush","transitionIn":"dissolve","requiredAssets":[],"newInformation":"Direct EEG evidence of sleep in flying frigatebirds is introduced."},
-    {"sceneId":"s28","order":27,"narration":{"text":"Sometimes one hemisphere slept while the other remained more alert. Sometimes both hemispheres slept briefly. But the birds slept dramatically less in the air than they did on land: under an hour per day on average while flying in the study.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"reveal-number","focalSubject":"frigatebird flight path around a giant 0.69 HOURS/day clock","environment":"nature sky","props":["clock"],"cameraIntent":"pull-out","motionIntent":["prop-enter","camera-follow"],"caption":"0.69 HOURS / DAY","sfxIntent":"number reveal hit","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The birds can sleep in flight but obtain very little of it there."},
-    {"sceneId":"s29","order":28,"narration":{"text":"They were not peacefully taking eight-hour naps in the sky. They were stealing tiny packets of sleep whenever the environment allowed it.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"bird gliding through tiny floating sleep bubbles that pop quickly","environment":"nature sky","props":["clock"],"cameraIntent":"pan-right","motionIntent":["camera-follow","prop-enter","prop-exit"],"caption":"TINY PACKETS OF SLEEP","sfxIntent":"brief airy pops","transitionIn":"dissolve","requiredAssets":[],"newInformation":"Airborne sleep is framed as brief opportunistic rest rather than normal long sleep."},
-    {"sceneId":"s30","order":29,"narration":{"text":"Which raises the obvious question. Could humans do the dolphin trick?","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"human silhouette between dolphin and split brain","environment":"void","props":["question-mark"],"cameraIntent":"push-in","motionIntent":["prop-enter"],"caption":"COULD WE DO IT?","sfxIntent":"question rise","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The animal adaptation is turned back toward the viewer."},
-    {"sceneId":"s31","order":30,"narration":{"text":"Not really, at least not in the same clean way. Humans are not known to naturally switch into full dolphin-style one-sided sleep. But our sleep may be less symmetrical than it feels.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"compare-options","focalSubject":"dolphin split-brain diagram beside a human brain with only subtle asymmetry","environment":"void","props":[],"cameraIntent":"static","motionIntent":["subtle-idle"],"caption":"NOT THE DOLPHIN TRICK","sfxIntent":"gentle correction tick","transitionIn":"dissolve","requiredAssets":[],"newInformation":"Humans are explicitly distinguished from true dolphin-style one-sided sleep."},
-    {"sceneId":"s32","order":31,"narration":{"text":"In a well-known ‘first-night effect’ study, researchers found that when people slept in an unfamiliar laboratory for the first time, one hemisphere showed shallower sleep in part of a brain network and reacted more strongly to unusual sounds. It was as if part of the sleeping brain had been assigned night-watch duty.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"sleeping human in unfamiliar lab room while one brain side lights up at a sound","environment":"bedroom laboratory","props":["door"],"cameraIntent":"push-in","motionIntent":["prop-enter","expression-change"],"caption":"NIGHT WATCH","sfxIntent":"distant unfamiliar knock","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"Human first-night hemispheric asymmetry is explained."},
-    {"sceneId":"s33","order":32,"narration":{"text":"The effect disappeared on later nights in that experiment.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"same lab room over nights one, two, three with asymmetry fading","environment":"bedroom laboratory","props":["clock"],"cameraIntent":"pan-right","motionIntent":["prop-enter"],"caption":"ONLY THE FIRST NIGHT","sfxIntent":"three quiet clock ticks","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The original study's asymmetry was transient."},
-    {"sceneId":"s34","order":33,"narration":{"text":"That sounds wonderfully dolphin-like, but there is an important caveat: later research has complicated the idea that hemispheric asymmetry alone explains the entire first-night effect. Human sleep is not simply one hemisphere awake and one asleep.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"compare-options","focalSubject":"simple dolphin split diagram gets crossed out over a human brain, replaced by patchy gradients","environment":"void","props":[],"cameraIntent":"push-in","motionIntent":["prop-exit","prop-enter"],"caption":"HUMANS ARE MESSIER","sfxIntent":"soft correction sweep","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The episode preserves the scientific caveat around human hemispheric asymmetry."},
-    {"sceneId":"s35","order":34,"narration":{"text":"The better lesson is that the border between sleep and wakefulness is surprisingly blurry.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"resolve-paradox","focalSubject":"awake and asleep zones blend into a gradient landscape shaped like a brain","environment":"void","props":[],"cameraIntent":"pull-out","motionIntent":["subtle-idle"],"caption":"THE BORDER IS BLURRY","sfxIntent":"soft tonal blend","transitionIn":"dissolve","requiredAssets":[],"newInformation":"A distributed-state model replaces the binary model."},
-    {"sceneId":"s36","order":35,"narration":{"text":"Your brain is not one machine with one master switch. It is a huge collection of circuits with different jobs, different workloads, and sometimes different states.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"brain becomes a miniature city of independent districts and circuits","environment":"city","props":["arrow"],"cameraIntent":"parallax-drift","motionIntent":["subtle-idle","camera-follow"],"caption":"MANY CIRCUITS. MANY STATES.","sfxIntent":"quiet city-neural ambience","transitionIn":"match-cut","requiredAssets":[],"newInformation":"The brain is reframed as distributed interacting systems rather than one switch."},
-    {"sceneId":"s37","order":36,"narration":{"text":"One region can be closer to sleep than another. A network can become locally exhausted. An animal can evolve ways to rest one hemisphere while protecting itself with the other. And researchers can now reproduce part of sleep’s electrical rhythm in an awake animal and recover a measurable piece of lost cognitive function.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"show-consequence","focalSubject":"rapid montage: dim brain district, tired worker, dolphin split brain, stimulated mouse","environment":"void","props":[],"cameraIntent":"pan-right","motionIntent":["prop-enter","prop-exit","camera-follow"],"caption":"SLEEP IS DISTRIBUTED","sfxIntent":"four rhythmic motif hits","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"The evidence chain is summarized before the future question."},
-    {"sceneId":"s38","order":37,"narration":{"text":"So could the future give us a device that rests your brain while you keep working?","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"build-tension","focalSubject":"future human at desk wearing a simple non-invasive headband while one brain patch rests","environment":"office desk workplace","props":["question-mark"],"cameraIntent":"push-in","motionIntent":["prop-enter","subtle-idle"],"caption":"REST WHILE AWAKE?","sfxIntent":"subtle futuristic rise","transitionIn":"dissolve","requiredAssets":[],"newInformation":"A plausible future-facing question is opened without claiming existing technology."},
-    {"sceneId":"s39","order":38,"narration":{"text":"Maybe pieces of that idea are scientifically imaginable. The researchers behind the 2026 study want to investigate whether similar effects could someday be produced in humans using non-invasive brain stimulation.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"explain-mechanism","focalSubject":"mouse experiment arrow points toward a cautious outline of a human research study","environment":"laboratory","props":["arrow"],"cameraIntent":"pan-right","motionIntent":["prop-enter"],"caption":"A FUTURE RESEARCH QUESTION","sfxIntent":"light transition pulse","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"Human translation is framed strictly as future research."},
-    {"sceneId":"s40","order":39,"narration":{"text":"But there is a giant gap between helping a specific brain region recover and replacing sleep. Normal sleep coordinates memory, emotion, metabolism, immune function, hormones, and activity across enormous parts of the brain and body. Even animals famous for extreme sleep tricks usually pay for it somehow. Frigatebirds catch up with much deeper, longer sleep when they return to land.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"compare-options","focalSubject":"small repaired brain patch on one side versus whole sleeping body ecosystem on the other; bird lands and sleeps deeply","environment":"nature home","props":["clock"],"cameraIntent":"pull-out","motionIntent":["prop-enter","character-gesture"],"caption":"LOCAL REST ≠ FULL SLEEP","sfxIntent":"deep settling tone","transitionIn":"hard-cut","requiredAssets":[],"newInformation":"Local benefit is decisively separated from replacing full sleep."},
-    {"sceneId":"s41","order":40,"narration":{"text":"Sleep is not wasted time that evolution forgot to optimize. If anything, the strangest animals on Earth show the opposite. Evolution has repeatedly invented bizarre ways to squeeze sleep into dangerous lives because apparently, even when staying awake is essential, the brain still finds a way to collect its debt.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"resolve-paradox","focalSubject":"dolphin, frigatebird, mouse and human orbit a central sleeping brain like an evolutionary mural","environment":"nature","props":["clock"],"cameraIntent":"pull-out","motionIntent":["subtle-idle","camera-follow"],"caption":"THE BRAIN COLLECTS ITS DEBT","sfxIntent":"warm resolving swell","transitionIn":"dissolve","requiredAssets":[],"newInformation":"Evolutionary pressure reinforces sleep's necessity rather than making it obsolete."},
-    {"sceneId":"s42","order":41,"narration":{"text":"And that changes the question. Maybe you are never simply ‘awake’ or ‘asleep.’ Maybe those are just the labels we give to whichever state is winning across most of your brain at that moment. Tonight, when you lie down and the room disappears without you noticing the exact second it happens, billions of neurons will not flip off together. Some will slow first. Others will keep listening. Different networks will move through different patterns. And somewhere between awake and asleep, the border you thought was a line turns out to be a landscape.","segmentStartIndex":null,"segmentEndIndex":null},"timing":{"startSeconds":null,"endSeconds":null},"visualPurpose":"resolve-paradox","focalSubject":"human lies down as the brain transforms into a twilight landscape with regions dimming at different times","environment":"home bedroom nature","props":[],"cameraIntent":"pull-out","motionIntent":["subtle-idle","expression-change"],"caption":"A LANDSCAPE, NOT A LINE","sfxIntent":"quiet night ambience resolving to silence","transitionIn":"dissolve","requiredAssets":[],"newInformation":"The episode closes by replacing the binary switch metaphor with a distributed landscape metaphor."}
+    {
+      "sceneId": "s01",
+      "order": 0,
+      "narration": {
+        "text": "You probably think sleep is a switch.",
+        "segmentStartIndex": 0,
+        "segmentEndIndex": 6
+      },
+      "timing": {
+        "startSeconds": 0,
+        "endSeconds": 2.675
+      },
+      "visualPurpose": "establish-premise",
+      "focalSubject": "human beside a giant sleep switch",
+      "environment": "bedroom home",
+      "props": [
+        "switch",
+        "moon",
+        "sun"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter",
+        "subtle-idle"
+      ],
+      "caption": "SLEEP = SWITCH?",
+      "sfxIntent": "soft toggle click",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "Viewer's binary sleep assumption is established."
+    },
+    {
+      "sceneId": "s02",
+      "order": 1,
+      "narration": {
+        "text": "You are awake. Then, at some point you cannot remember, the switch flips, and you are asleep.",
+        "segmentStartIndex": 7,
+        "segmentEndIndex": 23
+      },
+      "timing": {
+        "startSeconds": 2.675,
+        "endSeconds": 9.149999999999999
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "same human moving from desk to bed as the switch flips",
+      "environment": "home bedroom",
+      "props": [
+        "clock",
+        "bed",
+        "switch"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "character-gesture",
+        "prop-enter"
+      ],
+      "caption": "AWAKE → ASLEEP",
+      "sfxIntent": "clock tick then click",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The familiar whole-person awake-to-asleep model is visualized."
+    },
+    {
+      "sceneId": "s03",
+      "order": 2,
+      "narration": {
+        "text": "But your brain does not always work that way.",
+        "segmentStartIndex": 24,
+        "segmentEndIndex": 32
+      },
+      "timing": {
+        "startSeconds": 9.149999999999999,
+        "endSeconds": 12.399999999999999
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "switch cracks into many smaller switches inside a brain",
+      "environment": "void",
+      "props": [
+        "question-mark"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter",
+        "expression-change"
+      ],
+      "caption": "NOT SO SIMPLE",
+      "sfxIntent": "small crack",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The binary model is challenged."
+    },
+    {
+      "sceneId": "s04",
+      "order": 3,
+      "narration": {
+        "text": "In 2026, researchers did something that sounds almost impossible: they made small regions of an awake mouse brain behave as if they were asleep. The mouse stayed awake. It could still move, sense its environment, and respond. But inside selected patches of cortex, neurons began cycling through the slow ON-and-OFF rhythm normally associated with deep non-REM sleep.",
+        "segmentStartIndex": 33,
+        "segmentEndIndex": 89
+      },
+      "timing": {
+        "startSeconds": 12.399999999999999,
+        "endSeconds": 39.599999999999994
+      },
+      "visualPurpose": "introduce-character",
+      "focalSubject": "awake lab mouse with transparent brain and one cortical patch pulsing slow waves",
+      "environment": "laboratory",
+      "props": [
+        "mouse",
+        "brain",
+        "wave"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "subtle-idle",
+        "prop-enter",
+        "camera-follow"
+      ],
+      "caption": "AWAKE + SLEEPING?",
+      "sfxIntent": "low neural pulse",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "The 2026 awake-mouse local-sleep experiment is introduced."
+    },
+    {
+      "sceneId": "s05",
+      "order": 4,
+      "narration": {
+        "text": "And after thirty minutes of this strange half-state, sleep-deprived mice performed a memory task almost as well as mice that had actually rested.",
+        "segmentStartIndex": 90,
+        "segmentEndIndex": 112
+      },
+      "timing": {
+        "startSeconds": 39.599999999999994,
+        "endSeconds": 49.324999999999996
+      },
+      "visualPurpose": "reveal-number",
+      "focalSubject": "30-minute clock beside two mouse memory-test paths converging",
+      "environment": "abstract graph data",
+      "props": [
+        "clock",
+        "chart"
+      ],
+      "cameraIntent": "static",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "30 MINUTES",
+      "sfxIntent": "soft reveal hit",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The induced pattern produced a measurable sleep-related memory benefit."
+    },
+    {
+      "sceneId": "s06",
+      "order": 5,
+      "narration": {
+        "text": "So if part of a brain can sleep while the rest stays awake, what exactly does ‘being awake’ even mean?",
+        "segmentStartIndex": 113,
+        "segmentEndIndex": 132
+      },
+      "timing": {
+        "startSeconds": 49.324999999999996,
+        "endSeconds": 55.99999999999999
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "split brain hovering over an awake human",
+      "environment": "void",
+      "props": [
+        "question-mark"
+      ],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "subtle-idle",
+        "prop-enter"
+      ],
+      "caption": "WHAT IS AWAKE?",
+      "sfxIntent": "airy question rise",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "The episode's central philosophical-scientific question is opened."
+    },
+    {
+      "sceneId": "s07",
+      "order": 6,
+      "narration": {
+        "text": "To understand why this is so strange, imagine a stadium at night.",
+        "segmentStartIndex": 133,
+        "segmentEndIndex": 144
+      },
+      "timing": {
+        "startSeconds": 55.99999999999999,
+        "endSeconds": 60.724999999999994
+      },
+      "visualPurpose": "establish-premise",
+      "focalSubject": "stadium filled with thousands of glowing neuron-like spectators",
+      "environment": "city stadium night",
+      "props": [],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "subtle-idle"
+      ],
+      "caption": "IMAGINE A STADIUM",
+      "sfxIntent": "distant crowd hum",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "A visual metaphor for distributed neural activity is established."
+    },
+    {
+      "sceneId": "s08",
+      "order": 7,
+      "narration": {
+        "text": "When you are fully awake, billions of neurons are busy strengthening connections, reacting to the world, and changing with experience. Traditional thinking made sleep sound like the stadium closing: lights off, gates locked, everyone goes home.",
+        "segmentStartIndex": 145,
+        "segmentEndIndex": 180
+      },
+      "timing": {
+        "startSeconds": 60.724999999999994,
+        "endSeconds": 76.875
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "stadium lights sequentially shutting off while neural spectators exit",
+      "environment": "city stadium night",
+      "props": [
+        "door"
+      ],
+      "cameraIntent": "pan-left",
+      "motionIntent": [
+        "prop-exit",
+        "camera-follow"
+      ],
+      "caption": "LIGHTS OUT?",
+      "sfxIntent": "stadium lights clicking off",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The simplistic global shutdown model is visualized."
+    },
+    {
+      "sceneId": "s09",
+      "order": 8,
+      "narration": {
+        "text": "But real sleep is messier. Different brain regions can build up different amounts of sleep pressure depending on how hard they have been working. And when you are severely sleep deprived, small groups of neurons can briefly slip into slow, sleep-like activity even while your behavior still looks awake.",
+        "segmentStartIndex": 181,
+        "segmentEndIndex": 229
+      },
+      "timing": {
+        "startSeconds": 76.875,
+        "endSeconds": 96.45
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "brain divided into neighborhoods with different fatigue meters; one neighborhood dims",
+      "environment": "void",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "parallax-drift",
+      "motionIntent": [
+        "prop-enter",
+        "subtle-idle"
+      ],
+      "caption": "LOCAL SLEEP",
+      "sfxIntent": "one section powers down",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "Sleep pressure and sleep-like activity can be local rather than uniform."
+    },
+    {
+      "sceneId": "s10",
+      "order": 9,
+      "narration": {
+        "text": "That idea is called local sleep.",
+        "segmentStartIndex": 230,
+        "segmentEndIndex": 235
+      },
+      "timing": {
+        "startSeconds": 96.45,
+        "endSeconds": 99.175
+      },
+      "visualPurpose": "reveal-number",
+      "focalSubject": "single dim brain patch surrounded by awake bright regions",
+      "environment": "void",
+      "props": [],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "subtle-idle"
+      ],
+      "caption": "LOCAL SLEEP",
+      "sfxIntent": "small tonal lock",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The term local sleep is named."
+    },
+    {
+      "sceneId": "s11",
+      "order": 10,
+      "narration": {
+        "text": "Scientists had already seen versions of it before the 2026 experiment. In sleep-deprived animals, and in evidence from humans, local slow waves can appear during wakefulness. The strange part is that you may not feel the exact moment a circuit checks out. The rest of your brain can keep the performance going while one region becomes less reliable.",
+        "segmentStartIndex": 236,
+        "segmentEndIndex": 293
+      },
+      "timing": {
+        "startSeconds": 99.175,
+        "endSeconds": 123.10000000000001
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "awake office worker while a small brain circuit dozes behind the scenes",
+      "environment": "office desk workplace",
+      "props": [
+        "clock",
+        "phone"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "character-gesture",
+        "expression-change"
+      ],
+      "caption": "YOU MAY NOT NOTICE",
+      "sfxIntent": "brief muffled drop",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "Local sleep can occur without an obvious whole-person transition to sleep."
+    },
+    {
+      "sceneId": "s12",
+      "order": 11,
+      "narration": {
+        "text": "That may help explain why extreme tiredness can produce absurd mistakes. You can be staring at a screen, technically awake, while the networks you need for a particular task are no longer operating normally.",
+        "segmentStartIndex": 294,
+        "segmentEndIndex": 327
+      },
+      "timing": {
+        "startSeconds": 123.10000000000001,
+        "endSeconds": 136.5
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "tired worker confidently typing nonsense while one brain zone is dim",
+      "environment": "office desk workplace",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "character-gesture",
+        "expression-change"
+      ],
+      "caption": "AWAKE… SORT OF",
+      "sfxIntent": "wrong-key clack",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "Local failure provides an intuitive consequence of sleep deprivation."
+    },
+    {
+      "sceneId": "s13",
+      "order": 12,
+      "narration": {
+        "text": "But those accidental local sleep events are short and chaotic. The new experiment asked a much more interesting question. What if you could trigger the useful pattern on purpose?",
+        "segmentStartIndex": 328,
+        "segmentEndIndex": 356
+      },
+      "timing": {
+        "startSeconds": 136.5,
+        "endSeconds": 148.45000000000002
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "chaotic waves straighten into a controlled repeating pattern",
+      "environment": "void",
+      "props": [
+        "question-mark"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "ON PURPOSE?",
+      "sfxIntent": "chaos resolves to pulse",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "The story moves from accidental local sleep to controlled induction."
+    },
+    {
+      "sceneId": "s14",
+      "order": 13,
+      "narration": {
+        "text": "Researchers at the University of Wisconsin-Madison used pulses of light to control specially prepared neurons in sleep-deprived mice. They stimulated small parts of the cortex with a repeating pattern: neurons active, neurons quiet, active, quiet.",
+        "segmentStartIndex": 357,
+        "segmentEndIndex": 391
+      },
+      "timing": {
+        "startSeconds": 148.45000000000002,
+        "endSeconds": 166.45000000000002
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "mouse brain cross-section with light pulses driving alternating neuron rows",
+      "environment": "laboratory",
+      "props": [
+        "lightbulb"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter",
+        "camera-follow"
+      ],
+      "caption": "ON. OFF. ON. OFF.",
+      "sfxIntent": "four soft synchronized pulses",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The controlled alternating stimulation pattern is explained."
+    },
+    {
+      "sceneId": "s15",
+      "order": 14,
+      "narration": {
+        "text": "This was not simply turning the brain down. The timing mattered.",
+        "segmentStartIndex": 392,
+        "segmentEndIndex": 402
+      },
+      "timing": {
+        "startSeconds": 166.45000000000002,
+        "endSeconds": 171.22500000000002
+      },
+      "visualPurpose": "compare-options",
+      "focalSubject": "two wave patterns side by side: flat dimming versus rhythmic ON/OFF",
+      "environment": "abstract graph data",
+      "props": [
+        "chart"
+      ],
+      "cameraIntent": "static",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "TIMING MATTERED",
+      "sfxIntent": "wrong buzz then clean pulse",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The temporal structure, not mere reduced firing, was important."
+    },
+    {
+      "sceneId": "s16",
+      "order": 15,
+      "narration": {
+        "text": "The alternating ON-and-OFF pattern resembled the slow waves of non-REM sleep. When the researchers used patterns that did not reproduce that rhythm, they did not get the same effect.",
+        "segmentStartIndex": 403,
+        "segmentEndIndex": 431
+      },
+      "timing": {
+        "startSeconds": 171.22500000000002,
+        "endSeconds": 183.95000000000002
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "sleep wave overlays the induced wave until they align",
+      "environment": "abstract graph data",
+      "props": [
+        "chart"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "MATCH THE RHYTHM",
+      "sfxIntent": "wave sync tone",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The induced rhythm resembled NREM slow-wave dynamics."
+    },
+    {
+      "sceneId": "s17",
+      "order": 16,
+      "narration": {
+        "text": "Afterward, the stimulated brain regions behaved as if some of their sleep need had already been paid back. When the mice eventually went to sleep, those areas showed less slow-wave activity than they otherwise would have.",
+        "segmentStartIndex": 432,
+        "segmentEndIndex": 467
+      },
+      "timing": {
+        "startSeconds": 183.95000000000002,
+        "endSeconds": 198.15000000000003
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "local brain battery meter partially refilled before the mouse sleeps",
+      "environment": "laboratory",
+      "props": [
+        "chart"
+      ],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "prop-enter",
+        "subtle-idle"
+      ],
+      "caption": "LESS LOCAL SLEEP NEED",
+      "sfxIntent": "soft recharge",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "Induced activity reduced later slow-wave need in the targeted regions."
+    },
+    {
+      "sceneId": "s18",
+      "order": 17,
+      "narration": {
+        "text": "Then came the part that makes this more than a weird brain-wave trick. The team tested tactile memory.",
+        "segmentStartIndex": 468,
+        "segmentEndIndex": 485
+      },
+      "timing": {
+        "startSeconds": 198.15000000000003,
+        "endSeconds": 205.12500000000003
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "mouse approaches two floor textures in a memory arena",
+      "environment": "laboratory",
+      "props": [
+        "question-mark"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "camera-follow"
+      ],
+      "caption": "BUT DID IT HELP?",
+      "sfxIntent": "small suspense rise",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "A behavioral test is introduced."
+    },
+    {
+      "sceneId": "s19",
+      "order": 18,
+      "narration": {
+        "text": "Sleep normally helps preserve this kind of learning, so sleep-deprived mice tend to perform worse. But sleep-deprived mice that received the sleep-like stimulation in relevant sensory and motor regions performed roughly like well-rested animals.",
+        "segmentStartIndex": 486,
+        "segmentEndIndex": 519
+      },
+      "timing": {
+        "startSeconds": 205.12500000000003,
+        "endSeconds": 221.70000000000002
+      },
+      "visualPurpose": "compare-options",
+      "focalSubject": "three mice lanes: rested, deprived, deprived plus stimulation; first and third finish together",
+      "environment": "abstract graph data",
+      "props": [
+        "chart"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "prop-enter",
+        "camera-follow"
+      ],
+      "caption": "MEMORY RECOVERED",
+      "sfxIntent": "two finish pings",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The measured tactile-memory benefit is shown without overgeneralizing cognition."
+    },
+    {
+      "sceneId": "s20",
+      "order": 19,
+      "narration": {
+        "text": "A small part of the brain had apparently received at least some of the benefits of sleep without the whole animal going unconscious.",
+        "segmentStartIndex": 520,
+        "segmentEndIndex": 542
+      },
+      "timing": {
+        "startSeconds": 221.70000000000002,
+        "endSeconds": 229.60000000000002
+      },
+      "visualPurpose": "resolve-paradox",
+      "focalSubject": "awake mouse with one glowing restored cortical patch",
+      "environment": "void",
+      "props": [],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "subtle-idle"
+      ],
+      "caption": "REST WITHOUT SLEEPING?",
+      "sfxIntent": "soft reveal",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "The central paradox is restated at the local-brain level."
+    },
+    {
+      "sceneId": "s21",
+      "order": 20,
+      "narration": {
+        "text": "That still does not mean scientists have invented a substitute for sleep. The study was in mice, the intervention was invasive, and sleep does far more than maintain one memory task.",
+        "segmentStartIndex": 543,
+        "segmentEndIndex": 573
+      },
+      "timing": {
+        "startSeconds": 229.60000000000002,
+        "endSeconds": 241.67500000000004
+      },
+      "visualPurpose": "compare-options",
+      "focalSubject": "large red boundary line between mouse experiment and sleeping human",
+      "environment": "void",
+      "props": [
+        "arrow"
+      ],
+      "cameraIntent": "static",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "NOT A SLEEP REPLACEMENT",
+      "sfxIntent": "firm stop tick",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The key scientific caveat prevents a misleading human claim."
+    },
+    {
+      "sceneId": "s22",
+      "order": 21,
+      "narration": {
+        "text": "But nature has already built a much more dramatic version of this idea.",
+        "segmentStartIndex": 574,
+        "segmentEndIndex": 586
+      },
+      "timing": {
+        "startSeconds": 241.67500000000004,
+        "endSeconds": 246.45000000000005
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "mouse silhouette match-cuts into a dolphin silhouette",
+      "environment": "nature ocean",
+      "props": [],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "camera-follow"
+      ],
+      "caption": "NATURE WENT FURTHER",
+      "sfxIntent": "water swell",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The story escalates from laboratory local sleep to natural hemispheric sleep."
+    },
+    {
+      "sceneId": "s23",
+      "order": 22,
+      "narration": {
+        "text": "A dolphin cannot simply become completely unconscious for eight hours. It has to keep swimming. It has to watch its environment. Most importantly, it has to reach the surface to breathe.",
+        "segmentStartIndex": 587,
+        "segmentEndIndex": 617
+      },
+      "timing": {
+        "startSeconds": 246.45000000000005,
+        "endSeconds": 259.82500000000005
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "dolphin swimming beneath surface with breath path highlighted",
+      "environment": "nature ocean",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "camera-follow",
+        "subtle-idle"
+      ],
+      "caption": "IT HAS TO BREATHE",
+      "sfxIntent": "underwater ambience and breath",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "The survival pressure behind dolphin sleep adaptation is established."
+    },
+    {
+      "sceneId": "s24",
+      "order": 23,
+      "narration": {
+        "text": "So dolphins and other whales can sleep one cerebral hemisphere at a time. One side rests; the other remains more alert and helps maintain movement, breathing, and awareness. Later, the roles can switch.",
+        "segmentStartIndex": 618,
+        "segmentEndIndex": 650
+      },
+      "timing": {
+        "startSeconds": 259.82500000000005,
+        "endSeconds": 274.42500000000007
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "transparent dolphin head with one brain hemisphere dim and one bright, then swapping",
+      "environment": "nature ocean",
+      "props": [],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "expression-change",
+        "prop-enter"
+      ],
+      "caption": "ONE SIDE AT A TIME",
+      "sfxIntent": "left-right soft pulse",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "True unihemispheric sleep is explained through a dolphin."
+    },
+    {
+      "sceneId": "s25",
+      "order": 24,
+      "narration": {
+        "text": "The phrase ‘sleep with one eye open’ is almost literal here. Because the brain’s visual pathways cross, the eye connected to the more awake hemisphere can remain open.",
+        "segmentStartIndex": 651,
+        "segmentEndIndex": 678
+      },
+      "timing": {
+        "startSeconds": 274.42500000000007,
+        "endSeconds": 285.8500000000001
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "close-up dolphin with one eye open and crossing eye-to-brain lines",
+      "environment": "nature ocean",
+      "props": [],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "expression-change"
+      ],
+      "caption": "ONE EYE OPEN",
+      "sfxIntent": "tiny eye-open tick",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The one-eye-open behavior is tied to hemispheric state."
+    },
+    {
+      "sceneId": "s26",
+      "order": 25,
+      "narration": {
+        "text": "And dolphins are not the only animals that have turned sleep into a compromise.",
+        "segmentStartIndex": 679,
+        "segmentEndIndex": 692
+      },
+      "timing": {
+        "startSeconds": 285.8500000000001,
+        "endSeconds": 291.2250000000001
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "dolphin arcs upward and morphs into a bird wing silhouette",
+      "environment": "nature sky",
+      "props": [],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "camera-follow"
+      ],
+      "caption": "THEN THERE ARE BIRDS",
+      "sfxIntent": "water-to-wind transition",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "Escalation moves from ocean mammals to airborne sleep."
+    },
+    {
+      "sceneId": "s27",
+      "order": 26,
+      "narration": {
+        "text": "Great frigatebirds can remain over the ocean for days at a time. Researchers attached miniature brain-recording devices to the birds and discovered that they can actually sleep while flying.",
+        "segmentStartIndex": 693,
+        "segmentEndIndex": 721
+      },
+      "timing": {
+        "startSeconds": 291.2250000000001,
+        "endSeconds": 303.9750000000001
+      },
+      "visualPurpose": "introduce-character",
+      "focalSubject": "frigatebird gliding over ocean with tiny EEG recorder and sleep waves",
+      "environment": "nature ocean sky",
+      "props": [],
+      "cameraIntent": "camera-follow",
+      "motionIntent": [
+        "camera-follow",
+        "subtle-idle"
+      ],
+      "caption": "SLEEPING IN FLIGHT",
+      "sfxIntent": "wind rush",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "Direct EEG evidence of sleep in flying frigatebirds is introduced."
+    },
+    {
+      "sceneId": "s28",
+      "order": 27,
+      "narration": {
+        "text": "Sometimes one hemisphere slept while the other remained more alert. Sometimes both hemispheres slept briefly. But the birds slept dramatically less in the air than they did on land: under an hour per day on average while flying in the study.",
+        "segmentStartIndex": 722,
+        "segmentEndIndex": 762
+      },
+      "timing": {
+        "startSeconds": 303.9750000000001,
+        "endSeconds": 320.00000000000006
+      },
+      "visualPurpose": "reveal-number",
+      "focalSubject": "frigatebird flight path around a giant 0.69 HOURS/day clock",
+      "environment": "nature sky",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "prop-enter",
+        "camera-follow"
+      ],
+      "caption": "0.69 HOURS / DAY",
+      "sfxIntent": "number reveal hit",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The birds can sleep in flight but obtain very little of it there."
+    },
+    {
+      "sceneId": "s29",
+      "order": 28,
+      "narration": {
+        "text": "They were not peacefully taking eight-hour naps in the sky. They were stealing tiny packets of sleep whenever the environment allowed it.",
+        "segmentStartIndex": 763,
+        "segmentEndIndex": 784
+      },
+      "timing": {
+        "startSeconds": 320.00000000000006,
+        "endSeconds": 328.75000000000006
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "bird gliding through tiny floating sleep bubbles that pop quickly",
+      "environment": "nature sky",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "camera-follow",
+        "prop-enter",
+        "prop-exit"
+      ],
+      "caption": "TINY PACKETS OF SLEEP",
+      "sfxIntent": "brief airy pops",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "Airborne sleep is framed as brief opportunistic rest rather than normal long sleep."
+    },
+    {
+      "sceneId": "s30",
+      "order": 29,
+      "narration": {
+        "text": "Which raises the obvious question. Could humans do the dolphin trick?",
+        "segmentStartIndex": 785,
+        "segmentEndIndex": 795
+      },
+      "timing": {
+        "startSeconds": 328.75000000000006,
+        "endSeconds": 333.87500000000006
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "human silhouette between dolphin and split brain",
+      "environment": "void",
+      "props": [
+        "question-mark"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "COULD WE DO IT?",
+      "sfxIntent": "question rise",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The animal adaptation is turned back toward the viewer."
+    },
+    {
+      "sceneId": "s31",
+      "order": 30,
+      "narration": {
+        "text": "Not really, at least not in the same clean way. Humans are not known to naturally switch into full dolphin-style one-sided sleep. But our sleep may be less symmetrical than it feels.",
+        "segmentStartIndex": 796,
+        "segmentEndIndex": 827
+      },
+      "timing": {
+        "startSeconds": 333.87500000000006,
+        "endSeconds": 346.3250000000001
+      },
+      "visualPurpose": "compare-options",
+      "focalSubject": "dolphin split-brain diagram beside a human brain with only subtle asymmetry",
+      "environment": "void",
+      "props": [],
+      "cameraIntent": "static",
+      "motionIntent": [
+        "subtle-idle"
+      ],
+      "caption": "NOT THE DOLPHIN TRICK",
+      "sfxIntent": "gentle correction tick",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "Humans are explicitly distinguished from true dolphin-style one-sided sleep."
+    },
+    {
+      "sceneId": "s32",
+      "order": 31,
+      "narration": {
+        "text": "In a well-known ‘first-night effect’ study, researchers found that when people slept in an unfamiliar laboratory for the first time, one hemisphere showed shallower sleep in part of a brain network and reacted more strongly to unusual sounds. It was as if part of the sleeping brain had been assigned night-watch duty.",
+        "segmentStartIndex": 828,
+        "segmentEndIndex": 879
+      },
+      "timing": {
+        "startSeconds": 346.3250000000001,
+        "endSeconds": 367.00000000000006
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "sleeping human in unfamiliar lab room while one brain side lights up at a sound",
+      "environment": "bedroom laboratory",
+      "props": [
+        "door"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter",
+        "expression-change"
+      ],
+      "caption": "NIGHT WATCH",
+      "sfxIntent": "distant unfamiliar knock",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "Human first-night hemispheric asymmetry is explained."
+    },
+    {
+      "sceneId": "s33",
+      "order": 32,
+      "narration": {
+        "text": "The effect disappeared on later nights in that experiment.",
+        "segmentStartIndex": 880,
+        "segmentEndIndex": 888
+      },
+      "timing": {
+        "startSeconds": 367.00000000000006,
+        "endSeconds": 370.70000000000005
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "same lab room over nights one, two, three with asymmetry fading",
+      "environment": "bedroom laboratory",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "ONLY THE FIRST NIGHT",
+      "sfxIntent": "three quiet clock ticks",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The original study's asymmetry was transient."
+    },
+    {
+      "sceneId": "s34",
+      "order": 33,
+      "narration": {
+        "text": "That sounds wonderfully dolphin-like, but there is an important caveat: later research has complicated the idea that hemispheric asymmetry alone explains the entire first-night effect. Human sleep is not simply one hemisphere awake and one asleep.",
+        "segmentStartIndex": 889,
+        "segmentEndIndex": 924
+      },
+      "timing": {
+        "startSeconds": 370.70000000000005,
+        "endSeconds": 388.15000000000003
+      },
+      "visualPurpose": "compare-options",
+      "focalSubject": "simple dolphin split diagram gets crossed out over a human brain, replaced by patchy gradients",
+      "environment": "void",
+      "props": [],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-exit",
+        "prop-enter"
+      ],
+      "caption": "HUMANS ARE MESSIER",
+      "sfxIntent": "soft correction sweep",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The episode preserves the scientific caveat around human hemispheric asymmetry."
+    },
+    {
+      "sceneId": "s35",
+      "order": 34,
+      "narration": {
+        "text": "The better lesson is that the border between sleep and wakefulness is surprisingly blurry.",
+        "segmentStartIndex": 925,
+        "segmentEndIndex": 938
+      },
+      "timing": {
+        "startSeconds": 388.15000000000003,
+        "endSeconds": 394.00000000000006
+      },
+      "visualPurpose": "resolve-paradox",
+      "focalSubject": "awake and asleep zones blend into a gradient landscape shaped like a brain",
+      "environment": "void",
+      "props": [],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "subtle-idle"
+      ],
+      "caption": "THE BORDER IS BLURRY",
+      "sfxIntent": "soft tonal blend",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "A distributed-state model replaces the binary model."
+    },
+    {
+      "sceneId": "s36",
+      "order": 35,
+      "narration": {
+        "text": "Your brain is not one machine with one master switch. It is a huge collection of circuits with different jobs, different workloads, and sometimes different states.",
+        "segmentStartIndex": 939,
+        "segmentEndIndex": 964
+      },
+      "timing": {
+        "startSeconds": 394.00000000000006,
+        "endSeconds": 404.50000000000006
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "brain becomes a miniature city of independent districts and circuits",
+      "environment": "city",
+      "props": [
+        "arrow"
+      ],
+      "cameraIntent": "parallax-drift",
+      "motionIntent": [
+        "subtle-idle",
+        "camera-follow"
+      ],
+      "caption": "MANY CIRCUITS. MANY STATES.",
+      "sfxIntent": "quiet city-neural ambience",
+      "transitionIn": "match-cut",
+      "requiredAssets": [],
+      "newInformation": "The brain is reframed as distributed interacting systems rather than one switch."
+    },
+    {
+      "sceneId": "s37",
+      "order": 36,
+      "narration": {
+        "text": "One region can be closer to sleep than another. A network can become locally exhausted. An animal can evolve ways to rest one hemisphere while protecting itself with the other. And researchers can now reproduce part of sleep’s electrical rhythm in an awake animal and recover a measurable piece of lost cognitive function.",
+        "segmentStartIndex": 965,
+        "segmentEndIndex": 1017
+      },
+      "timing": {
+        "startSeconds": 404.50000000000006,
+        "endSeconds": 426.7000000000001
+      },
+      "visualPurpose": "show-consequence",
+      "focalSubject": "rapid montage: dim brain district, tired worker, dolphin split brain, stimulated mouse",
+      "environment": "void",
+      "props": [],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "prop-enter",
+        "prop-exit",
+        "camera-follow"
+      ],
+      "caption": "SLEEP IS DISTRIBUTED",
+      "sfxIntent": "four rhythmic motif hits",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "The evidence chain is summarized before the future question."
+    },
+    {
+      "sceneId": "s38",
+      "order": 37,
+      "narration": {
+        "text": "So could the future give us a device that rests your brain while you keep working?",
+        "segmentStartIndex": 1018,
+        "segmentEndIndex": 1033
+      },
+      "timing": {
+        "startSeconds": 426.7000000000001,
+        "endSeconds": 431.9250000000001
+      },
+      "visualPurpose": "build-tension",
+      "focalSubject": "future human at desk wearing a simple non-invasive headband while one brain patch rests",
+      "environment": "office desk workplace",
+      "props": [
+        "question-mark"
+      ],
+      "cameraIntent": "push-in",
+      "motionIntent": [
+        "prop-enter",
+        "subtle-idle"
+      ],
+      "caption": "REST WHILE AWAKE?",
+      "sfxIntent": "subtle futuristic rise",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "A plausible future-facing question is opened without claiming existing technology."
+    },
+    {
+      "sceneId": "s39",
+      "order": 38,
+      "narration": {
+        "text": "Maybe pieces of that idea are scientifically imaginable. The researchers behind the 2026 study want to investigate whether similar effects could someday be produced in humans using non-invasive brain stimulation.",
+        "segmentStartIndex": 1034,
+        "segmentEndIndex": 1063
+      },
+      "timing": {
+        "startSeconds": 431.9250000000001,
+        "endSeconds": 447.5250000000001
+      },
+      "visualPurpose": "explain-mechanism",
+      "focalSubject": "mouse experiment arrow points toward a cautious outline of a human research study",
+      "environment": "laboratory",
+      "props": [
+        "arrow"
+      ],
+      "cameraIntent": "pan-right",
+      "motionIntent": [
+        "prop-enter"
+      ],
+      "caption": "A FUTURE RESEARCH QUESTION",
+      "sfxIntent": "light transition pulse",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "Human translation is framed strictly as future research."
+    },
+    {
+      "sceneId": "s40",
+      "order": 39,
+      "narration": {
+        "text": "But there is a giant gap between helping a specific brain region recover and replacing sleep. Normal sleep coordinates memory, emotion, metabolism, immune function, hormones, and activity across enormous parts of the brain and body. Even animals famous for extreme sleep tricks usually pay for it somehow. Frigatebirds catch up with much deeper, longer sleep when they return to land.",
+        "segmentStartIndex": 1064,
+        "segmentEndIndex": 1123
+      },
+      "timing": {
+        "startSeconds": 447.5250000000001,
+        "endSeconds": 474.15000000000003
+      },
+      "visualPurpose": "compare-options",
+      "focalSubject": "small repaired brain patch on one side versus whole sleeping body ecosystem on the other; bird lands and sleeps deeply",
+      "environment": "nature home",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "prop-enter",
+        "character-gesture"
+      ],
+      "caption": "LOCAL REST ≠ FULL SLEEP",
+      "sfxIntent": "deep settling tone",
+      "transitionIn": "hard-cut",
+      "requiredAssets": [],
+      "newInformation": "Local benefit is decisively separated from replacing full sleep."
+    },
+    {
+      "sceneId": "s41",
+      "order": 40,
+      "narration": {
+        "text": "Sleep is not wasted time that evolution forgot to optimize. If anything, the strangest animals on Earth show the opposite. Evolution has repeatedly invented bizarre ways to squeeze sleep into dangerous lives because apparently, even when staying awake is essential, the brain still finds a way to collect its debt.",
+        "segmentStartIndex": 1124,
+        "segmentEndIndex": 1173
+      },
+      "timing": {
+        "startSeconds": 474.15000000000003,
+        "endSeconds": 495.90000000000003
+      },
+      "visualPurpose": "resolve-paradox",
+      "focalSubject": "dolphin, frigatebird, mouse and human orbit a central sleeping brain like an evolutionary mural",
+      "environment": "nature",
+      "props": [
+        "clock"
+      ],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "subtle-idle",
+        "camera-follow"
+      ],
+      "caption": "THE BRAIN COLLECTS ITS DEBT",
+      "sfxIntent": "warm resolving swell",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "Evolutionary pressure reinforces sleep's necessity rather than making it obsolete."
+    },
+    {
+      "sceneId": "s42",
+      "order": 41,
+      "narration": {
+        "text": "And that changes the question. Maybe you are never simply ‘awake’ or ‘asleep.’ Maybe those are just the labels we give to whichever state is winning across most of your brain at that moment. Tonight, when you lie down and the room disappears without you noticing the exact second it happens, billions of neurons will not flip off together. Some will slow first. Others will keep listening. Different networks will move through different patterns. And somewhere between awake and asleep, the border you thought was a line turns out to be a landscape.",
+        "segmentStartIndex": 1174,
+        "segmentEndIndex": 1266
+      },
+      "timing": {
+        "startSeconds": 495.90000000000003,
+        "endSeconds": 531.4250000000001
+      },
+      "visualPurpose": "resolve-paradox",
+      "focalSubject": "human lies down as the brain transforms into a twilight landscape with regions dimming at different times",
+      "environment": "home bedroom nature",
+      "props": [],
+      "cameraIntent": "pull-out",
+      "motionIntent": [
+        "subtle-idle",
+        "expression-change"
+      ],
+      "caption": "A LANDSCAPE, NOT A LINE",
+      "sfxIntent": "quiet night ambience resolving to silence",
+      "transitionIn": "dissolve",
+      "requiredAssets": [],
+      "newInformation": "The episode closes by replacing the binary switch metaphor with a distributed landscape metaphor."
+    }
   ]
 }

@@ -4,7 +4,8 @@ export type CameraIntent =
   | "pull-out"
   | "pan-left"
   | "pan-right"
-  | "parallax-drift";
+  | "parallax-drift"
+  | "camera-follow";
 
 export type MotionIntent =
   | "none"

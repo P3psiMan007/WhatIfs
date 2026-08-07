@@ -1,0 +1,16 @@
+{
+  "episodeId": "20260807-brain-sleeps-awake",
+  "stateRevision": 6,
+  "renderedAt": "2026-08-07T13:19:00.589Z",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "durationInFrames": 15943,
+  "durationSeconds": 531.4333333333333,
+  "videoPath": "out/20260807-brain-sleeps-awake-final.mp4",
+  "narrationPath": "episodes/20260807-brain-sleeps-awake/audio/narration.wav",
+  "contactSheetPath": "out/20260807-brain-sleeps-awake-contact-sheet.jpg",
+  "compositionId": "Episode",
+  "remotionVersion": "4.0.506",
+  "gitCommit": "2b9c881f811405f5898e091a014714947e53da43"
+}

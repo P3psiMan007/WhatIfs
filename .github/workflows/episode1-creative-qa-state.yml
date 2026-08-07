@@ -1,0 +1,55 @@
+name: Episode 1 Creative QA State
+
+on:
+  pull_request:
+    branches:
+      - factory-infrastructure
+
+permissions:
+  contents: write
+
+concurrency:
+  group: episode1-creative-qa-state
+  cancel-in-progress: false
+
+jobs:
+  apply-creative-fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check creative QA decision
+        id: gate
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const state = JSON.parse(fs.readFileSync('episodes/current/episode-state.json', 'utf8'));
+          const qa = JSON.parse(fs.readFileSync('episodes/20260807-brain-sleeps-awake/qa/creative-qa-v1.json', 'utf8'));
+          const due = state.episode_id === '20260807-brain-sleeps-awake' && state.state === 'RENDERED' && qa.status === 'FAIL';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `run=${due ? 'true' : 'false'}\n`);
+          console.log(`Creative QA transition due: ${due}; state=${state.state}; revision=${state.state_revision}; qa=${qa.status}`);
+          NODE
+
+      - name: Record creative QA failure in canonical state
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          REV=$(node -e "console.log(JSON.parse(require('fs').readFileSync('episodes/current/episode-state.json','utf8')).state_revision)")
+          node tools/episode-state.mjs patch "$REV" 20260807-brain-sleeps-awake independent-critic '{"qa":{"status":"FAIL","scores":{"factualIntegrity":9.4,"titlePromiseAlignment":9.0,"first30Seconds":7.4,"scriptRetention":8.6,"narration":8.5,"visualStorytelling":6.8,"visualVariety":6.5,"captionDesign":6.2,"soundDesign":4.0,"technicalIntegrity":10.0,"endingPayoff":8.5},"top_issues":["visual beat density too low for 8:51","continuous narration captions compete with visuals","composition variety decays across episode","publish-grade sound design missing"],"required_fixes":["sparse editorial callouts only","increase effective visual beat density","increase environment/composition variety","add copyright-safe ambience/music/SFX","rerender and independently review"],"user_action_required":null}}'
+          REV2=$(node -e "console.log(JSON.parse(require('fs').readFileSync('episodes/current/episode-state.json','utf8')).state_revision)")
+          node tools/episode-state.mjs transition "$REV2" 20260807-brain-sleeps-awake QA_FAILED independent-critic "creative canary below publish-grade threshold; V2 required"
+
+      - name: Commit canonical QA state
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add episodes/current/episode-state.json
+          git diff --cached --quiet || git commit -m "qa: fail Episode 1 canary and request V2"
+          git pull --rebase origin ${{ github.event.pull_request.head.ref }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}

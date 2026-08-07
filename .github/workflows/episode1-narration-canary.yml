@@ -1,0 +1,68 @@
+name: Episode 1 Narration Canary
+
+on:
+  pull_request:
+    branches:
+      - factory-infrastructure
+
+permissions:
+  contents: write
+
+jobs:
+  narration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check whether narration is due
+        id: gate
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const state = JSON.parse(fs.readFileSync('episodes/current/episode-state.json', 'utf8'));
+          const due = state.episode_id === '20260807-brain-sleeps-awake' && state.state === 'VOICE_SELECTED';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `run=${due ? 'true' : 'false'}\n`);
+          console.log(`Narration due: ${due}; current state=${state.state}; revision=${state.state_revision}`);
+          NODE
+
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: npm ci
+
+      - name: Verify isolated WAV writer regression test
+        if: steps.gate.outputs.run == 'true'
+        run: node --test tools/voice/wavWriter.test.mjs
+
+      - name: Generate full narration with locked narrator
+        if: steps.gate.outputs.run == 'true'
+        env:
+          EPISODE_ID: 20260807-brain-sleeps-awake
+        run: npm run voice:narration
+
+      - name: Commit narration timing and VOICE_READY state
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add episodes/current/episode-state.json episodes/20260807-brain-sleeps-awake/audio/narration-timing.json
+          git diff --cached --quiet || git commit -m "episode: generate narration timing and mark voice ready"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+      - name: Upload narration artifact
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode1-full-narration
+          path: |
+            episodes/20260807-brain-sleeps-awake/audio/narration.wav
+            episodes/20260807-brain-sleeps-awake/audio/narration-timing.json
+            episodes/current/episode-state.json
+          retention-days: 14
+          if-no-files-found: error

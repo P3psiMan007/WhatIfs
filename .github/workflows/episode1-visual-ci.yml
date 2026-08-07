@@ -1,0 +1,60 @@
+name: Episode 1 Visual CI
+
+on:
+  pull_request:
+    branches:
+      - factory-infrastructure
+
+permissions:
+  contents: write
+
+jobs:
+  visual-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Episode 1 timing, art-plan, and sound-design tests
+        run: node --test tools/render/applySceneTiming.test.mjs src/video/episodes/brainSleepArtPlan.test.ts tools/audio/episodeSoundDesign.test.mjs
+
+      - name: Align scenes to real narration timing
+        env:
+          EPISODE_ID: 20260807-brain-sleeps-awake
+        run: node tools/render/applySceneTiming.mjs
+
+      - name: Validate full episode package schema
+        run: |
+          node --input-type=module <<'NODE'
+          import {validateEpisodePackage} from './tools/validate/validateEpisodePackage.mjs';
+          const result = validateEpisodePackage('episodes/20260807-brain-sleeps-awake');
+          if (!result.ok) {
+            console.error(result.errors);
+            process.exit(1);
+          }
+          console.log('Episode package schema validation passed.');
+          NODE
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build Remotion bundle
+        run: npm run build
+
+      - name: Commit aligned scene manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add episodes/20260807-brain-sleeps-awake/scene-manifest.json
+          git diff --cached --quiet || git commit -m "episode: align scenes to narration timing"
+          git pull --rebase origin ${{ github.event.pull_request.head.ref }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}

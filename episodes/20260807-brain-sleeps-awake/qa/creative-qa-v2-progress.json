@@ -1,0 +1,51 @@
+{
+  "episodeId": "20260807-brain-sleeps-awake",
+  "reviewedAt": "2026-08-07T15:12:00Z",
+  "reviewer": "independent-critic",
+  "status": "FAIL_BLOCKED_AT_FACTORY_RENDER",
+  "publishReady": false,
+  "scope": "changed artifacts only since creative QA v1",
+  "changedArtifactFindings": {
+    "captionPath": {
+      "status": "IMPROVED_IN_SOURCE_UNVERIFIED_IN_RENDER",
+      "detail": "Episode-specific SceneRenderer no longer burns the continuous WordSyncedCaption layer. Existing authored scene labels remain as sparse editorial callouts. This addresses the v1 subtitle-led frame problem in source, but it cannot receive a publish-grade score until an actual V2 MP4/contact sheet exists."
+    },
+    "visualBeatDensity": {
+      "status": "IMPROVED_IN_SOURCE_UNVERIFIED_IN_RENDER",
+      "detail": "Episode-specific SceneRenderer adds a deliberate second framing after 52% of each scene via a focal-origin scale jump, yielding roughly two framings per authored scene. This plausibly raises effective beat density from ~42 toward ~84, but pacing/continuity must be judged on the rendered MP4."
+    },
+    "environmentVariety": {
+      "status": "IMPROVED_IN_SOURCE_UNVERIFIED_IN_RENDER",
+      "detail": "BrainSleepAtmosphere adds distinct bedroom, lab, office, ocean, night-sky, city and abstract environment overlays keyed to scene family. Opacity is restrained. Actual readability, compositing order and novelty still require render review."
+    },
+    "soundDesign": {
+      "status": "CANARY_PASS_BUT_NOT_PUBLISH_VERIFIED",
+      "detail": "The soundtrack canary successfully generated a 531.425s deterministic copyright-safe bed with 24 sparse authored cues. Artifact probe found AAC, 24 kHz, mono; mean volume -23.1 dB and peak -0.9 dB. Because the intended bed/SFX are flattened to mono and the actual final video mix has not been rendered/listened to, soundDesign remains below publish-grade verification."
+    }
+  },
+  "blockingFindings": [
+    {
+      "owner": "episode-factory/render-stage",
+      "severity": "BLOCKER",
+      "finding": "No V2 MP4/contact sheet exists. The current Episode 1 Render Canary only runs when state === VOICE_READY, while canonical state is QA_FAILED, so a failed episode cannot currently re-enter the render stage."
+    },
+    {
+      "owner": "episode-factory/render-stage",
+      "severity": "BLOCKER",
+      "finding": "The current render workflow still executes npm run render:episode and does not invoke tools/render/render-episode-with-soundtrack.mjs, so even if the gate reopened, the new V2 soundtrack would not be included in the rendered canary."
+    },
+    {
+      "owner": "episode-factory/audio-stage",
+      "severity": "MAJOR",
+      "finding": "The generated soundtrack artifact is AAC 24 kHz mono despite synthesized stereo ambience/SFX inputs. Before publish-grade approval, preserve an appropriate final mix format/channel layout and verify the actual rendered video's audio technically and perceptually."
+    }
+  ],
+  "requiredFixes": [
+    "Add an explicit QA_FAILED -> factory revision/re-render path without weakening revision safety or publish gates.",
+    "Wire the V2 render canary to the soundtrack-aware render path and require the soundtrack canary artifact as an input.",
+    "Produce a fresh V2 MP4, contact sheet, render manifest and technical QA report; do not reuse v1 artifacts.",
+    "Ensure final mixed audio has an intentional channel/sample-rate policy suitable for upload, then rerun clipping/silence/loudness checks on the final MP4.",
+    "Return the fresh V2 render to independent creative QA for first-30s, visual variety, caption, sound, pacing and ending review."
+  ],
+  "decision": "KEEP_QA_FAILED_RETURN_TO_FACTORY_RENDER_STAGE"
+}

@@ -10,7 +10,15 @@ const template = path.resolve("episodes/current/episode-state.json");
 function withState(fn) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "whatif-state-"));
   const p = path.join(dir, "episode-state.json");
-  fs.copyFileSync(template, p);
+  const state = JSON.parse(fs.readFileSync(template, "utf8"));
+  state.episode_id = null;
+  state.state = "IDLE";
+  state.state_revision = 0;
+  state.updated_at = null;
+  state.updated_by = null;
+  state.lock = { active: false, locked_at: null, locked_by: null, reason: null };
+  state.history = [];
+  fs.writeFileSync(p, JSON.stringify(state, null, 2) + "\n");
   return fn(p);
 }
 

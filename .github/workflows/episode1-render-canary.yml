@@ -1,0 +1,100 @@
+name: Episode 1 Render Canary
+
+on:
+  pull_request:
+    branches:
+      - factory-infrastructure
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: episode1-render-canary
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check whether render is due
+        id: gate
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const state = JSON.parse(fs.readFileSync('episodes/current/episode-state.json', 'utf8'));
+          const due = state.episode_id === '20260807-brain-sleeps-awake' && state.state === 'VOICE_READY';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `run=${due ? 'true' : 'false'}\n`);
+          console.log(`Render due: ${due}; state=${state.state}; revision=${state.state_revision}`);
+          NODE
+
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: npm ci
+
+      - name: Download verified narration artifact
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: episode1-full-narration
+          path: narration-artifact
+          github-token: ${{ github.token }}
+          run-id: 31177574644
+
+      - name: Stage narration WAV
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          mkdir -p episodes/20260807-brain-sleeps-awake/audio
+          cp narration-artifact/20260807-brain-sleeps-awake/audio/narration.wav episodes/20260807-brain-sleeps-awake/audio/narration.wav
+          test -s episodes/20260807-brain-sleeps-awake/audio/narration.wav
+          echo "Narration WAV staged: $(stat -c%s episodes/20260807-brain-sleeps-awake/audio/narration.wav) bytes"
+
+      - name: Verify visual package before full render
+        if: steps.gate.outputs.run == 'true'
+        env:
+          EPISODE_ID: 20260807-brain-sleeps-awake
+        run: |
+          node --test tools/render/applySceneTiming.test.mjs src/video/episodes/brainSleepArtPlan.test.ts tools/voice/wavWriter.test.mjs
+          npm run typecheck
+          npm run build
+
+      - name: Render, finalize, contact sheet, and technical QA
+        if: steps.gate.outputs.run == 'true'
+        env:
+          EPISODE_ID: 20260807-brain-sleeps-awake
+        run: npm run render:episode
+
+      - name: Commit render state and manifests
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add episodes/current/episode-state.json \
+            episodes/20260807-brain-sleeps-awake/renders/render-manifest.json \
+            episodes/20260807-brain-sleeps-awake/qa/20260807-brain-sleeps-awake-qa-report.json
+          git diff --cached --quiet || git commit -m "episode: render first production video and record technical QA"
+          git pull --rebase origin ${{ github.event.pull_request.head.ref }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
+      - name: Upload render artifacts
+        if: always() && steps.gate.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode1-render-canary
+          path: |
+            out/20260807-brain-sleeps-awake-final.mp4
+            out/20260807-brain-sleeps-awake-render-log.txt
+            out/20260807-brain-sleeps-awake-contact-sheet.jpg
+            episodes/20260807-brain-sleeps-awake/renders/render-manifest.json
+            episodes/20260807-brain-sleeps-awake/qa/20260807-brain-sleeps-awake-qa-report.json
+          retention-days: 14
+          if-no-files-found: warn

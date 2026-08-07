@@ -1,0 +1,77 @@
+name: Episode 1 Sound Design Canary
+
+on:
+  pull_request:
+    branches:
+      - factory-infrastructure
+    paths:
+      - "tools/audio/**"
+      - ".github/workflows/episode1-sound-canary.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: episode1-sound-canary
+  cancel-in-progress: false
+
+jobs:
+  sound-design:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run sound-design planner tests
+        run: node --test tools/audio/episodeSoundDesign.test.mjs
+
+      - name: Download verified narration artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: episode1-full-narration
+          path: narration-artifact
+          github-token: ${{ github.token }}
+          run-id: 31177574644
+
+      - name: Stage narration WAV
+        run: |
+          mkdir -p episodes/20260807-brain-sleeps-awake/audio
+          cp narration-artifact/20260807-brain-sleeps-awake/audio/narration.wav episodes/20260807-brain-sleeps-awake/audio/narration.wav
+          test -s episodes/20260807-brain-sleeps-awake/audio/narration.wav
+
+      - name: Build copyright-safe V2 soundtrack
+        env:
+          EPISODE_ID: 20260807-brain-sleeps-awake
+        run: node tools/audio/build-episode-soundtrack.mjs
+
+      - name: Probe soundtrack
+        run: |
+          node --input-type=module <<'NODE'
+          import {probeMedia} from './tools/qa/probeMedia.mjs';
+          const result = await probeMedia('episodes/20260807-brain-sleeps-awake/audio/soundtrack.m4a');
+          if (!result.ok) throw new Error('soundtrack probe failed');
+          const duration = Number.parseFloat(result.format.duration);
+          const audio = result.streams.find((s) => s.codec_type === 'audio');
+          if (!audio || duration < 530 || duration > 533) throw new Error(`invalid soundtrack: duration=${duration}`);
+          console.log(JSON.stringify({duration, codec: audio.codec_name, sampleRate: audio.sample_rate, channels: audio.channels}, null, 2));
+          NODE
+
+      - name: Upload soundtrack canary
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode1-v2-soundtrack
+          path: |
+            episodes/20260807-brain-sleeps-awake/audio/soundtrack.m4a
+            episodes/20260807-brain-sleeps-awake/audio/sound-design-manifest.json
+          retention-days: 14
+          if-no-files-found: error

@@ -3,13 +3,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
-import { RawAudio } from "@huggingface/transformers";
 import { streamSynthesize } from "./kokoroClient.mjs";
 import { stripMarkdownToPlainText } from "./extractHook.mjs";
 import { concatenateAudioChunks } from "./concatenateAudio.mjs";
 import { buildNarrationTimingFromChunks } from "./narrationTiming.mjs";
 import { resolveNarratorVoice } from "./channelNarrator.mjs";
 import { runMechanicalAudioChecks } from "./auditionChecks.mjs";
+import { saveFloat32Wav } from "./wavWriter.mjs";
 
 /** Production owns VOICE_SELECTED->VOICE_READY; VOICE_BLOCKED allows a retry after a prior failed generation. */
 const ALLOWED_STATES = ["VOICE_SELECTED", "VOICE_BLOCKED"];
@@ -63,7 +63,7 @@ export const runGenerateNarration = async (deps = {}) => {
   const audioPath = path.join(audioDir, "narration.wav");
 
   const combined = concatenateAudioChunks(chunks.map((c) => ({ audio: c.audio, samplingRate: c.samplingRate })));
-  await new RawAudio(combined.audio, combined.samplingRate).save(audioPath);
+  saveFloat32Wav(audioPath, combined.audio, combined.samplingRate);
 
   const timing = buildNarrationTimingFromChunks(
     chunks.map((c) => ({ text: c.text, durationSeconds: c.durationSeconds })),

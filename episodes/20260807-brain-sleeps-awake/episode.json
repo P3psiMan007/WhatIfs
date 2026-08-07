@@ -1,0 +1,28 @@
+{
+  "episodeId": "20260807-brain-sleeps-awake",
+  "pipelineVersion": "2.1",
+  "title": "Your Brain Can Sleep While You're Still Awake",
+  "premise": "Sleep is not always a whole-brain on/off state. Local brain regions can show sleep-like activity during wakefulness, some animals naturally sleep one hemisphere at a time, and a 2026 mouse study deliberately induced cortical ON/OFF patterns while the animals remained awake and recovered a measurable sleep-related memory benefit.",
+  "coreParadox": "A brain can contain sleep-like and wake-like states at the same time, so being awake is not necessarily a single uniform condition across the entire brain.",
+  "hookPromise": "Show the viewer how part of a brain can behave as if asleep while the organism remains awake, then escalate from a new 2026 experiment to dolphins, flying birds, and the blurry boundary in humans.",
+  "targetLengthMinutes": 8.2,
+  "opportunityScore": 94,
+  "whyThisWins": "Fresh 2026 neuroscience gives the story timely evidence, the awake-versus-asleep contradiction is instantly understandable worldwide, dolphin and bird sleep provide memorable visual escalation, and public curiosity around unihemispheric sleep is demonstrably strong while the exact 2026 angle is not heavily saturated.",
+  "researchQuestions": [
+    "What exactly did the 2026 awake-mouse experiment induce and what cognitive benefit was measured?",
+    "What is local sleep and what evidence exists during wakefulness?",
+    "How does unihemispheric sleep work in dolphins and why is it adaptive?",
+    "What has been directly measured about sleep in flying frigatebirds?",
+    "What does the human first-night effect actually show, and what should not be overstated?",
+    "Could local sleep-like stimulation plausibly replace normal human sleep?"
+  ],
+  "factRisks": [
+    "Do not imply the 2026 mouse result has been demonstrated in humans.",
+    "Do not claim humans naturally perform full dolphin-style unihemispheric sleep.",
+    "Do not frame local sleep-like stimulation as a replacement for normal sleep.",
+    "Distinguish local cortical ON/OFF periods from whole-organism sleep.",
+    "Treat the human first-night hemispheric-asymmetry explanation as suggestive rather than a complete settled account."
+  ],
+  "createdAt": "2026-08-07",
+  "updatedAt": "2026-08-07"
+}

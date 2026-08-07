@@ -16,6 +16,14 @@ export function extractProducerFailureReason(stderr = '') {
   return match?.[1] || null;
 }
 
+export function extractProducerFailureDetails(stderr = '') {
+  const text = String(stderr || '').trim();
+  if (!text) return null;
+  const marker = text.lastIndexOf('PRODUCER_BLOCKED');
+  const useful = marker >= 0 ? text.slice(marker) : text;
+  return useful.slice(0, 1600);
+}
+
 export function planNextAction({ state, controls, autonomy, topics, producerConfigured }) {
   if (controls?.pauseAllProduction === true) return { kind: 'NOOP', reason: 'pauseAllProduction' };
 
@@ -34,7 +42,7 @@ export function planNextAction({ state, controls, autonomy, topics, producerConf
 }
 
 export function sameStatus(prior, payload) {
-  const keys = ['kind', 'reason', 'episodeId', 'state', 'stateRevision', 'topicId', 'exitCode'];
+  const keys = ['kind', 'reason', 'details', 'episodeId', 'state', 'stateRevision', 'topicId', 'exitCode'];
   return keys.every((key) => (prior?.[key] ?? null) === (payload?.[key] ?? null));
 }
 
@@ -121,11 +129,12 @@ function main() {
   const after = fs.existsSync(statePath) ? readJson(statePath) : state;
   if (result.status !== 0) {
     const reason = extractProducerFailureReason(result.stderr) || 'producer_failed';
-    writeStatus(statusPath, { kind: 'BLOCKED', reason, episodeId: after.episode_id, state: after.state, stateRevision: after.state_revision, exitCode: result.status });
+    const details = extractProducerFailureDetails(result.stderr);
+    writeStatus(statusPath, { kind: 'BLOCKED', reason, details, episodeId: after.episode_id, state: after.state, stateRevision: after.state_revision, exitCode: result.status });
     process.exitCode = result.status || 1;
     return;
   }
-  writeStatus(statusPath, { kind: 'PRODUCER_RAN', reason: null, episodeId: after.episode_id, state: after.state, stateRevision: after.state_revision });
+  writeStatus(statusPath, { kind: 'PRODUCER_RAN', reason: null, details: null, episodeId: after.episode_id, state: after.state, stateRevision: after.state_revision });
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();

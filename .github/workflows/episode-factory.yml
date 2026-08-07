@@ -44,7 +44,8 @@ on:
 
 permissions:
   contents: write
-\concurrency:
+
+concurrency:
   group: episode-factory-main
   cancel-in-progress: false
 

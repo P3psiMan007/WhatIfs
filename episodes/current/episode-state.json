@@ -1,22 +1,43 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-brain-sleeps-awake",
-  "state": "VOICE_SELECTED",
-  "state_revision": 4,
-  "updated_at": "2026-08-07T11:38:00Z",
-  "updated_by": "user-selection",
-  "lock": {"active": true, "locked_at": "2026-08-07T11:35:00Z", "locked_by": "growth-intelligence", "reason": "first real production episode"},
+  "state": "VOICE_READY",
+  "state_revision": 6,
+  "updated_at": "2026-08-07T12:27:44.875Z",
+  "updated_by": "factory",
+  "lock": {
+    "active": true,
+    "locked_at": "2026-08-07T11:35:00Z",
+    "locked_by": "growth-intelligence",
+    "reason": "first real production episode"
+  },
   "growth": {
     "opportunity_score": 94,
     "why_this_wins": "Fresh 2026 neuroscience plus a universally understandable awake-versus-asleep paradox, with strong visual escalation through dolphins and flying birds and qualitative proof of audience curiosity.",
     "core_paradox": "Sleep and wakefulness can coexist locally in the same brain instead of behaving as one global binary switch.",
     "hook_promise": "Show how part of a brain can behave as if asleep while the organism remains awake, then escalate from a new 2026 experiment to dolphins, birds, and humans.",
     "target_length_min": 8.2,
-    "critic_lessons_applied": ["pay off the title immediately", "one major visual idea per beat", "preserve scientific caveats without slowing the hook"],
+    "critic_lessons_applied": [
+      "pay off the title immediately",
+      "one major visual idea per beat",
+      "preserve scientific caveats without slowing the hook"
+    ],
     "packages": {
-      "default": {"title": "Your Brain Can Sleep While You're Still Awake", "thumbnail_text": "HALF ASLEEP?", "thumbnail_visual": "split human face and brain: one eye/side awake, one side sleeping"},
-      "b": {"title": "What If Half Your Brain Could Sleep at a Time?", "thumbnail_text": "ONE HALF?", "thumbnail_visual": "awake human beneath a split brain with one half resting"},
-      "c": {"title": "Sleep Isn't an On/Off Switch", "thumbnail_text": "BOTH?", "thumbnail_visual": "brain behind a toggle switch stuck between sun and moon"}
+      "default": {
+        "title": "Your Brain Can Sleep While You're Still Awake",
+        "thumbnail_text": "HALF ASLEEP?",
+        "thumbnail_visual": "split human face and brain: one eye/side awake, one side sleeping"
+      },
+      "b": {
+        "title": "What If Half Your Brain Could Sleep at a Time?",
+        "thumbnail_text": "ONE HALF?",
+        "thumbnail_visual": "awake human beneath a split brain with one half resting"
+      },
+      "c": {
+        "title": "Sleep Isn't an On/Off Switch",
+        "thumbnail_text": "BOTH?",
+        "thumbnail_visual": "brain behind a toggle switch stuck between sun and moon"
+      }
     },
     "research_questions": [
       "What exactly did the 2026 awake-mouse experiment induce and what cognitive benefit was measured?",
@@ -35,7 +56,7 @@
   },
   "production": {
     "script_words": 1278,
-    "estimated_duration_min": 8.0,
+    "estimated_duration_min": 8,
     "pronunciation_dictionary": [
       "NREM -> non rem",
       "optogenetics -> op-toe-juh-NET-iks",
@@ -53,16 +74,75 @@
       "language": "en-US",
       "settings": {}
     },
-    "voice_asset": null,
+    "voice_asset": "episodes/20260807-brain-sleeps-awake/audio/narration.wav",
     "render_asset": null,
-    "qa_inputs_ready": false
+    "qa_inputs_ready": true
   },
-  "qa": {"status": null, "scores": {}, "top_issues": [], "required_fixes": [], "user_action_required": null},
-  "analytics": {"last_checked_at": null, "sample_note": null, "metrics": {}, "keep": [], "change": [], "avoid": [], "test_next": [], "ab_test_recommendation": null},
+  "qa": {
+    "status": null,
+    "scores": {},
+    "top_issues": [],
+    "required_fixes": [],
+    "user_action_required": null
+  },
+  "analytics": {
+    "last_checked_at": null,
+    "sample_note": null,
+    "metrics": {},
+    "keep": [],
+    "change": [],
+    "avoid": [],
+    "test_next": [],
+    "ab_test_recommendation": null
+  },
   "history": [
-    {"revision": 1, "at": "2026-08-07T11:35:00Z", "actor": "growth-intelligence", "from": "IDLE", "to": "SELECTED", "reason": "data-backed first real episode selected"},
-    {"revision": 2, "at": "2026-08-07T11:36:00Z", "actor": "episode-factory", "from": "SELECTED", "to": "RESEARCHED", "reason": "authoritative research package and fact ledger completed"},
-    {"revision": 3, "at": "2026-08-07T11:37:00Z", "actor": "episode-factory", "from": "RESEARCHED", "to": "SCRIPTED", "reason": "retention-focused 1278-word script and pronunciation dictionary completed"},
-    {"revision": 4, "at": "2026-08-07T11:38:00Z", "actor": "user-selection", "from": "SCRIPTED", "to": "VOICE_SELECTED", "reason": "permanent channel narrator af_heart at 0.95 was selected by user; recurring audition skipped"}
+    {
+      "revision": 1,
+      "at": "2026-08-07T11:35:00Z",
+      "actor": "growth-intelligence",
+      "from": "IDLE",
+      "to": "SELECTED",
+      "reason": "data-backed first real episode selected"
+    },
+    {
+      "revision": 2,
+      "at": "2026-08-07T11:36:00Z",
+      "actor": "episode-factory",
+      "from": "SELECTED",
+      "to": "RESEARCHED",
+      "reason": "authoritative research package and fact ledger completed"
+    },
+    {
+      "revision": 3,
+      "at": "2026-08-07T11:37:00Z",
+      "actor": "episode-factory",
+      "from": "RESEARCHED",
+      "to": "SCRIPTED",
+      "reason": "retention-focused 1278-word script and pronunciation dictionary completed"
+    },
+    {
+      "revision": 4,
+      "at": "2026-08-07T11:38:00Z",
+      "actor": "user-selection",
+      "from": "SCRIPTED",
+      "to": "VOICE_SELECTED",
+      "reason": "permanent channel narrator af_heart at 0.95 was selected by user; recurring audition skipped"
+    },
+    {
+      "revision": 5,
+      "at": "2026-08-07T12:27:44.835Z",
+      "actor": "factory",
+      "from": "VOICE_SELECTED",
+      "to": "VOICE_SELECTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 6,
+      "at": "2026-08-07T12:27:44.875Z",
+      "actor": "factory",
+      "from": "VOICE_SELECTED",
+      "to": "VOICE_READY",
+      "reason": "narration generated and passed mechanical QA"
+    }
   ]
 }

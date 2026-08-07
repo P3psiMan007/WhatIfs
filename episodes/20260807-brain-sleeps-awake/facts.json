@@ -1,0 +1,168 @@
+{
+  "episodeId": "20260807-brain-sleeps-awake",
+  "generatedAt": "2026-08-07",
+  "facts": [
+    {
+      "id": "F1",
+      "claim": "A 2026 Nature Neuroscience study deliberately induced NREM-like cortical ON/OFF periods in awake sleep-deprived mice using optogenetic/genetic methods.",
+      "sources": [
+        {
+          "title": "Researchers trigger sleep’s restorative effect in parts of the awake brain",
+          "url": "https://www.nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+          "publisher": "National Institutes of Health",
+          "retrievedAt": "2026-08-07"
+        },
+        {
+          "title": "Induction of cortical ON/OFF periods in awake mice fulfills sleep functions",
+          "url": "https://doi.org/10.1038/s41593-026-02318-9",
+          "publisher": "Nature Neuroscience",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "high",
+      "usedInScenes": [],
+      "notes": "Keep species and intervention explicit. Do not generalize the induced effect directly to humans."
+    },
+    {
+      "id": "F2",
+      "claim": "In that mouse study, stimulated regions later showed lower slow-wave activity during natural sleep, consistent with reduced local sleep need.",
+      "sources": [
+        {
+          "title": "Researchers trigger sleep’s restorative effect in parts of the awake brain",
+          "url": "https://www.nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+          "publisher": "National Institutes of Health",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "medium",
+      "usedInScenes": [],
+      "notes": "Phrase as local sleep need, not proof that total organism sleep need disappeared."
+    },
+    {
+      "id": "F3",
+      "claim": "Sleep-deprived mice receiving the sleep-like stimulation in relevant sensory and motor regions performed similarly to well-rested mice on a tactile-memory task, while unstimulated sleep-deprived mice performed worse.",
+      "sources": [
+        {
+          "title": "Researchers trigger sleep’s restorative effect in parts of the awake brain",
+          "url": "https://www.nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+          "publisher": "National Institutes of Health",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "high",
+      "usedInScenes": [],
+      "notes": "Describe the specific tactile-memory result only; do not imply broad cognition was fully restored."
+    },
+    {
+      "id": "F4",
+      "claim": "Local slow-wave or sleep-like activity can appear during behavioral wakefulness, particularly after sleep deprivation.",
+      "sources": [
+        {
+          "title": "Researchers trigger sleep’s restorative effect in parts of the awake brain",
+          "url": "https://www.nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+          "publisher": "National Institutes of Health",
+          "retrievedAt": "2026-08-07"
+        },
+        {
+          "title": "Is Your Brain Sleeping While You're Awake?",
+          "url": "https://www.nationalgeographic.com/science/article/110427-sleep-deprived-brains-nature-science-health-rat-asleep-awake",
+          "publisher": "National Geographic",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "medium",
+      "usedInScenes": [],
+      "notes": "Use local-sleep language rather than saying an awake person is globally asleep."
+    },
+    {
+      "id": "F5",
+      "claim": "Whales and dolphins can use unihemispheric sleep, sleeping one cerebral hemisphere at a time while preserving swimming, breathing, and environmental awareness.",
+      "sources": [
+        {
+          "title": "Question of the Week: Dolphins and Whales on the High Seas",
+          "url": "https://www.fisheries.noaa.gov/pacific-islands/endangered-species-conservation/question-week-dolphins-and-whales-high-seas",
+          "publisher": "NOAA Fisheries",
+          "retrievedAt": "2026-08-07"
+        },
+        {
+          "title": "Behavioral, neurophysiological and evolutionary perspectives on unihemispheric sleep",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/11118608/",
+          "publisher": "Neuroscience & Biobehavioral Reviews / PubMed",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "low",
+      "usedInScenes": [],
+      "notes": "Strong visual escalation."
+    },
+    {
+      "id": "F6",
+      "claim": "Great frigatebirds have been directly recorded sleeping in flight, sometimes one hemisphere at a time and sometimes both; in the study they averaged about 0.69 hours of sleep per day while flying.",
+      "sources": [
+        {
+          "title": "Evidence that birds sleep in mid-flight",
+          "url": "https://www.nature.com/articles/ncomms12468",
+          "publisher": "Nature Communications",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "low",
+      "usedInScenes": [],
+      "notes": "Do not imply the birds get normal land-like sleep totals while airborne."
+    },
+    {
+      "id": "F7",
+      "claim": "A 2016 human first-night-effect study found hemispheric asymmetry in sleep depth in part of the default-mode network and stronger responsiveness to unusual sounds from the less-sleeping hemisphere during the first laboratory night.",
+      "sources": [
+        {
+          "title": "Night Watch in One Brain Hemisphere during Sleep Associated with the First-Night Effect in Humans",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/27112296/",
+          "publisher": "Current Biology / PubMed",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "medium",
+      "usedInScenes": [],
+      "notes": "Do not equate this with full human unihemispheric sleep."
+    },
+    {
+      "id": "F8",
+      "claim": "Later human work complicates the idea that hemispheric asymmetry alone explains the first-night effect, so the phenomenon should be presented as suggestive rather than a settled dolphin-like mechanism in humans.",
+      "sources": [
+        {
+          "title": "The first-night effect of sleep occurs over nonconsecutive nights in unfamiliar and familiar environments",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/39126649/",
+          "publisher": "PubMed",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "medium",
+      "usedInScenes": [],
+      "notes": "This caveat is required in the human section."
+    },
+    {
+      "id": "F9",
+      "claim": "The researchers behind the 2026 mouse study identified future investigation of non-invasive transcranial stimulation in humans as a research direction, but no human sleep-replacement effect has been demonstrated.",
+      "sources": [
+        {
+          "title": "Researchers trigger sleep’s restorative effect in parts of the awake brain",
+          "url": "https://www.nih.gov/news-events/news-releases/researchers-trigger-sleeps-restorative-effect-parts-awake-brain",
+          "publisher": "National Institutes of Health",
+          "retrievedAt": "2026-08-07"
+        }
+      ],
+      "confidence": "verified",
+      "riskLevel": "high",
+      "usedInScenes": [],
+      "notes": "Future-facing only. Never turn this into a practical claim that people can skip sleep."
+    }
+  ]
+}

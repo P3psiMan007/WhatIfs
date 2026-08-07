@@ -45,12 +45,16 @@ on:
 permissions:
   contents: write
 
+# Newer production/self-healing changes supersede stale attempts. Episode state
+# writes are revision checked, so cancelling an old uncommitted workspace is safer
+# than letting it block corrected code for hours.
 concurrency:
   group: episode-factory-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   test:
+    timeout-minutes: 12
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -69,6 +73,7 @@ jobs:
   factory:
     if: github.event_name != 'pull_request'
     needs: test
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     env:
       EPISODE_PRODUCER_CMD: ${{ vars.EPISODE_PRODUCER_CMD }}
@@ -99,17 +104,22 @@ jobs:
         run: |
           for pass in 1 2 3; do
             set +e
-            node tools/episode-runner.mjs
+            timeout --signal=TERM --kill-after=30s 40m node tools/episode-runner.mjs
             rc=$?
             set -e
             if [ "$rc" -eq 2 ]; then
               break
+            fi
+            if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+              echo "BLOCKED producer_timeout" >&2
+              exit "$rc"
             fi
             if [ "$rc" -ne 0 ]; then
               exit "$rc"
             fi
           done
       - name: Upload render and narration artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: episode-render
@@ -122,6 +132,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
       - name: Persist canonical state changes
+        if: always()
         shell: bash
         run: |
           git config user.name "whatifs-episode-factory"

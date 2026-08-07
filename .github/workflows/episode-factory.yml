@@ -46,8 +46,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: episode-factory-main
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('episode-factory-pr-{0}', github.event.pull_request.number) || 'episode-factory-main' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:

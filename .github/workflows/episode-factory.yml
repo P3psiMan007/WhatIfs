@@ -51,6 +51,7 @@ concurrency:
 
 jobs:
   test:
+    timeout-minutes: 12
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -61,14 +62,17 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Run state, orchestration, and producer tests
         run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs
-      - name: Remotion browser/render smoke test
-        run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=10
-      - name: Verify smoke render exists
-        run: test -s /tmp/whatifs-smoke.png
+      - name: Remotion episode smoke test
+        run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
+      - name: Remotion thumbnail smoke test
+        run: npx remotion still video/src/index.jsx WhatIfThumbnail /tmp/whatifs-thumb.png
+      - name: Verify smoke renders exist
+        run: test -s /tmp/whatifs-smoke.png && test -s /tmp/whatifs-thumb.png
 
   factory:
     if: github.event_name != 'pull_request'
     needs: test
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     env:
       EPISODE_PRODUCER_CMD: ${{ vars.EPISODE_PRODUCER_CMD }}
@@ -102,19 +106,19 @@ jobs:
             node tools/episode-runner.mjs
             rc=$?
             set -e
-            if [ "$rc" -eq 2 ]; then
-              break
-            fi
-            if [ "$rc" -ne 0 ]; then
-              exit "$rc"
-            fi
+            if [ "$rc" -eq 2 ]; then break; fi
+            if [ "$rc" -ne 0 ]; then exit "$rc"; fi
           done
-      - name: Upload render and narration artifacts
+      - name: Upload render, package, and QA artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: episode-render
           path: |
             dist/episode.mp4
+            dist/thumbnail.png
+            dist/contact-sheet.jpg
+            dist/first-30s-contact-sheet.jpg
             public/narration.mp3
             public/narration.srt
             episodes/current/render-manifest.json
@@ -122,6 +126,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
       - name: Persist canonical state changes
+        if: always()
         shell: bash
         run: |
           git config user.name "whatifs-episode-factory"

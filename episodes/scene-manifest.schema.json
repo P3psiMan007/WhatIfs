@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whatifexplains.local/scene-manifest.schema.json",
+  "title": "What If Explains Scene Manifest",
+  "type": "object",
+  "required": ["episodeId", "fps", "scenes"],
+  "additionalProperties": false,
+  "properties": {
+    "episodeId": {"type": "string", "minLength": 1},
+    "fps": {"type": "integer", "minimum": 1},
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["sceneId", "order", "narration", "timing", "visualPurpose", "focalSubject", "environment", "props", "cameraIntent", "motionIntent", "caption", "sfxIntent", "transitionIn", "requiredAssets", "newInformation"],
+        "additionalProperties": false,
+        "properties": {
+          "sceneId": {"type": "string", "minLength": 1},
+          "order": {"type": "integer", "minimum": 0},
+          "narration": {
+            "type": "object",
+            "required": ["text", "segmentStartIndex", "segmentEndIndex"],
+            "additionalProperties": false,
+            "properties": {
+              "text": {"type": "string", "minLength": 1},
+              "segmentStartIndex": {"type": ["integer", "null"]},
+              "segmentEndIndex": {"type": ["integer", "null"]}
+            }
+          },
+          "timing": {
+            "type": "object",
+            "required": ["startSeconds", "endSeconds"],
+            "additionalProperties": false,
+            "properties": {
+              "startSeconds": {"type": ["number", "null"]},
+              "endSeconds": {"type": ["number", "null"]}
+            }
+          },
+          "visualPurpose": {"enum": ["establish-premise", "introduce-character", "explain-mechanism", "reveal-number", "show-consequence", "compare-options", "build-tension", "resolve-paradox", "call-to-action"]},
+          "focalSubject": {"type": "string", "minLength": 1},
+          "environment": {"type": "string", "minLength": 1},
+          "props": {"type": "array", "items": {"type": "string"}},
+          "cameraIntent": {"enum": ["static", "push-in", "pull-out", "pan-left", "pan-right", "parallax-drift"]},
+          "motionIntent": {
+            "type": "array",
+            "items": {"enum": ["none", "subtle-idle", "character-gesture", "prop-enter", "prop-exit", "expression-change", "camera-follow"]}
+          },
+          "caption": {"type": "string", "minLength": 1},
+          "sfxIntent": {"type": ["string", "null"]},
+          "transitionIn": {"enum": ["hard-cut", "match-cut", "dissolve"]},
+          "requiredAssets": {"type": "array", "items": {"type": "string"}},
+          "newInformation": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

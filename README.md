@@ -1,5 +1,24 @@
 # WhatIfs
 
+## Video factory
+
+The `src/` (Remotion video project) and `tools/` (voice/render/QA pipeline)
+directories are the "What If Explains" automated video factory: shared
+episode state (see [`docs/EPISODE_STATE_PROTOCOL.md`](docs/EPISODE_STATE_PROTOCOL.md)),
+Kokoro TTS voice auditions and narration, a doodle-documentary Remotion
+rendering engine, and mechanical technical QA. Full architecture, exact
+commands, and failure recovery: [`docs/FACTORY_ARCHITECTURE.md`](docs/FACTORY_ARCHITECTURE.md).
+
+```bash
+npm install
+npm test                 # full test suite
+npx remotion studio       # visual preview (FactoryTest composition needs no real episode)
+```
+
+No automation in this repo ever publishes anything — `QA_PASSED_AWAITING_USER_APPROVAL`
+is the highest state any script can reach, and the only upload path is the
+manual, always-private YouTube workflow documented below.
+
 ## Automated private YouTube uploads
 
 This repo can upload videos to YouTube as **private** using the YouTube Data

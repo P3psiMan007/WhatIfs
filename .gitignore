@@ -23,3 +23,38 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Node / Remotion
+node_modules/
+dist/
+build/
+out/
+.remotion/
+*.tsbuildinfo
+
+# Transient render staging (render-episode.mjs copies narration.wav here so
+# Remotion's <Audio staticFile()> can load it, then deletes it after)
+public/render-assets/
+
+# TTS model weights / caches (downloaded at runtime, never committed)
+.cache/
+models/
+*.onnx
+*.onnx_data
+
+# Generated production media - never committed, only uploaded as CI artifacts
+# (narration WAVs, rendered MP4s, contact sheets, render logs). This is
+# extension-based, NOT a directory-level ignore: episodes/<id>/audio/ and
+# episodes/<id>/renders/ also hold small JSON manifests (voice-audition-
+# manifest.json, narration-timing.json, render-manifest.json) that ARE
+# committed - the shared state file's whole point is to be tracked in git.
+episodes/*/assets/*.png
+episodes/*/assets/*.jpg
+episodes/*/assets/*.webp
+*.wav
+*.mp3
+*.mp4
+*.mov
+*.jpg
+*.jpeg
+!episodes/_fixtures/**/*.md

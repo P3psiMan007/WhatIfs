@@ -1,0 +1,7 @@
+{
+  "selected": false,
+  "episodeIdSelectedFrom": null,
+  "selectedAt": null,
+  "voice": null,
+  "notes": "No permanent narrator has been chosen yet. Run the voice-audition workflow for a real episode, listen to the results, then call tools/voice/channelNarrator.mjs's setChannelNarrator() (or edit this file directly) to lock in a VoiceConfig. Once selected, future episodes use it automatically unless a specific episode overrides production.selected_voice in its own state."
+}

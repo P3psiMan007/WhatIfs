@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whatifexplains.local/fact-ledger.schema.json",
+  "title": "What If Explains Fact Ledger",
+  "type": "object",
+  "required": ["episodeId", "generatedAt", "facts"],
+  "additionalProperties": false,
+  "properties": {
+    "episodeId": {"type": "string", "minLength": 1},
+    "generatedAt": {"type": "string"},
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "sources", "confidence", "riskLevel", "usedInScenes", "notes"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "claim": {"type": "string", "minLength": 1},
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["title", "url", "publisher", "retrievedAt"],
+              "additionalProperties": false,
+              "properties": {
+                "title": {"type": "string", "minLength": 1},
+                "url": {"type": "string", "format": "uri"},
+                "publisher": {"type": ["string", "null"]},
+                "retrievedAt": {"type": ["string", "null"]}
+              }
+            }
+          },
+          "confidence": {"enum": ["verified", "likely", "disputed", "speculative"]},
+          "riskLevel": {"enum": ["low", "medium", "high"]},
+          "usedInScenes": {"type": "array", "items": {"type": "string"}},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

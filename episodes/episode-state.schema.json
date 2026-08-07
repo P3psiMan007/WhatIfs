@@ -7,7 +7,7 @@
   "properties": {
     "pipeline_version": {"const": "2.1"},
     "episode_id": {"type": ["string","null"]},
-    "state": {"enum": ["IDLE","SELECTED","RESEARCH_BLOCKED","RESEARCHED","SCRIPTED","VOICE_BLOCKED","VOICE_AUDITIONS_READY","VOICE_SELECTED","VOICE_READY","RENDERED","QA_FAILED","QA_FAILED_VOICE","QA_PASSED_AWAITING_USER_APPROVAL","PUBLISHED","ANALYZED"]},
+    "state": {"enum": ["IDLE","SELECTED","RESEARCH_BLOCKED","RESEARCHED","SCRIPTED","VOICE_BLOCKED","VOICE_AUDITIONS_READY","VOICE_SELECTED","VOICE_READY","RENDERED","QA_FAILED","QA_FAILED_VOICE","QA_PASSED_AWAITING_USER_APPROVAL","QA_PASSED","AUTO_PUBLISH_READY","PUBLISHED","ANALYZED"]},
     "state_revision": {"type":"integer","minimum":0},
     "updated_at": {"type":["string","null"]},
     "updated_by": {"type":["string","null"]},

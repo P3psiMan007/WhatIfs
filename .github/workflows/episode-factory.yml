@@ -13,11 +13,14 @@ on:
       - "tools/episode-producer.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
+      - "tools/prepare-authored-visual-rebuild.mjs"
+      - "tools/prepare-authored-visual-rebuild.test.mjs"
       - "tools/episode-state.mjs"
       - "episodes/current/episode-state.json"
       - "episodes/current/research.md"
       - "episodes/current/script.md"
       - "episodes/current/production-input.json"
+      - "public/assets/**"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "queue/topics.json"
@@ -33,11 +36,14 @@ on:
       - "tools/episode-producer.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
+      - "tools/prepare-authored-visual-rebuild.mjs"
+      - "tools/prepare-authored-visual-rebuild.test.mjs"
       - "tools/episode-state.mjs"
       - "episodes/current/episode-state.json"
       - "episodes/current/research.md"
       - "episodes/current/script.md"
       - "episodes/current/production-input.json"
+      - "public/assets/**"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "queue/topics.json"
@@ -64,8 +70,8 @@ jobs:
           node-version: "22"
       - name: Install video dependencies
         run: npm install --no-audit --no-fund
-      - name: Run state, orchestration, producer, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/publish-grade-visual-guard.test.mjs
+      - name: Run state, orchestration, producer, visual guard, and rebuild tests
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/publish-grade-visual-guard.test.mjs tools/prepare-authored-visual-rebuild.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test
@@ -102,6 +108,8 @@ jobs:
           command -v ffprobe
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
+      - name: Reset technical preview when authored scene assets are ready
+        run: node tools/prepare-authored-visual-rebuild.mjs
       - name: Advance factory and run built-in producer
         shell: bash
         run: |

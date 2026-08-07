@@ -1,0 +1,88 @@
+name: Episode Factory
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "tools/episode-runner.mjs"
+      - "tools/episode-runner.test.mjs"
+      - "tools/episode-state.mjs"
+      - "episodes/current/episode-state.json"
+      - "config/autonomy.json"
+      - "queue/daily-control.json"
+      - "queue/topics.json"
+      - "queue/runner-status.json"
+      - ".github/workflows/episode-factory.yml"
+  pull_request:
+    paths:
+      - "tools/episode-runner.mjs"
+      - "tools/episode-runner.test.mjs"
+      - "tools/episode-state.mjs"
+      - "episodes/current/episode-state.json"
+      - "config/autonomy.json"
+      - "queue/daily-control.json"
+      - "queue/topics.json"
+      - "queue/runner-status.json"
+      - ".github/workflows/episode-factory.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: episode-factory-main
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run state and factory tests
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs
+
+  factory:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      EPISODE_PRODUCER_CMD: ${{ vars.EPISODE_PRODUCER_CMD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Advance factory and record blockers
+        shell: bash
+        run: |
+          for pass in 1 2; do
+            set +e
+            node tools/episode-runner.mjs
+            rc=$?
+            set -e
+            if [ "$rc" -eq 2 ]; then
+              break
+            fi
+            if [ "$rc" -ne 0 ]; then
+              exit "$rc"
+            fi
+          done
+      - name: Persist canonical state changes
+        shell: bash
+        run: |
+          git config user.name "whatifs-episode-factory"
+          git config user.email "whatifs-episode-factory@users.noreply.github.com"
+          git add episodes/current/episode-state.json queue/topics.json queue/runner-status.json
+          if git diff --cached --quiet; then
+            echo "No state changes to persist."
+            exit 0
+          fi
+          git commit -m "chore: advance episode factory state"
+          git push

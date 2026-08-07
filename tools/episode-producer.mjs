@@ -295,7 +295,7 @@ function makeContactSheet(outputPath,distDir,durationSeconds) {
   const fullPath = path.join(distDir,'contact-sheet.jpg'); const first30Path = path.join(distDir,'first-30s-contact-sheet.jpg'); const interval = Math.max(2,durationSeconds / 12);
   const full = run('ffmpeg',['-y','-v','error','-i',outputPath,'-vf',`fps=1/${interval.toFixed(3)},scale=480:-2,tile=4x3:padding=8:margin=8`,'-frames:v','1',fullPath]);
   if (full.status !== 0 || !fs.existsSync(fullPath)) throw new Error('full contact sheet failed');
-  const first = run('ffmpeg',['-y','-v','error','-ss','0','-t','30','-i',outputPath,'-vf','fps=1/3,scale=384:-2,tile=5x2:padding=6,margin=6','-frames:v','1',first30Path]);
+  const first = run('ffmpeg',['-y','-v','error','-ss','0','-t','30','-i',outputPath,'-vf','fps=1/3,scale=384:-2,tile=5x2:padding=6:margin=6','-frames:v','1',first30Path]);
   if (first.status !== 0 || !fs.existsSync(first30Path)) throw new Error('first-30 contact sheet failed');
   return {fullPath,first30Path};
 }

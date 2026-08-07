@@ -21,13 +21,20 @@ export function planNextAction({ state, controls, autonomy, topics, producerConf
   return { kind: 'RUN_PRODUCER', episodeId: state?.episode_id, state: state?.state };
 }
 
+export function sameStatus(prior, payload) {
+  const keys = ['kind', 'reason', 'episodeId', 'state', 'stateRevision', 'topicId', 'exitCode'];
+  return keys.every((key) => (prior?.[key] ?? null) === (payload?.[key] ?? null));
+}
+
 function writeStatus(statusPath, payload) {
   const prior = fs.existsSync(statusPath) ? readJson(statusPath) : { revision: 0 };
+  if (sameStatus(prior, payload)) return false;
   writeJson(statusPath, {
     revision: Number(prior.revision || 0) + 1,
     updatedAt: new Date().toISOString(),
     ...payload,
   });
+  return true;
 }
 
 function runEpisodeState(args) {

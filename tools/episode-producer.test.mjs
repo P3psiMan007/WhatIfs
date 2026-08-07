@@ -20,8 +20,8 @@ const validInput = {
   packages: [{ id: 'A', title: 'What If Humans Never Needed Sleep?', thumbnailText: '8 HOURS BACK' }],
   visualGrade: 'publish-grade',
   scenes: [
-    { id: 'hook', headline: 'NO MORE SLEEP', narration: 'Imagine never needing to sleep again.', visual: 'clock', visualAsset: 'assets/hook.mp4' },
-    { id: 'payoff', headline: 'MORE WAKING LIFE', narration: 'You gain waking time, not extra years.', visual: 'hourglass', visualAsset: 'assets/payoff.mp4' }
+    { id: 'hook', headline: 'NO MORE SLEEP', narration: 'Imagine never needing to sleep again.', visual: 'clock', visualAsset: 'assets/hook.svg' },
+    { id: 'payoff', headline: 'MORE WAKING LIFE', narration: 'You gain waking time, not extra years.', visual: 'hourglass', visualAsset: 'assets/payoff.svg' }
   ],
   sources: [{ url: 'https://example.com', claims: ['example claim'] }]
 };
@@ -32,7 +32,7 @@ test('rejects production input for another episode', () => {
 });
 
 test('requires at least two narrated scenes', () => {
-  const broken = {...validInput, scenes: [{id:'one', headline:'ONE', narration:'Only one.', visualAsset:'assets/one.mp4'}]};
+  const broken = {...validInput, scenes: [{id:'one', headline:'ONE', narration:'Only one.', visualAsset:'assets/one.svg'}]};
   assert.match(validateProductionInput(broken, {episode_id:'ep1'}), /at least 2 scenes/);
 });
 
@@ -57,9 +57,9 @@ test('RENDERED is left for independent QA', () => {
 });
 
 test('publish-grade visual readiness requires explicit grade and per-scene assets', () => {
-  assert.equal(isPublishGradeVisualInput(validInput), true);
-  assert.equal(isPublishGradeVisualInput({...validInput, visualGrade:'heuristic-placeholder'}), false);
-  assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}), false);
+  assert.equal(isPublishGradeVisualInput(validInput, {assetExists:()=>true}), true);
+  assert.equal(isPublishGradeVisualInput({...validInput, visualGrade:'heuristic-placeholder'}, {assetExists:()=>true}), false);
+  assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}, {assetExists:()=>true}), false);
 });
 
 test('parses SRT captions into second-based cues', () => {
@@ -77,7 +77,7 @@ test('builds production input from durable research and retention script artifac
   assert.equal(built.episodeId, 'ep1');
   assert.equal(built.scenes.length, 2);
   assert.equal(built.scenes[0].visual, 'clock');
-  assert.equal(isPublishGradeVisualInput(built), false);
+  assert.equal(isPublishGradeVisualInput(built, {assetExists:()=>true}), false);
   assert.equal(built.sources.length, 2);
   assert.equal(built.packages.length, 3);
 });
@@ -97,7 +97,7 @@ test('scene boundaries use measured per-scene narration durations rather than wo
 });
 
 test('visual beats keep publish-grade motion cadence with no long static holds', () => {
-  const scenes = [{id:'s1', headline:'HOOK', visual:'clock', start:0, duration:25, narration:'x'}];
+  const scenes = [{id:'s1', headline:'HOOK', visual:'clock', visualAsset:'assets/hook.svg', start:0, duration:25, narration:'x'}];
   const captions = [
     {start:0,end:2.2,text:'Tonight, you go to bed for the last time.'},
     {start:2.2,end:4.4,text:'Not because something is wrong.'},
@@ -113,6 +113,7 @@ test('visual beats keep publish-grade motion cadence with no long static holds',
   assert.ok(beats.length >= 5);
   assert.ok(beats.every((beat) => beat.duration <= 6.01), JSON.stringify(beats));
   assert.equal(beats[0].sceneHeadline, 'HOOK');
+  assert.equal(beats[0].visualAsset, 'assets/hook.svg');
   assert.ok(beats.some((beat) => /8|HOURS/.test(beat.callout || '')));
 });
 

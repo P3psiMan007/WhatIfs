@@ -1,9 +1,11 @@
 {
-  "revision": 4,
-  "updatedAt": "2026-08-07T21:33:50.861Z",
-  "kind": "PRODUCER_RAN",
-  "reason": null,
+  "revision": 5,
+  "updatedAt": "2026-08-07T22:26:06.275Z",
+  "kind": "BLOCKED",
+  "reason": "visual_beat_density_failed",
+  "details": "PRODUCER_BLOCKED visual_beat_density_failed: max beat 7.582s",
   "episodeId": "20260807-episode",
-  "state": "RENDERED",
-  "stateRevision": 8
+  "state": "VOICE_READY",
+  "stateRevision": 9,
+  "exitCode": 2
 }

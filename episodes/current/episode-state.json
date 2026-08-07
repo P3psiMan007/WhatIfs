@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-brain-sleeps-awake",
-  "state": "SELECTED",
-  "state_revision": 1,
-  "updated_at": "2026-08-07T11:35:00Z",
-  "updated_by": "growth-intelligence",
+  "state": "RESEARCHED",
+  "state_revision": 2,
+  "updated_at": "2026-08-07T11:36:00Z",
+  "updated_by": "episode-factory",
   "lock": {"active": true, "locked_at": "2026-08-07T11:35:00Z", "locked_by": "growth-intelligence", "reason": "first real production episode"},
   "growth": {
     "opportunity_score": 94,
@@ -46,6 +46,7 @@
   "qa": {"status": null, "scores": {}, "top_issues": [], "required_fixes": [], "user_action_required": null},
   "analytics": {"last_checked_at": null, "sample_note": null, "metrics": {}, "keep": [], "change": [], "avoid": [], "test_next": [], "ab_test_recommendation": null},
   "history": [
-    {"revision": 1, "at": "2026-08-07T11:35:00Z", "actor": "growth-intelligence", "from": "IDLE", "to": "SELECTED", "reason": "data-backed first real episode selected"}
+    {"revision": 1, "at": "2026-08-07T11:35:00Z", "actor": "growth-intelligence", "from": "IDLE", "to": "SELECTED", "reason": "data-backed first real episode selected"},
+    {"revision": 2, "at": "2026-08-07T11:36:00Z", "actor": "episode-factory", "from": "SELECTED", "to": "RESEARCHED", "reason": "authoritative research package and fact ledger completed"}
   ]
 }

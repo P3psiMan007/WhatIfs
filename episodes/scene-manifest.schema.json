@@ -41,7 +41,7 @@
           "focalSubject": {"type": "string", "minLength": 1},
           "environment": {"type": "string", "minLength": 1},
           "props": {"type": "array", "items": {"type": "string"}},
-          "cameraIntent": {"enum": ["static", "push-in", "pull-out", "pan-left", "pan-right", "parallax-drift"]},
+          "cameraIntent": {"enum": ["static", "push-in", "pull-out", "pan-left", "pan-right", "parallax-drift", "camera-follow"]},
           "motionIntent": {
             "type": "array",
             "items": {"enum": ["none", "subtle-idle", "character-gesture", "prop-enter", "prop-exit", "expression-change", "camera-follow"]}

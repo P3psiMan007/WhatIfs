@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { getBrainSleepSceneFamily } from "./brainSleepArtPlan";
+import { getBrainSleepSceneFamily } from "./brainSleepArtPlan.ts";
 
 test("all 42 Episode 1 scenes have specialized art families", () => {
   const families = new Set<string>();

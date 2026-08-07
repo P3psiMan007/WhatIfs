@@ -1,9 +1,9 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-brain-sleeps-awake",
-  "state": "RESEARCHED",
-  "state_revision": 2,
-  "updated_at": "2026-08-07T11:36:00Z",
+  "state": "SCRIPTED",
+  "state_revision": 3,
+  "updated_at": "2026-08-07T11:37:00Z",
   "updated_by": "episode-factory",
   "lock": {"active": true, "locked_at": "2026-08-07T11:35:00Z", "locked_by": "growth-intelligence", "reason": "first real production episode"},
   "growth": {
@@ -34,9 +34,16 @@
     ]
   },
   "production": {
-    "script_words": null,
-    "estimated_duration_min": null,
-    "pronunciation_dictionary": [],
+    "script_words": 1278,
+    "estimated_duration_min": 8.0,
+    "pronunciation_dictionary": [
+      "NREM -> non rem",
+      "optogenetics -> op-toe-juh-NET-iks",
+      "cetaceans -> suh-TAY-shunz",
+      "unihemispheric -> yoo-nee-hem-iss-FEHR-ik",
+      "frigatebirds -> FRIG-it birds",
+      "transcranial -> trans-CRAY-nee-ul"
+    ],
     "voice_candidates": [],
     "selected_voice": null,
     "voice_asset": null,
@@ -47,6 +54,7 @@
   "analytics": {"last_checked_at": null, "sample_note": null, "metrics": {}, "keep": [], "change": [], "avoid": [], "test_next": [], "ab_test_recommendation": null},
   "history": [
     {"revision": 1, "at": "2026-08-07T11:35:00Z", "actor": "growth-intelligence", "from": "IDLE", "to": "SELECTED", "reason": "data-backed first real episode selected"},
-    {"revision": 2, "at": "2026-08-07T11:36:00Z", "actor": "episode-factory", "from": "SELECTED", "to": "RESEARCHED", "reason": "authoritative research package and fact ledger completed"}
+    {"revision": 2, "at": "2026-08-07T11:36:00Z", "actor": "episode-factory", "from": "SELECTED", "to": "RESEARCHED", "reason": "authoritative research package and fact ledger completed"},
+    {"revision": 3, "at": "2026-08-07T11:37:00Z", "actor": "episode-factory", "from": "RESEARCHED", "to": "SCRIPTED", "reason": "retention-focused 1278-word script and pronunciation dictionary completed"}
   ]
 }

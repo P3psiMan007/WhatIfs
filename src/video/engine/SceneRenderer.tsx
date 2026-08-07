@@ -9,6 +9,7 @@ import {WordSyncedCaption} from "../captions/WordSyncedCaption";
 import type {CaptionPhrase} from "../captions/types";
 import type {SceneManifestEntry} from "../types/scene";
 import {BrainSleepSceneArt} from "../episodes/BrainSleepSceneArt";
+import {BrainSleepAtmosphere} from "../episodes/BrainSleepAtmosphere";
 import {mapEnvironmentHint, mapPropHint, extractHeroNumber} from "./contentHints";
 
 export interface SceneRendererProps {
@@ -38,10 +39,6 @@ export const SceneRenderer: React.FC<SceneRendererProps> = ({
   nowSeconds,
 }) => {
   if (episodeId === "20260807-brain-sleeps-awake") {
-    // Each authored scene has a second editorial framing at ~52% progress.
-    // The deliberate jump creates a real shot change (wide -> focused crop)
-    // without duplicating narration or making the scene manifest brittle.
-    // 42 authored scenes therefore yield ~84 meaningful visual framings.
     const secondBeat = cameraProgress >= 0.52;
     const beatProgress = secondBeat ? Math.min(1, Math.max(0, (cameraProgress - 0.52) / 0.48)) : 0;
     const beatScale = secondBeat ? 1.085 + beatProgress * 0.035 : 1;
@@ -55,6 +52,7 @@ export const SceneRenderer: React.FC<SceneRendererProps> = ({
           }}
         >
           <BrainSleepSceneArt scene={scene} cameraProgress={cameraProgress} revealProgress={revealProgress} />
+          <BrainSleepAtmosphere sceneId={scene.sceneId} />
         </AbsoluteFill>
       </AbsoluteFill>
     );

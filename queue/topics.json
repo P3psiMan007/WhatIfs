@@ -1,0 +1,14 @@
+{
+  "queue_version": "1.0",
+  "topics": [
+    {
+      "id": "sleep-no-need",
+      "topic": "What if humans never needed sleep?",
+      "hookPromise": "Explore what would happen to health, work, society, memory, and time if sleep suddenly became biologically unnecessary.",
+      "source": "seed",
+      "enabled": true,
+      "consumedAt": null,
+      "episodeId": null
+    }
+  ]
+}

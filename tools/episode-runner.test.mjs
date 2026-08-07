@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planNextAction, sameStatus } from './episode-runner.mjs';
+import { planNextAction, sameStatus, resolveProducerCommand, extractProducerFailureReason } from './episode-runner.mjs';
 
 const controls = { pauseAllProduction: false, pausePublishing: false };
 const autonomy = { publishReadyStates: ['QA_PASSED','AUTO_PUBLISH_READY'] };
@@ -31,9 +31,27 @@ test('publish-ready states are left to the guarded publisher', () => {
   assert.equal(plan.reason, 'publisher_owned_state');
 });
 
+test('RENDERED is left for independent QA', () => {
+  const plan = planNextAction({ state: {state:'RENDERED', episode_id:'ep1'}, controls, autonomy, topics: [], producerConfigured: true });
+  assert.equal(plan.kind, 'NOOP');
+  assert.equal(plan.reason, 'awaiting_qa');
+});
+
 test('identical runner status is treated as unchanged', () => {
   assert.equal(sameStatus(
     { revision: 4, updatedAt: 'old', kind: 'BLOCKED', reason: 'missing_production_provider', episodeId: 'ep1', stateRevision: 2 },
     { kind: 'BLOCKED', reason: 'missing_production_provider', episodeId: 'ep1', stateRevision: 2 }
   ), true);
+});
+
+test('uses the built-in producer when no repository variable is configured', () => {
+  assert.equal(resolveProducerCommand({ configured: '', builtInExists: true }), 'node tools/episode-producer.mjs');
+});
+
+test('explicit repository producer command overrides the built-in producer', () => {
+  assert.equal(resolveProducerCommand({ configured: 'custom-producer', builtInExists: true }), 'custom-producer');
+});
+
+test('extracts precise fail-closed producer blocker', () => {
+  assert.equal(extractProducerFailureReason('PRODUCER_BLOCKED narration_generation_failed: timeout'), 'narration_generation_failed');
 });

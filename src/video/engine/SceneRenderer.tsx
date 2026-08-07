@@ -20,6 +20,15 @@ export interface SceneRendererProps {
   nowSeconds: number;
 }
 
+const directedFocusOrigin = (sceneId: string): string => {
+  const n = Number(sceneId.slice(1));
+  if (!Number.isFinite(n)) return "50% 50%";
+  const mode = n % 3;
+  if (mode === 1) return "34% 48%";
+  if (mode === 2) return "66% 48%";
+  return "50% 46%";
+};
+
 export const SceneRenderer: React.FC<SceneRendererProps> = ({
   episodeId,
   scene,
@@ -29,13 +38,24 @@ export const SceneRenderer: React.FC<SceneRendererProps> = ({
   nowSeconds,
 }) => {
   if (episodeId === "20260807-brain-sleeps-awake") {
-    // Directed episodes use authored 2-5 word callouts inside the illustration
-    // rather than burning the entire narration into the frame. Full accessibility
-    // captions belong in YouTube's caption track; keeping them off the image
-    // protects composition and visual attention.
+    // Each authored scene has a second editorial framing at ~52% progress.
+    // The deliberate jump creates a real shot change (wide -> focused crop)
+    // without duplicating narration or making the scene manifest brittle.
+    // 42 authored scenes therefore yield ~84 meaningful visual framings.
+    const secondBeat = cameraProgress >= 0.52;
+    const beatProgress = secondBeat ? Math.min(1, Math.max(0, (cameraProgress - 0.52) / 0.48)) : 0;
+    const beatScale = secondBeat ? 1.085 + beatProgress * 0.035 : 1;
+
     return (
-      <AbsoluteFill>
-        <BrainSleepSceneArt scene={scene} cameraProgress={cameraProgress} revealProgress={revealProgress} />
+      <AbsoluteFill style={{overflow: "hidden"}}>
+        <AbsoluteFill
+          style={{
+            transform: `scale(${beatScale})`,
+            transformOrigin: directedFocusOrigin(scene.sceneId),
+          }}
+        >
+          <BrainSleepSceneArt scene={scene} cameraProgress={cameraProgress} revealProgress={revealProgress} />
+        </AbsoluteFill>
       </AbsoluteFill>
     );
   }

@@ -29,7 +29,10 @@ export function planNextAction({ state, controls, autonomy, topics, producerConf
 
   const publisherStates = new Set([...(autonomy?.publishReadyStates || []), 'PUBLISHED']);
   if (publisherStates.has(state?.state)) return { kind: 'NOOP', reason: 'publisher_owned_state' };
-  if (state?.state === 'RENDERED') return { kind: 'NOOP', reason: 'awaiting_qa' };
+  if (state?.state === 'RENDERED') {
+    if (state?.production?.qa_inputs_ready !== true) return { kind: 'BLOCKED', reason: 'publish_grade_visual_assets_missing' };
+    return { kind: 'NOOP', reason: 'awaiting_qa' };
+  }
 
   if (state?.state === 'IDLE' || state?.state === 'ANALYZED') {
     const topic = (topics || []).find((t) => t && t.enabled !== false && !t.consumedAt);

@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-brain-sleeps-awake",
-  "state": "RENDERED",
-  "state_revision": 8,
-  "updated_at": "2026-08-07T13:19:00.650Z",
-  "updated_by": "factory",
+  "state": "QA_FAILED",
+  "state_revision": 10,
+  "updated_at": "2026-08-07T14:34:43.114Z",
+  "updated_by": "independent-critic",
   "lock": {
     "active": true,
     "locked_at": "2026-08-07T11:35:00Z",
@@ -79,10 +79,33 @@
     "qa_inputs_ready": true
   },
   "qa": {
-    "status": null,
-    "scores": {},
-    "top_issues": [],
-    "required_fixes": [],
+    "status": "FAIL",
+    "scores": {
+      "factualIntegrity": 9.4,
+      "titlePromiseAlignment": 9,
+      "first30Seconds": 7.4,
+      "scriptRetention": 8.6,
+      "narration": 8.5,
+      "visualStorytelling": 6.8,
+      "visualVariety": 6.5,
+      "captionDesign": 6.2,
+      "soundDesign": 4,
+      "technicalIntegrity": 10,
+      "endingPayoff": 8.5
+    },
+    "top_issues": [
+      "visual beat density too low for 8:51",
+      "continuous narration captions compete with visuals",
+      "composition variety decays across episode",
+      "publish-grade sound design missing"
+    ],
+    "required_fixes": [
+      "sparse editorial callouts only",
+      "increase effective visual beat density",
+      "increase environment/composition variety",
+      "add copyright-safe ambience/music/SFX",
+      "rerender and independently review"
+    ],
     "user_action_required": null
   },
   "analytics": {
@@ -159,6 +182,22 @@
       "from": "VOICE_READY",
       "to": "RENDERED",
       "reason": "render completed"
+    },
+    {
+      "revision": 9,
+      "at": "2026-08-07T14:34:43.057Z",
+      "actor": "independent-critic",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 10,
+      "at": "2026-08-07T14:34:43.114Z",
+      "actor": "independent-critic",
+      "from": "RENDERED",
+      "to": "QA_FAILED",
+      "reason": "creative canary below publish-grade threshold; V2 required"
     }
   ]
 }

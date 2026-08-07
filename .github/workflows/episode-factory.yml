@@ -11,6 +11,8 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/publish-grade-visual-guard.mjs"
+      - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
       - "episodes/current/episode-state.json"
       - "episodes/current/research.md"
@@ -29,6 +31,8 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/publish-grade-visual-guard.mjs"
+      - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
       - "episodes/current/episode-state.json"
       - "episodes/current/research.md"
@@ -60,8 +64,8 @@ jobs:
           node-version: "22"
       - name: Install video dependencies
         run: npm install --no-audit --no-fund
-      - name: Run state, orchestration, and producer tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs
+      - name: Run state, orchestration, producer, and visual guard tests
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test
@@ -109,6 +113,8 @@ jobs:
             if [ "$rc" -eq 2 ]; then break; fi
             if [ "$rc" -ne 0 ]; then exit "$rc"; fi
           done
+      - name: Enforce publish-grade visual readiness
+        run: node tools/publish-grade-visual-guard.mjs
       - name: Upload render, package, and QA artifacts
         if: always()
         uses: actions/upload-artifact@v4

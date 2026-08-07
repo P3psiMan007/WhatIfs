@@ -20,7 +20,22 @@ export function isPublishGradeVisualInput(input, {assetExists} = {}) {
 export function visualGuardDecision({state, input, manifest, assetExists}) {
   if (state?.state !== 'RENDERED') return {kind:'NOOP', reason:'not_rendered'};
   const publishGrade = isPublishGradeVisualInput(input, {assetExists});
-  if (publishGrade) return {kind:'READY', reason:'publish_grade_visuals_verified'};
+  if (publishGrade) {
+    return {
+      kind:'READY',
+      reason:'publish_grade_visuals_verified',
+      patch:{
+        production:{qa_inputs_ready:true},
+        qa:{user_action_required:null},
+      },
+      manifestPatch:{
+        visualGrade:'publish-grade',
+        qaInputsReady:true,
+        technicalPreview:false,
+        publishBlocker:null,
+      },
+    };
+  }
   return {
     kind:'BLOCK',
     reason:'publish_grade_visual_assets_missing',
@@ -55,12 +70,16 @@ function main() {
   const input = readJson(inputPath);
   const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
   const decision = visualGuardDecision({state,input,manifest});
-  if (decision.kind !== 'BLOCK') {
-    console.log(`VISUAL_GUARD_${decision.kind} ${decision.reason}`);
+  if (decision.kind === 'NOOP') {
+    console.log(`VISUAL_GUARD_NOOP ${decision.reason}`);
     return;
   }
   runState(['patch', String(state.state_revision), state.episode_id, 'publish-grade-visual-guard', JSON.stringify(decision.patch)]);
   if (manifest) writeJson(manifestPath, {...manifest, ...decision.manifestPatch});
+  if (decision.kind === 'READY') {
+    console.log(`VISUAL_GUARD_READY ${decision.reason}`);
+    return;
+  }
   console.error(`VISUAL_GUARD_BLOCKED ${decision.reason}`);
 }
 

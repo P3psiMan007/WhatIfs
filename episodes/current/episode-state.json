@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "SELECTED",
-  "state_revision": 2,
-  "updated_at": "2026-08-07T20:33:26.925Z",
-  "updated_by": "episode-factory",
+  "state": "SCRIPTED",
+  "state_revision": 4,
+  "updated_at": "2026-08-07T21:04:38.282Z",
+  "updated_by": "episode-producer",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -19,9 +19,24 @@
     "target_length_min": null,
     "critic_lessons_applied": [],
     "packages": {
-      "default": null,
-      "b": null,
-      "c": null
+      "default": {
+        "id": "A",
+        "title": "What If Humans Never Needed Sleep?",
+        "thumbnailText": "8 HOURS BACK",
+        "thumbnailConcept": "A glowing clock with one-third of the day opening into empty space."
+      },
+      "b": {
+        "id": "B",
+        "title": "What If You Never Had to Sleep Again?",
+        "thumbnailText": "NO MORE SLEEP",
+        "thumbnailConcept": "An awake figure centered between day and night with no bed visible."
+      },
+      "c": {
+        "id": "C",
+        "title": "A World Without Sleep Would Change Everything",
+        "thumbnailText": "24 HOURS AWAKE",
+        "thumbnailConcept": "A bright 24-hour city wrapped by a full-day clock."
+      }
     },
     "research_questions": [],
     "fact_risks": [],
@@ -30,8 +45,8 @@
     "topic_source": "seed"
   },
   "production": {
-    "script_words": null,
-    "estimated_duration_min": null,
+    "script_words": 1006,
+    "estimated_duration_min": 6.49,
     "pronunciation_dictionary": [],
     "voice_candidates": [],
     "selected_voice": null,
@@ -71,6 +86,22 @@
       "actor": "episode-factory",
       "from": "SELECTED",
       "to": "SELECTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 3,
+      "at": "2026-08-07T21:04:38.251Z",
+      "actor": "episode-producer",
+      "from": "SELECTED",
+      "to": "SCRIPTED",
+      "reason": "validated production input"
+    },
+    {
+      "revision": 4,
+      "at": "2026-08-07T21:04:38.282Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
       "reason": "patch"
     }
   ]

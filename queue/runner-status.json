@@ -1,9 +1,10 @@
 {
-  "revision": 2,
-  "updatedAt": "2026-08-07T20:33:26.966Z",
+  "revision": 3,
+  "updatedAt": "2026-08-07T21:06:29.914Z",
   "kind": "BLOCKED",
-  "reason": "missing_production_provider",
+  "reason": "producer_exception",
   "episodeId": "20260807-episode",
-  "state": "SELECTED",
-  "stateRevision": 2
+  "state": "SCRIPTED",
+  "stateRevision": 4,
+  "exitCode": 2
 }

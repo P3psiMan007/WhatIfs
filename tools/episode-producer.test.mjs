@@ -1,6 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateProductionInput, planProducerStage, parseSrt, buildProductionInputFromArtifacts } from './episode-producer.mjs';
+import {
+  validateProductionInput,
+  planProducerStage,
+  parseSrt,
+  buildProductionInputFromArtifacts,
+  buildExactSceneTimeline,
+  buildVisualBeats,
+  formatSrt,
+  extractBeatCallout,
+} from './episode-producer.mjs';
 
 const validInput = {
   episodeId: 'ep1',
@@ -9,8 +18,8 @@ const validInput = {
   description: 'A factual hypothetical explainer.',
   packages: [{ id: 'A', title: 'What If Humans Never Needed Sleep?', thumbnailText: '8 HOURS BACK' }],
   scenes: [
-    { id: 'hook', headline: 'NO MORE SLEEP', narration: 'Imagine never needing to sleep again.' },
-    { id: 'payoff', headline: 'MORE WAKING LIFE', narration: 'You gain waking time, not extra years.' }
+    { id: 'hook', headline: 'NO MORE SLEEP', narration: 'Imagine never needing to sleep again.', visual: 'clock' },
+    { id: 'payoff', headline: 'MORE WAKING LIFE', narration: 'You gain waking time, not extra years.', visual: 'hourglass' }
   ],
   sources: [{ url: 'https://example.com', claims: ['example claim'] }]
 };
@@ -62,4 +71,59 @@ test('builds production input from durable research and retention script artifac
   assert.equal(built.scenes[0].visual, 'clock');
   assert.equal(built.sources.length, 2);
   assert.equal(built.packages.length, 3);
+});
+
+test('scene boundaries use measured per-scene narration durations rather than word-count estimates', () => {
+  const parts = [
+    {scene: validInput.scenes[0], duration: 4.25, cues:[{start:0.05,end:4.1,text:'Imagine never needing to sleep again.'}]},
+    {scene: validInput.scenes[1], duration: 3.5, cues:[{start:0.04,end:3.4,text:'You gain waking time, not extra years.'}]},
+  ];
+  const timeline = buildExactSceneTimeline(parts);
+  assert.equal(timeline.scenes[0].start, 0);
+  assert.equal(timeline.scenes[0].duration, 4.25);
+  assert.equal(timeline.scenes[1].start, 4.25);
+  assert.equal(timeline.scenes[1].duration, 3.5);
+  assert.equal(timeline.captions[1].start, 4.29);
+  assert.equal(timeline.durationSeconds, 7.75);
+});
+
+test('visual beats keep publish-grade motion cadence with no long static holds', () => {
+  const scenes = [{id:'s1', headline:'HOOK', visual:'clock', start:0, duration:25, narration:'x'}];
+  const captions = [
+    {start:0,end:2.2,text:'Tonight, you go to bed for the last time.'},
+    {start:2.2,end:4.4,text:'Not because something is wrong.'},
+    {start:4.4,end:10.2,text:'Tomorrow, every human wakes up and discovers that sleep is unnecessary.'},
+    {start:10.2,end:11.3,text:'No fatigue.'},
+    {start:11.3,end:12.6,text:'No brain fog.'},
+    {start:12.6,end:14.2,text:'No hidden health cost.'},
+    {start:14.2,end:18.8,text:'Your body repairs itself while you remain awake.'},
+    {start:18.8,end:22.0,text:'You gain roughly eight extra hours every day.'},
+    {start:22.0,end:25,text:'Those hours might stop belonging to you.'},
+  ];
+  const beats = buildVisualBeats(scenes, captions, {minSeconds:3, maxSeconds:6});
+  assert.ok(beats.length >= 5);
+  assert.ok(beats.every((beat) => beat.duration <= 6.01), JSON.stringify(beats));
+  assert.equal(beats[0].sceneHeadline, 'HOOK');
+  assert.ok(beats.some((beat) => /8|HOURS/.test(beat.callout || '')));
+});
+
+test('long subtitle cues are split into multiple visual beats even when caption text is unchanged', () => {
+  const scenes = [{id:'s1', headline:'BIOLOGY', visual:'brain', start:0, duration:14, narration:'x'}];
+  const captions = [{start:0,end:14,text:'A long factual sentence remains on screen while the visual treatment changes.'}];
+  const beats = buildVisualBeats(scenes, captions, {minSeconds:3,maxSeconds:5});
+  assert.ok(beats.length >= 3);
+  assert.ok(Math.max(...beats.map((b)=>b.duration)) <= 5.01);
+});
+
+test('combined SRT formatter preserves globally shifted cue times', () => {
+  const srt = formatSrt([
+    {start:0.05,end:1.5,text:'First'},
+    {start:4.29,end:7.65,text:'Second'},
+  ]);
+  assert.match(srt, /00:00:04,290 --> 00:00:07,650/);
+});
+
+test('beat callouts surface meaningful numbers and short paradox phrases', () => {
+  assert.equal(extractBeatCallout('You have just recovered about 2,920 hours every year.'), '2,920 HOURS');
+  assert.equal(extractBeatCallout('No brain fog.'), 'NO BRAIN FOG');
 });

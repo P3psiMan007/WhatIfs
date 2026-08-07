@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "RENDERED",
-  "state_revision": 8,
-  "updated_at": "2026-08-07T21:33:50.846Z",
-  "updated_by": "episode-producer",
+  "state": "VOICE_READY",
+  "state_revision": 9,
+  "updated_at": "2026-08-07T21:54:32.000Z",
+  "updated_by": "critic-qa-self-heal",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -52,15 +52,22 @@
       "en-US-BrianNeural"
     ],
     "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31218928554/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31218928554/artifact/episode-render/episode.mp4",
-    "qa_inputs_ready": true
+    "voice_asset": null,
+    "render_asset": null,
+    "qa_inputs_ready": false
   },
   "qa": {
-    "status": null,
+    "status": "REWORK_REQUIRED",
     "scores": {},
-    "top_issues": [],
-    "required_fixes": [],
+    "top_issues": [
+      "V1 visual scene boundaries drift from the spoken narration.",
+      "V1 visual beats hold substantially unchanged compositions for too long for the target retention pacing."
+    ],
+    "required_fixes": [
+      "Re-render using measured per-scene narration timing.",
+      "Use approximately 3-6 second visual beats instead of long static holds.",
+      "Generate and inspect the chosen thumbnail plus first-30-second and full-video contact sheets before QA pass."
+    ],
     "user_action_required": null
   },
   "analytics": {
@@ -137,6 +144,14 @@
       "from": "VOICE_READY",
       "to": "RENDERED",
       "reason": "1080p render completed and ffprobe verified"
+    },
+    {
+      "revision": 9,
+      "at": "2026-08-07T21:54:32.000Z",
+      "actor": "critic-qa-self-heal",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "V1 render invalidated after direct quality review found narration-sync drift and overly long static visual holds; rebuild with V2 timing/pacing and QA assets"
     }
   ]
 }

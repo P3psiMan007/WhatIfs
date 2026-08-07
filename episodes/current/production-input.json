@@ -11,7 +11,7 @@
     "foreground": "#eae7e1",
     "accent": "#ffb340"
   },
-  "experimentAssignment": "baseline-dark-amber-v1",
+  "experimentAssignment": "baseline-dark-amber-v2",
   "packages": [
     {
       "id": "A",

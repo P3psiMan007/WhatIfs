@@ -12,13 +12,13 @@ So if part of a brain can sleep while the rest stays awake, what exactly does �
 
 To understand why this is so strange, imagine a stadium at night.
 
-When you are fully awake, billions of neurons are constantly firing, strengthening connections, reacting to the world, and changing with experience. Traditional thinking made sleep sound like the stadium closing: lights off, gates locked, everyone goes home.
+When you are fully awake, billions of neurons are busy strengthening connections, reacting to the world, and changing with experience. Traditional thinking made sleep sound like the stadium closing: lights off, gates locked, everyone goes home.
 
 But real sleep is messier. Different brain regions can build up different amounts of sleep pressure depending on how hard they have been working. And when you are severely sleep deprived, small groups of neurons can briefly slip into slow, sleep-like activity even while your behavior still looks awake.
 
 That idea is called local sleep.
 
-Scientists had already seen versions of it before the 2026 experiment. In sleep-deprived animals, and in evidence from humans, local slow waves can appear during wakefulness. The dangerous part is that you may not feel the exact moment a circuit checks out. The rest of your brain can keep the performance going, while one region becomes less reliable.
+Scientists had already seen versions of it before the 2026 experiment. In sleep-deprived animals, and in evidence from humans, local slow waves can appear during wakefulness. The strange part is that you may not feel the exact moment a circuit checks out. The rest of your brain can keep the performance going while one region becomes less reliable.
 
 That may help explain why extreme tiredness can produce absurd mistakes. You can be staring at a screen, technically awake, while the networks you need for a particular task are no longer operating normally.
 
@@ -26,7 +26,7 @@ But those accidental local sleep events are short and chaotic. The new experimen
 
 What if you could trigger the useful pattern on purpose?
 
-Researchers at the University of Wisconsin-Madison used optogenetics, a technique that lets scientists control genetically modified neurons with light. In sleep-deprived mice, they stimulated small parts of the cortex with a repeating pattern: neurons active, neurons quiet, active, quiet.
+Researchers at the University of Wisconsin-Madison used pulses of light to control specially prepared neurons in sleep-deprived mice. They stimulated small parts of the cortex with a repeating pattern: neurons active, neurons quiet, active, quiet.
 
 This was not simply turning the brain down.
 
@@ -42,7 +42,7 @@ The team tested tactile memory. Sleep normally helps preserve this kind of learn
 
 A small part of the brain had apparently received at least some of the benefits of sleep without the whole animal going unconscious.
 
-That still does not mean scientists have invented a substitute for sleep. The study was in mice, the intervention involved invasive genetic and optical techniques, and sleep does far more than maintain one memory task.
+That still does not mean scientists have invented a substitute for sleep. The study was in mice, the intervention was invasive, and sleep does far more than maintain one memory task.
 
 But nature has already built a much more dramatic version of this idea.
 
@@ -50,9 +50,9 @@ A dolphin cannot simply become completely unconscious for eight hours.
 
 It has to keep swimming. It has to watch its environment. Most importantly, it has to reach the surface to breathe.
 
-So dolphins and other cetaceans can use unihemispheric sleep: one cerebral hemisphere enters slow-wave sleep while the other remains more awake. One side rests; the other helps maintain movement, breathing, and awareness. Later, the roles can switch.
+So dolphins and other whales can sleep one cerebral hemisphere at a time. One side rests; the other remains more alert and helps maintain movement, breathing, and awareness. Later, the roles can switch.
 
-The phrase “sleep with one eye open” is almost literal here. Because visual pathways cross, the eye connected to the more awake hemisphere can remain open.
+The phrase “sleep with one eye open” is almost literal here. Because the brain’s visual pathways cross, the eye connected to the more awake hemisphere can remain open.
 
 And dolphins are not the only animals that have turned sleep into a compromise.
 
@@ -68,7 +68,7 @@ Could humans do the dolphin trick?
 
 Not really, at least not in the same clean way.
 
-Humans are not known to naturally switch into full dolphin-style unihemispheric sleep. But our sleep may be less symmetrical than it feels.
+Humans are not known to naturally switch into full dolphin-style one-sided sleep. But our sleep may be less symmetrical than it feels.
 
 In a well-known “first-night effect” study, researchers found that when people slept in an unfamiliar laboratory for the first time, one hemisphere showed shallower sleep in part of a brain network and reacted more strongly to unusual sounds. It was as if part of the sleeping brain had been assigned night-watch duty.
 

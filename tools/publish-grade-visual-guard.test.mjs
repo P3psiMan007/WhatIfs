@@ -33,9 +33,16 @@ test('rendered heuristic output is downgraded to a technical preview', () => {
   assert.equal(decision.manifestPatch.technicalPreview, true);
 });
 
-test('rendered publish-grade assets remain eligible for independent QA only when files resolve', () => {
+test('rendered publish-grade assets become eligible for independent QA only when files resolve', () => {
   const ready = visualGuardDecision({state:{state:'RENDERED'}, input:publishGradeInput, manifest:{}, assetExists:allAssetsExist});
-  assert.deepEqual(ready, {kind:'READY', reason:'publish_grade_visuals_verified'});
+  assert.equal(ready.kind, 'READY');
+  assert.equal(ready.reason, 'publish_grade_visuals_verified');
+  assert.equal(ready.patch.production.qa_inputs_ready, true);
+  assert.equal(ready.patch.qa.user_action_required, null);
+  assert.equal(ready.manifestPatch.visualGrade, 'publish-grade');
+  assert.equal(ready.manifestPatch.qaInputsReady, true);
+  assert.equal(ready.manifestPatch.technicalPreview, false);
+  assert.equal(ready.manifestPatch.publishBlocker, null);
   const blocked = visualGuardDecision({state:{state:'RENDERED'}, input:publishGradeInput, manifest:{}, assetExists:()=>false});
   assert.equal(blocked.kind, 'BLOCK');
 });

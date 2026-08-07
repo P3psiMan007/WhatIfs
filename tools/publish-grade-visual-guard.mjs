@@ -1,20 +1,25 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const writeJson = (p, value) => fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
 
-export function isPublishGradeVisualInput(input) {
+export function isPublishGradeVisualInput(input, {assetExists} = {}) {
+  const exists = assetExists || ((asset) => fs.existsSync(path.join('public', asset)));
   return input?.visualGrade === 'publish-grade'
     && Array.isArray(input?.scenes)
     && input.scenes.length >= 2
-    && input.scenes.every((scene) => typeof scene?.visualAsset === 'string' && scene.visualAsset.trim().length > 0);
+    && input.scenes.every((scene) => {
+      const asset = typeof scene?.visualAsset === 'string' ? scene.visualAsset.trim() : '';
+      return asset.length > 0 && exists(asset);
+    });
 }
 
-export function visualGuardDecision({state, input, manifest}) {
+export function visualGuardDecision({state, input, manifest, assetExists}) {
   if (state?.state !== 'RENDERED') return {kind:'NOOP', reason:'not_rendered'};
-  const publishGrade = isPublishGradeVisualInput(input);
+  const publishGrade = isPublishGradeVisualInput(input, {assetExists});
   if (publishGrade) return {kind:'READY', reason:'publish_grade_visuals_verified'};
   return {
     kind:'BLOCK',

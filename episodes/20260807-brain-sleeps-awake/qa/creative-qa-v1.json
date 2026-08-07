@@ -1,0 +1,44 @@
+{
+  "episodeId": "20260807-brain-sleeps-awake",
+  "reviewedAt": "2026-08-07T14:32:00Z",
+  "reviewer": "independent-critic",
+  "status": "FAIL",
+  "publishReady": false,
+  "scores": {
+    "factualIntegrity": 9.4,
+    "titlePromiseAlignment": 9.0,
+    "first30Seconds": 7.4,
+    "scriptRetention": 8.6,
+    "narration": 8.5,
+    "visualStorytelling": 6.8,
+    "visualVariety": 6.5,
+    "captionDesign": 6.2,
+    "soundDesign": 4.0,
+    "technicalIntegrity": 10.0,
+    "endingPayoff": 8.5
+  },
+  "evidence": {
+    "render": "out/20260807-brain-sleeps-awake-final.mp4",
+    "contactSheet": "out/20260807-brain-sleeps-awake-contact-sheet.jpg",
+    "technicalQa": "episodes/20260807-brain-sleeps-awake/qa/20260807-brain-sleeps-awake-qa-report.json",
+    "durationSeconds": 531.48,
+    "resolution": "1920x1080",
+    "fps": 30,
+    "technicalQaStatus": "PASS"
+  },
+  "topIssues": [
+    "The 42-scene pass is too sparse for an 8:51 curiosity explainer; average visual hold is too long for the target retention style.",
+    "Full narration phrases are burned in almost continuously, competing with the illustration and making the frame feel subtitle-led instead of image-led.",
+    "Many scenes reuse the same brain, mouse, human and dark-void composition, so visual novelty decays across the episode.",
+    "The current final render is essentially narration-only; there is no publish-grade music/ambience/SFX layer supporting transitions, reveals and attention resets.",
+    "The first 30 seconds explains the paradox correctly but needs faster visual escalation and more distinct shot changes before the deeper explanation begins."
+  ],
+  "requiredFixes": [
+    "Replace continuous full-phrase burned captions with sparse 2-5 word editorial callouts; rely on YouTube captions for full accessibility text.",
+    "Increase effective visual beat density to at least 80 meaningful changes using scene splits and/or internal sub-beats; front-load changes in the first 30 seconds.",
+    "Add stronger environment and composition variety: bedroom, lab, office, ocean, night flight, first-night bedroom and abstract brain landscape rather than repeated dark-void icon arrangements.",
+    "Add a copyright-safe sound layer: restrained ambient bed plus intentional transition/reveal SFX, always subordinate to narration.",
+    "Re-render and independently review the actual MP4/contact sheet; technical PASS alone cannot advance to publishing."
+  ],
+  "decision": "FAIL_CLOSED_TO_V2"
+}

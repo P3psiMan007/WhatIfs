@@ -1,21 +1,37 @@
 {
   "pipeline_version": "2.1",
-  "episode_id": null,
-  "state": "IDLE",
-  "state_revision": 0,
-  "updated_at": null,
-  "updated_by": null,
-  "lock": {"active": false, "locked_at": null, "locked_by": null, "reason": null},
+  "episode_id": "20260807-brain-sleeps-awake",
+  "state": "SELECTED",
+  "state_revision": 1,
+  "updated_at": "2026-08-07T11:35:00Z",
+  "updated_by": "growth-intelligence",
+  "lock": {"active": true, "locked_at": "2026-08-07T11:35:00Z", "locked_by": "growth-intelligence", "reason": "first real production episode"},
   "growth": {
-    "opportunity_score": null,
-    "why_this_wins": null,
-    "core_paradox": null,
-    "hook_promise": null,
-    "target_length_min": null,
-    "critic_lessons_applied": [],
-    "packages": {"default": null, "b": null, "c": null},
-    "research_questions": [],
-    "fact_risks": []
+    "opportunity_score": 94,
+    "why_this_wins": "Fresh 2026 neuroscience plus a universally understandable awake-versus-asleep paradox, with strong visual escalation through dolphins and flying birds and qualitative proof of audience curiosity.",
+    "core_paradox": "Sleep and wakefulness can coexist locally in the same brain instead of behaving as one global binary switch.",
+    "hook_promise": "Show how part of a brain can behave as if asleep while the organism remains awake, then escalate from a new 2026 experiment to dolphins, birds, and humans.",
+    "target_length_min": 8.2,
+    "critic_lessons_applied": ["pay off the title immediately", "one major visual idea per beat", "preserve scientific caveats without slowing the hook"],
+    "packages": {
+      "default": {"title": "Your Brain Can Sleep While You're Still Awake", "thumbnail_text": "HALF ASLEEP?", "thumbnail_visual": "split human face and brain: one eye/side awake, one side sleeping"},
+      "b": {"title": "What If Half Your Brain Could Sleep at a Time?", "thumbnail_text": "ONE HALF?", "thumbnail_visual": "awake human beneath a split brain with one half resting"},
+      "c": {"title": "Sleep Isn't an On/Off Switch", "thumbnail_text": "BOTH?", "thumbnail_visual": "brain behind a toggle switch stuck between sun and moon"}
+    },
+    "research_questions": [
+      "What exactly did the 2026 awake-mouse experiment induce and what cognitive benefit was measured?",
+      "What is local sleep and what evidence exists during wakefulness?",
+      "How does unihemispheric sleep work in dolphins and why is it adaptive?",
+      "What has been directly measured about sleep in flying frigatebirds?",
+      "What does the human first-night effect actually show, and what should not be overstated?",
+      "Could local sleep-like stimulation plausibly replace normal human sleep?"
+    ],
+    "fact_risks": [
+      "mouse result must not be presented as demonstrated in humans",
+      "humans must not be described as natural dolphin-style unihemispheric sleepers",
+      "local stimulation must not be presented as a replacement for normal sleep",
+      "first-night hemispheric asymmetry requires caveat"
+    ]
   },
   "production": {
     "script_words": null,
@@ -29,5 +45,7 @@
   },
   "qa": {"status": null, "scores": {}, "top_issues": [], "required_fixes": [], "user_action_required": null},
   "analytics": {"last_checked_at": null, "sample_note": null, "metrics": {}, "keep": [], "change": [], "avoid": [], "test_next": [], "ab_test_recommendation": null},
-  "history": []
+  "history": [
+    {"revision": 1, "at": "2026-08-07T11:35:00Z", "actor": "growth-intelligence", "from": "IDLE", "to": "SELECTED", "reason": "data-backed first real episode selected"}
+  ]
 }

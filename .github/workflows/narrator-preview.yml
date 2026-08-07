@@ -1,0 +1,69 @@
+name: Narrator Preview
+
+on:
+  pull_request:
+    branches:
+      - factory-infrastructure
+
+permissions:
+  contents: read
+
+jobs:
+  generate-previews:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate four narrator previews
+        run: |
+          mkdir -p out/narrator-preview
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import crypto from 'node:crypto';
+          import { synthesizeToFile } from './tools/voice/kokoroClient.mjs';
+          import { buildVoiceConfig } from './tools/voice/voiceCatalog.mjs';
+
+          const text = `Most of your life is missing. Not because those moments never happened, but because your brain decided they weren't worth keeping. Now imagine that switch broke—and suddenly, you could never forget anything again. Would that make you a genius… or destroy your ability to think?`;
+          const voices = ['af_heart', 'af_bella', 'am_fenrir', 'bm_george'];
+          const outDir = 'out/narrator-preview';
+          const manifest = { text, speed: 0.95, candidates: [] };
+
+          for (const voiceId of voices) {
+            const file = path.join(outDir, `${voiceId}.wav`);
+            const config = buildVoiceConfig(voiceId, 0.95);
+            const result = await synthesizeToFile(text, config, file);
+            if (!result.ok) throw new Error(`${voiceId} generation failed: ${result.error}`);
+            const bytes = fs.readFileSync(file);
+            manifest.candidates.push({
+              voiceId,
+              language: config.language,
+              speed: config.speed,
+              file,
+              sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+              bytes: bytes.length,
+            });
+          }
+
+          if (new Set(manifest.candidates.map((c) => c.sha256)).size !== voices.length) {
+            throw new Error('Narrator previews are not all distinct audio outputs');
+          }
+
+          fs.writeFileSync(path.join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+          NODE
+
+      - name: Upload narrator preview WAVs
+        uses: actions/upload-artifact@v4
+        with:
+          name: what-if-explains-narrator-previews
+          path: out/narrator-preview/
+          retention-days: 7
+          if-no-files-found: error

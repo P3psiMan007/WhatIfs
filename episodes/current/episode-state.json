@@ -1,9 +1,9 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "SCRIPTED",
-  "state_revision": 4,
-  "updated_at": "2026-08-07T21:04:38.282Z",
+  "state": "RENDERED",
+  "state_revision": 8,
+  "updated_at": "2026-08-07T21:33:50.846Z",
   "updated_by": "episode-producer",
   "lock": {
     "active": false,
@@ -48,11 +48,13 @@
     "script_words": 1006,
     "estimated_duration_min": 6.49,
     "pronunciation_dictionary": [],
-    "voice_candidates": [],
-    "selected_voice": null,
-    "voice_asset": null,
-    "render_asset": null,
-    "qa_inputs_ready": false
+    "voice_candidates": [
+      "en-US-BrianNeural"
+    ],
+    "selected_voice": "en-US-BrianNeural",
+    "voice_asset": "github-actions://run/31218928554/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31218928554/artifact/episode-render/episode.mp4",
+    "qa_inputs_ready": true
   },
   "qa": {
     "status": null,
@@ -103,6 +105,38 @@
       "from": "SCRIPTED",
       "to": "SCRIPTED",
       "reason": "patch"
+    },
+    {
+      "revision": 5,
+      "at": "2026-08-07T21:12:44.545Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 6,
+      "at": "2026-08-07T21:12:44.577Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "VOICE_READY",
+      "reason": "narration generated and probed"
+    },
+    {
+      "revision": 7,
+      "at": "2026-08-07T21:33:50.815Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 8,
+      "at": "2026-08-07T21:33:50.846Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p render completed and ffprobe verified"
     }
   ]
 }

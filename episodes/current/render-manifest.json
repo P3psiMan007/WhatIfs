@@ -57,5 +57,9 @@
     "maxBeatDuration": 6,
     "averageBeatDuration": 3.914
   },
-  "sourceCount": 7
+  "sourceCount": 7,
+  "visualGrade": "heuristic-placeholder",
+  "qaInputsReady": false,
+  "technicalPreview": true,
+  "publishBlocker": "publish_grade_visual_assets_missing"
 }

@@ -36,6 +36,10 @@ jobs:
         if: steps.gate.outputs.run == 'true'
         run: npm ci
 
+      - name: Verify isolated WAV writer regression test
+        if: steps.gate.outputs.run == 'true'
+        run: node --test tools/voice/wavWriter.test.mjs
+
       - name: Generate full narration with locked narrator
         if: steps.gate.outputs.run == 'true'
         env:

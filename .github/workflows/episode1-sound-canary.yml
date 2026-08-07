@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: episode1-sound-canary
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   sound-design:

@@ -1,21 +1,33 @@
 {
   "pipeline_version": "2.1",
-  "episode_id": null,
-  "state": "IDLE",
-  "state_revision": 0,
-  "updated_at": null,
-  "updated_by": null,
-  "lock": {"active": false, "locked_at": null, "locked_by": null, "reason": null},
+  "episode_id": "20260807-episode",
+  "state": "SELECTED",
+  "state_revision": 2,
+  "updated_at": "2026-08-07T20:33:26.925Z",
+  "updated_by": "episode-factory",
+  "lock": {
+    "active": false,
+    "locked_at": null,
+    "locked_by": null,
+    "reason": null
+  },
   "growth": {
     "opportunity_score": null,
     "why_this_wins": null,
     "core_paradox": null,
-    "hook_promise": null,
+    "hook_promise": "Explore what would happen to health, work, society, memory, and time if sleep suddenly became biologically unnecessary.",
     "target_length_min": null,
     "critic_lessons_applied": [],
-    "packages": {"default": null, "b": null, "c": null},
+    "packages": {
+      "default": null,
+      "b": null,
+      "c": null
+    },
     "research_questions": [],
-    "fact_risks": []
+    "fact_risks": [],
+    "topic_id": "sleep-no-need",
+    "topic": "What if humans never needed sleep?",
+    "topic_source": "seed"
   },
   "production": {
     "script_words": null,
@@ -27,7 +39,39 @@
     "render_asset": null,
     "qa_inputs_ready": false
   },
-  "qa": {"status": null, "scores": {}, "top_issues": [], "required_fixes": [], "user_action_required": null},
-  "analytics": {"last_checked_at": null, "sample_note": null, "metrics": {}, "keep": [], "change": [], "avoid": [], "test_next": [], "ab_test_recommendation": null},
-  "history": []
+  "qa": {
+    "status": null,
+    "scores": {},
+    "top_issues": [],
+    "required_fixes": [],
+    "user_action_required": null
+  },
+  "analytics": {
+    "last_checked_at": null,
+    "sample_note": null,
+    "metrics": {},
+    "keep": [],
+    "change": [],
+    "avoid": [],
+    "test_next": [],
+    "ab_test_recommendation": null
+  },
+  "history": [
+    {
+      "revision": 1,
+      "at": "2026-08-07T20:33:26.891Z",
+      "actor": "episode-factory",
+      "from": "IDLE",
+      "to": "SELECTED",
+      "reason": "selected topic sleep-no-need"
+    },
+    {
+      "revision": 2,
+      "at": "2026-08-07T20:33:26.925Z",
+      "actor": "episode-factory",
+      "from": "SELECTED",
+      "to": "SELECTED",
+      "reason": "patch"
+    }
+  ]
 }

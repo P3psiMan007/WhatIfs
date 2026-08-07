@@ -1,9 +1,9 @@
 {
-  "revision": 0,
-  "updatedAt": null,
-  "kind": "IDLE",
-  "reason": null,
-  "episodeId": null,
-  "state": "IDLE",
-  "stateRevision": 0
+  "revision": 2,
+  "updatedAt": "2026-08-07T20:33:26.966Z",
+  "kind": "BLOCKED",
+  "reason": "missing_production_provider",
+  "episodeId": "20260807-episode",
+  "state": "SELECTED",
+  "stateRevision": 2
 }

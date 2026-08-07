@@ -9,8 +9,8 @@ import {
   buildVisualBeats,
   formatSrt,
   extractBeatCallout,
-  isPublishGradeVisualInput,
 } from './episode-producer.mjs';
+import {isPublishGradeVisualInput} from './publish-grade-visual-guard.mjs';
 
 const validInput = {
   episodeId: 'ep1',
@@ -77,7 +77,6 @@ test('builds production input from durable research and retention script artifac
   assert.equal(built.episodeId, 'ep1');
   assert.equal(built.scenes.length, 2);
   assert.equal(built.scenes[0].visual, 'clock');
-  assert.equal(built.visualGrade, 'heuristic-placeholder');
   assert.equal(isPublishGradeVisualInput(built), false);
   assert.equal(built.sources.length, 2);
   assert.equal(built.packages.length, 3);

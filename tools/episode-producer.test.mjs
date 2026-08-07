@@ -115,6 +115,16 @@ test('long subtitle cues are split into multiple visual beats even when caption 
   assert.ok(Math.max(...beats.map((b)=>b.duration)) <= 5.01);
 });
 
+test('short pending cue cannot combine with the next cue into an overlong visual beat', () => {
+  const scenes = [{id:'s1', headline:'HOOK', visual:'clock', start:0, duration:7.582, narration:'x'}];
+  const captions = [
+    {start:0,end:1.5,text:'Short opening phrase.'},
+    {start:1.7,end:7.582,text:'The next subtitle remains under six seconds but the combined window is too long.'},
+  ];
+  const beats = buildVisualBeats(scenes, captions, {minSeconds:3,maxSeconds:6});
+  assert.ok(Math.max(...beats.map((b)=>b.duration)) <= 6.01, JSON.stringify(beats));
+});
+
 test('combined SRT formatter preserves globally shifted cue times', () => {
   const srt = formatSrt([
     {start:0.05,end:1.5,text:'First'},

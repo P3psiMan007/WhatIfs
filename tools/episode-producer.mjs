@@ -225,7 +225,7 @@ export function buildVisualBeats(scenes, captions, options = {}) {
       }
       if (pendingStart == null) { pendingStart = cueStart; pendingEnd = cueEnd; pendingTexts = [cue.text]; continue; }
       const projected = cueEnd - pendingStart;
-      if (projected > maxSeconds && pendingEnd - pendingStart >= minSeconds * 0.7) { flush(); pendingStart = cueStart; pendingEnd = cueEnd; pendingTexts = [cue.text]; }
+      if (projected > maxSeconds) { flush(); pendingStart = cueStart; pendingEnd = cueEnd; pendingTexts = [cue.text]; }
       else { pendingEnd = cueEnd; pendingTexts.push(cue.text); if (pendingEnd - pendingStart >= minSeconds) flush(); }
     }
     flush();

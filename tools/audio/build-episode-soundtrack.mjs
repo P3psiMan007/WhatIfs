@@ -70,7 +70,7 @@ export const buildEpisodeSoundtrack = async ({episodeId = process.env.EPISODE_ID
 
   await generateLavfiAudio({
     input: `aevalsrc=0.22*sin(2*PI*110*t)+0.10*sin(2*PI*164.81*t)+0.06*sin(2*PI*220*t):s=48000:d=${duration}`,
-    filter: `lowpass=f=1500,tremolo=f=0.075:d=0.22,volume=0.65,afade=t=in:st=0:d=2,afade=t=out:st=${fadeOutStart}:d=3`,
+    filter: `lowpass=f=1500,tremolo=f=0.12:d=0.22,volume=0.65,afade=t=in:st=0:d=2,afade=t=out:st=${fadeOutStart}:d=3`,
     duration,
     outputPath: musicPath,
   });

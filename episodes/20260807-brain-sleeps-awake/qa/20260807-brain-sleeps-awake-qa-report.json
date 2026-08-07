@@ -1,0 +1,73 @@
+{
+  "episodeId": "20260807-brain-sleeps-awake",
+  "stateRevision": 6,
+  "generatedAt": "2026-08-07T13:19:00.589Z",
+  "overallStatus": "PASS",
+  "checks": [
+    {
+      "name": "mp4-exists",
+      "status": "PASS",
+      "detail": "out/20260807-brain-sleeps-awake-final.mp4 exists"
+    },
+    {
+      "name": "mp4-non-zero-size",
+      "status": "PASS",
+      "detail": "out/20260807-brain-sleeps-awake-final.mp4 is 98925335 bytes"
+    },
+    {
+      "name": "expected-resolution",
+      "status": "PASS",
+      "detail": "expected 1920x1080, got 1920x1080"
+    },
+    {
+      "name": "expected-fps",
+      "status": "PASS",
+      "detail": "expected 30fps, got 30.000fps"
+    },
+    {
+      "name": "duration-valid",
+      "status": "PASS",
+      "detail": "duration 531.48s (expected 1-Infinitys)"
+    },
+    {
+      "name": "video-stream-exists",
+      "status": "PASS",
+      "detail": "video stream present"
+    },
+    {
+      "name": "audio-stream-exists",
+      "status": "PASS",
+      "detail": "audio stream present"
+    },
+    {
+      "name": "audio-silence",
+      "status": "PASS",
+      "detail": "no silence >= threshold detected"
+    },
+    {
+      "name": "audio-clipping",
+      "status": "PASS",
+      "detail": "peak volume -3.6dB (fail threshold -0.3dB)"
+    },
+    {
+      "name": "black-frames",
+      "status": "PASS",
+      "detail": "no black segments >= 0.5s detected"
+    },
+    {
+      "name": "frozen-frames",
+      "status": "PASS",
+      "detail": "32.9s frozen of 531.5s (6%)"
+    },
+    {
+      "name": "required-assets-present",
+      "status": "PASS",
+      "detail": "no assets were required"
+    },
+    {
+      "name": "render-log-errors",
+      "status": "PASS",
+      "detail": "no error/fatal/exception lines in render log"
+    }
+  ]
+}

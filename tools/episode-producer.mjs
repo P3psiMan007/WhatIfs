@@ -85,6 +85,7 @@ export function buildProductionInputFromArtifacts(state, scriptText, researchTex
     experimentAssignment: 'baseline-dark-amber-v1',
     packages,
     pronunciationDictionary: [],
+    visualGrade: 'heuristic-placeholder',
     sources: urls.map((url) => ({url, claims:['See durable research ledger for verified claim and safe-use context.']})),
     scenes,
   };
@@ -103,6 +104,13 @@ export function validateProductionInput(input, state) {
   if (!Array.isArray(input.sources) || input.sources.length < 1) return 'at least 1 factual source is required';
   if (!input.narrator?.voice) return 'narrator.voice is required';
   return null;
+}
+
+export function isPublishGradeVisualInput(input) {
+  return input?.visualGrade === 'publish-grade'
+    && Array.isArray(input?.scenes)
+    && input.scenes.length >= 2
+    && input.scenes.every((scene) => typeof scene?.visualAsset === 'string' && scene.visualAsset.trim().length > 0);
 }
 
 export function planProducerStage({state, inputReady, audioReady, renderReady}) {
@@ -294,6 +302,7 @@ function main() {
     const technical = probeVideo(outputPath);
     const stream = technical.streams?.[0] || {};
     if (Number(stream.width) !== 1920 || Number(stream.height) !== 1080) return block('render_dimension_mismatch');
+    const publishGradeVisuals = isPublishGradeVisualInput(input);
     const manifest = {
       episodeId: current.episode_id,
       generatedAt: new Date().toISOString(),
@@ -305,6 +314,8 @@ function main() {
       packages: input.packages,
       chosenPackage: input.packages[0]?.id || 'A',
       experimentAssignment: input.experimentAssignment || 'control',
+      visualGrade: input.visualGrade || 'unknown',
+      qaInputsReady: publishGradeVisuals,
       technical,
       sourceCount: input.sources.length,
     };
@@ -312,10 +323,16 @@ function main() {
     const patched = runState(['patch', String(current.state_revision), current.episode_id, 'episode-producer', JSON.stringify({
       production: {
         render_asset: `github-actions://run/${process.env.GITHUB_RUN_ID || 'local'}/artifact/episode-render/episode.mp4`,
-        qa_inputs_ready: true,
+        qa_inputs_ready: publishGradeVisuals,
+      },
+      qa: {
+        user_action_required: publishGradeVisuals ? null : 'publish_grade_visual_assets_missing',
       },
     })]);
-    runState(['transition', String(patched.state_revision), current.episode_id, 'RENDERED', 'episode-producer', '1080p render completed and ffprobe verified']);
+    const reason = publishGradeVisuals
+      ? '1080p publish-grade render completed and ffprobe verified'
+      : '1080p technical preview completed; publish-grade visual assets still required';
+    runState(['transition', String(patched.state_revision), current.episode_id, 'RENDERED', 'episode-producer', reason]);
   }
 }
 

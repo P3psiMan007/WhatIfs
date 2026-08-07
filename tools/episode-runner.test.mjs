@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planNextAction, sameStatus, resolveProducerCommand, extractProducerFailureReason } from './episode-runner.mjs';
+import { planNextAction, sameStatus, resolveProducerCommand, extractProducerFailureReason, extractProducerFailureDetails } from './episode-runner.mjs';
 
 const controls = { pauseAllProduction: false, pausePublishing: false };
 const autonomy = { publishReadyStates: ['QA_PASSED','AUTO_PUBLISH_READY'] };
@@ -54,4 +54,12 @@ test('explicit repository producer command overrides the built-in producer', () 
 
 test('extracts precise fail-closed producer blocker', () => {
   assert.equal(extractProducerFailureReason('PRODUCER_BLOCKED narration_generation_failed: timeout'), 'narration_generation_failed');
+});
+
+test('preserves useful producer exception details for durable diagnosis', () => {
+  const stderr = 'some warning\nPRODUCER_BLOCKED producer_exception: Error: ffprobe duration failed\n    at probeDuration (file:///repo/tools/episode-producer.mjs:12:3)\n';
+  const details = extractProducerFailureDetails(stderr);
+  assert.match(details, /ffprobe duration failed/);
+  assert.match(details, /probeDuration/);
+  assert.ok(details.length <= 1600);
 });

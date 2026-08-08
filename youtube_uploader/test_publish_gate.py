@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from unittest import TestCase
 
 from youtube_uploader.publish_gate import evaluate_publication_gate
@@ -38,9 +39,12 @@ class PublishGateTests(TestCase):
             "publication": {"failClosedOnUncertainty": True},
         }
         daily = {
+            "pauseAllProduction": False,
             "pausePublishing": False,
             "dailyPublishQuota": 1,
             "publishedToday": 0,
+            "minimumSpacingMinutes": 360,
+            "lastPublicationAt": None,
         }
         return qa, state, autonomy, daily
 
@@ -75,6 +79,11 @@ class PublishGateTests(TestCase):
         daily["pausePublishing"] = True
         self.assertFalse(evaluate_publication_gate(qa, state, autonomy, daily).allowed)
 
+    def test_blocks_paused_production(self):
+        qa, state, autonomy, daily = self.base()
+        daily["pauseAllProduction"] = True
+        self.assertFalse(evaluate_publication_gate(qa, state, autonomy, daily).allowed)
+
     def test_blocks_when_auto_publish_disabled(self):
         qa, state, autonomy, daily = self.base()
         autonomy["autoPublishEnabled"] = False
@@ -101,3 +110,17 @@ class PublishGateTests(TestCase):
         qa, state, autonomy, daily = self.base()
         qa["reviewedRenderAsset"] = ""
         self.assertFalse(evaluate_publication_gate(qa, state, autonomy, daily).allowed)
+
+    def test_blocks_before_minimum_spacing_elapsed(self):
+        qa, state, autonomy, daily = self.base()
+        now = datetime(2026, 8, 8, 20, 0, tzinfo=timezone.utc)
+        daily["lastPublicationAt"] = (now - timedelta(minutes=120)).isoformat().replace("+00:00", "Z")
+        result = evaluate_publication_gate(qa, state, autonomy, daily, now=now)
+        self.assertFalse(result.allowed)
+        self.assertIn("minimum spacing", " ".join(result.reasons))
+
+    def test_allows_after_minimum_spacing_elapsed(self):
+        qa, state, autonomy, daily = self.base()
+        now = datetime(2026, 8, 8, 20, 0, tzinfo=timezone.utc)
+        daily["lastPublicationAt"] = (now - timedelta(minutes=361)).isoformat().replace("+00:00", "Z")
+        self.assertTrue(evaluate_publication_gate(qa, state, autonomy, daily, now=now).allowed)

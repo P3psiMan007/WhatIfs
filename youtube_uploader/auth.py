@@ -1,13 +1,14 @@
 """Shared authentication helpers for the YouTube publisher lifecycle.
 
-Factory V2 needs to upload a video privately, read it back for verification,
-and then change that same video's privacy status to public. YouTube's
-``videos.update`` method requires the broader ``youtube`` management scope;
-``youtube.upload`` alone is not enough for that final privacy transition.
+Factory V2 has two permission stages:
 
-Refresh-token grants are fixed at consent time. An older token that was
-minted without ``youtube`` must be re-authorized once before Factory V2 can
-publish automatically.
+1. Private upload + read-back verification. The existing token can do this
+   with ``youtube.upload`` + ``youtube.readonly``.
+2. Promote that same verified video to public. YouTube's ``videos.update``
+   requires the broader ``youtube`` management scope.
+
+An older refresh token can therefore still produce a safe verified PRIVATE
+upload. It only needs one re-authorization before automatic public promotion.
 """
 from __future__ import annotations
 
@@ -22,13 +23,19 @@ YOUTUBE_READONLY_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 YOUTUBE_MANAGE_SCOPE = "https://www.googleapis.com/auth/youtube"
 YT_ANALYTICS_READONLY_SCOPE = "https://www.googleapis.com/auth/yt-analytics.readonly"
 
-# Keep upload/readonly explicit for auditability even though the broader
-# management grant overlaps them. Analytics remains a separate read-only API.
-AUTHORIZE_SCOPES = [
+# These are the scopes the existing uploader token was originally authorized
+# for and are enough to create + verify a PRIVATE upload.
+PRIVATE_VERIFY_SCOPES = [
     YOUTUBE_UPLOAD_SCOPE,
     YOUTUBE_READONLY_SCOPE,
-    YOUTUBE_MANAGE_SCOPE,
     YT_ANALYTICS_READONLY_SCOPE,
+]
+
+# New authorizations request the additional management permission needed by
+# videos.update to promote the already-verified private video to public.
+AUTHORIZE_SCOPES = [
+    *PRIVATE_VERIFY_SCOPES,
+    YOUTUBE_MANAGE_SCOPE,
 ]
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -56,13 +63,13 @@ def credentials_from_refresh_token(
 
 
 def ensure_publication_credentials(credentials: Credentials, *, request=None) -> Credentials:
-    """Refresh credentials and fail before upload if public promotion is impossible."""
+    """Prove the refresh token can mint credentials for public promotion."""
     request = request or Request()
     try:
         credentials.refresh(request)
     except RefreshError as exc:
         raise RuntimeError(
-            "YouTube OAuth token cannot satisfy Factory V2 publication scopes; "
+            "YouTube OAuth token cannot promote the verified private video to public; "
             "re-authorize once with scripts/authorize.py and replace the GitHub refresh token."
         ) from exc
 
@@ -72,8 +79,8 @@ def ensure_publication_credentials(credentials: Credentials, *, request=None) ->
             "YouTube management scope is missing; re-authorize with scripts/authorize.py."
         )
 
-    # Google may omit granted_scopes when the granted and requested scopes are
-    # identical. If it is present, treat it as authoritative and fail closed.
+    # Google may omit granted_scopes when granted=requested. If present, treat
+    # it as authoritative and fail closed when the management permission is absent.
     granted = credentials.granted_scopes
     if granted is not None and YOUTUBE_MANAGE_SCOPE not in set(granted):
         raise RuntimeError(

@@ -1,7 +1,7 @@
 {
-  "autonomy_version": "1.0",
-  "revision": 0,
-  "autoPublishEnabled": false,
+  "autonomy_version": "1.1",
+  "revision": 1,
+  "autoPublishEnabled": true,
   "requiredCoreScore": 9,
   "publishReadyStates": [
     "QA_PASSED",
@@ -17,20 +17,14 @@
     "policy",
     "copyright"
   ],
-  "canary": {
-    "requiredPrivateUploads": 2,
-    "successfulPrivateUploads": 0,
-    "remainingPrivateUploads": 2,
-    "decrementOnlyAfterVerifiedSuccess": true,
+  "verification": {
+    "privateFirst": true,
     "requireProcessingVerification": true,
     "requireMetadataVerification": true,
     "requireThumbnailVerification": true,
-    "rerunMachineChecksAfterUpload": true
+    "promoteSameVideoIdOnly": true
   },
   "publication": {
-    "firstTwoRealVideosPrivacy": "private",
-    "allowPublicOrScheduledOnlyWhenCanaryComplete": true,
-    "requireAutoPublishEnabledForPublicOrScheduled": true,
     "failClosedOnUncertainty": true
   },
   "recording": {

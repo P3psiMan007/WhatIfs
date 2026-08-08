@@ -1,10 +1,10 @@
 {
-  "revision": 13,
-  "updatedAt": "2026-08-08T07:41:08.865Z",
+  "revision": 14,
+  "updatedAt": "2026-08-08T07:57:42.928Z",
   "kind": "PRODUCER_RAN",
   "reason": null,
   "details": null,
   "episodeId": "20260807-episode",
   "state": "RENDERED",
-  "stateRevision": 26
+  "stateRevision": 31
 }

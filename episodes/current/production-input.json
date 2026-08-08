@@ -152,5 +152,6 @@
     }
   ],
   "visualGrade": "publish-grade",
-  "thumbnailRevision": "framing-v2"
+  "thumbnailRevision": "framing-v2",
+  "hookContrastRevision": "hours-v2"
 }

@@ -153,6 +153,19 @@ export function countWords(scenes) {
   return scenes.reduce((n,scene)=>n + String(scene.narration || '').trim().split(/\s+/).filter(Boolean).length, 0);
 }
 
+export function buildNarrationBatchPayload(input) {
+  return {
+    voice: input?.narrator?.voice || 'am_michael',
+    rate: input?.narrator?.rate || '+0%',
+    scenes: (input?.scenes || []).map((scene) => ({id:scene.id, text:String(scene.narration || '').trim()})),
+  };
+}
+
+export function buildNarrationBatchCommand(input, batchPath, outputDir) {
+  buildNarrationBatchPayload(input);
+  return {program:'edge-tts', args:['--batch-json',batchPath,'--output-dir',outputDir]};
+}
+
 export function buildExactSceneTimeline(parts) {
   let cursor = 0;
   const captions = [];
@@ -271,13 +284,17 @@ function concatAudio(partPaths, outputPath, workDir) {
 function generateNarration(input, publicDir) {
   const workDir = path.join(publicDir,'voice-parts');
   fs.rmSync(workDir,{recursive:true,force:true}); fs.mkdirSync(workDir,{recursive:true});
-  const parts = []; const partPaths = []; const rate = input.narrator.rate || '+0%';
+  const batchPath = path.join(workDir,'narration-batch.json');
+  writeJson(batchPath,buildNarrationBatchPayload(input));
+  const command = buildNarrationBatchCommand(input,batchPath,workDir);
+  const tts = run(command.program,command.args);
+  if (tts.status !== 0) throw new Error('batch narration generation failed');
+
+  const parts = []; const partPaths = [];
   for (let index=0; index<input.scenes.length; index++) {
     const scene = input.scenes[index]; const stem = `scene-${String(index + 1).padStart(2,'0')}`;
-    const textPath = path.join(workDir,`${stem}.txt`); const partAudio = path.join(workDir,`${stem}.mp3`); const srtPath = path.join(workDir,`${stem}.srt`);
-    fs.writeFileSync(textPath,scene.narration.trim() + '\n');
-    const tts = run('edge-tts',['--file',textPath,'--voice',input.narrator.voice,'--rate',rate,'--write-media',partAudio,'--write-subtitles',srtPath]);
-    if (tts.status !== 0 || !fs.existsSync(partAudio) || fs.statSync(partAudio).size < 1024) throw new Error(`narration generation failed for ${scene.id}`);
+    const partAudio = path.join(workDir,`${stem}.mp3`); const srtPath = path.join(workDir,`${stem}.srt`);
+    if (!fs.existsSync(partAudio) || fs.statSync(partAudio).size < 1024) throw new Error(`narration generation failed for ${scene.id}`);
     const duration = probeDuration(partAudio); const cues = fs.existsSync(srtPath) ? parseSrt(fs.readFileSync(srtPath,'utf8')) : [];
     if (!cues.length) throw new Error(`narration subtitles missing for ${scene.id}`);
     parts.push({scene,duration,cues}); partPaths.push(partAudio);

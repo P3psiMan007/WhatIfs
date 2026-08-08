@@ -11,6 +11,7 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/kokoro-single-load.test.mjs"
       - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/episode1-visual-rebuild.mjs"
@@ -46,6 +47,7 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/kokoro-single-load.test.mjs"
       - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/episode1-visual-rebuild.mjs"
@@ -105,7 +107,7 @@ jobs:
           grep -q "kokoro==0.9.4" .github/workflows/episode-factory.yml
           grep -q "Apache-2.0" tools/narration-provider-repair.mjs
       - name: Run state, orchestration, producer, rebuild, packaging, beat alignment, registry, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/kokoro-single-load.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test

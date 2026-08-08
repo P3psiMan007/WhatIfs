@@ -4,6 +4,7 @@ import {spawnSync} from 'node:child_process';
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const writeJson = (p, value) => fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
+const BLOCKER = 'publish_grade_visual_assets_missing';
 
 export function isPublishGradeVisualInput(input) {
   return input?.visualGrade === 'publish-grade'
@@ -16,18 +17,24 @@ export function visualGuardDecision({state, input, manifest}) {
   if (state?.state !== 'RENDERED') return {kind:'NOOP', reason:'not_rendered'};
   const publishGrade = isPublishGradeVisualInput(input);
   if (publishGrade) return {kind:'READY', reason:'publish_grade_visuals_verified'};
+  const alreadyRecorded = state?.production?.qa_inputs_ready === false
+    && state?.qa?.user_action_required === BLOCKER
+    && manifest?.qaInputsReady === false
+    && manifest?.technicalPreview === true
+    && manifest?.publishBlocker === BLOCKER;
+  if (alreadyRecorded) return {kind:'BLOCK_RECORDED', reason:BLOCKER};
   return {
     kind:'BLOCK',
-    reason:'publish_grade_visual_assets_missing',
+    reason:BLOCKER,
     patch:{
       production:{qa_inputs_ready:false},
-      qa:{user_action_required:'publish_grade_visual_assets_missing'},
+      qa:{user_action_required:BLOCKER},
     },
     manifestPatch:{
       visualGrade: input?.visualGrade || 'heuristic-placeholder',
       qaInputsReady:false,
       technicalPreview:true,
-      publishBlocker:'publish_grade_visual_assets_missing',
+      publishBlocker:BLOCKER,
     },
   };
 }

@@ -1,6 +1,6 @@
 {
   "control_version": "1.0",
-  "revision": 5,
+  "revision": 6,
   "date": "2026-08-09",
   "pauseAllProduction": false,
   "pausePublishing": false,
@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "Immediate external Factory V2 kick for the canonical Kokoro final rebuild; do not wait for cron. Preserve strict 9/10 QA and private-first verified publishing."
+  "notes": "Forced external retrigger at user request for canonical Kokoro final rebuild. Do not wait for cron. Preserve strict 9/10 QA and verified private-first publishing."
 }

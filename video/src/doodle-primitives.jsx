@@ -21,22 +21,28 @@ export const RoughPath = ({d,stroke='#eae7e1',strokeWidth=6,fill='none',opacity=
 
 export const DoodlePerson = ({x=0,y=0,scale=1,stroke='#eae7e1',accent='#ffb340',pose='neutral',opacity=1,fill='none'}) => {
   const arms = {
-    neutral:[[0,72,-38,118],[0,72,38,118]],
-    open:[[0,72,-60,62],[0,72,60,62]],
-    celebrate:[[0,72,-48,20],[0,72,48,20]],
-    reach:[[0,72,-25,112],[0,72,70,42]],
-    tired:[[0,72,-48,104],[0,72,48,104]],
-    point:[[0,72,-25,108],[0,72,78,74]],
-  }[pose] || [[0,72,-38,118],[0,72,38,118]];
-  const bodyD = pose==='tired' ? 'M0 48 Q10 92 4 150' : 'M0 48 Q-3 98 0 150';
-  return <g transform={`translate(${x} ${y}) scale(${scale})`} opacity={opacity}>
-    <circle cx="0" cy="0" r="34" fill={fill} stroke={stroke} strokeWidth="7"/>
-    <circle cx="-11" cy="-5" r="3.5" fill={stroke}/><circle cx="11" cy="-5" r="3.5" fill={stroke}/>
-    {pose==='tired'?<path d="M-12 15 Q0 7 12 15" {...roughStroke(stroke,4)}/>:<path d="M-12 13 Q0 22 12 13" {...roughStroke(accent,4)}/>}
-    <RoughPath d={bodyD} stroke={stroke} strokeWidth={7}/>
-    {arms.map(([a,b,c,d],i)=><RoughLine key={i} x1={a} y1={b} x2={c} y2={d} stroke={i===1&&pose==='point'?accent:stroke} strokeWidth={7}/>)}
-    <RoughLine x1="0" y1="150" x2="-38" y2="220" stroke={stroke} strokeWidth={7}/>
-    <RoughLine x1="0" y1="150" x2="40" y2="220" stroke={stroke} strokeWidth={7}/>
+    neutral:[[0,78,-48,126],[0,78,48,126]],
+    open:[[0,78,-72,66],[0,78,72,66]],
+    celebrate:[[0,78,-58,18],[0,78,58,18]],
+    reach:[[0,78,-34,122],[0,78,82,38]],
+    tired:[[4,80,-52,116],[4,80,58,118]],
+    point:[[0,78,-34,120],[0,78,88,76]],
+  }[pose] || [[0,78,-48,126],[0,78,48,126]];
+  const bodyFill=fill==='none'?'rgba(234,231,225,.14)':fill;
+  const torsoD=pose==='tired'
+    ? 'M-30 48 Q5 38 38 58 L30 148 Q5 164 -25 146 Z'
+    : 'M-35 50 Q0 36 35 50 L28 146 Q0 164 -28 146 Z';
+  const hipX=pose==='tired'?4:0;
+  return <g data-character-quality="filled-v4" transform={`translate(${x} ${y}) scale(${scale})`} opacity={opacity}>
+    <circle cx="0" cy="0" r="36" fill={stroke} stroke="#0b0d12" strokeWidth="10"/>
+    <circle cx="-12" cy="-5" r="4" fill="#0b0d12"/><circle cx="12" cy="-5" r="4" fill="#0b0d12"/>
+    {pose==='tired'?<path d="M-13 15 Q0 6 13 15" {...roughStroke('#0b0d12',4)}/>:<path d="M-13 12 Q0 22 13 12" {...roughStroke('#0b0d12',4)}/>}
+    <path d={torsoD} fill={bodyFill} stroke={stroke} strokeWidth="10" strokeLinejoin="round"/>
+    <path d="M-24 76 Q0 92 25 76" fill="none" stroke={accent} strokeWidth="8" strokeLinecap="round" opacity=".82"/>
+    {arms.map(([a,b,c,d],i)=><RoughLine key={i} x1={a} y1={b} x2={c} y2={d} stroke={i===1&&pose==='point'?accent:stroke} strokeWidth={10}/>)}
+    <RoughLine x1={hipX-8} y1="145" x2="-43" y2="224" stroke={stroke} strokeWidth={10}/>
+    <RoughLine x1={hipX+8} y1="145" x2="44" y2="224" stroke={stroke} strokeWidth={10}/>
+    <circle cx={arms[0][2]} cy={arms[0][3]} r="7" fill={stroke}/><circle cx={arms[1][2]} cy={arms[1][3]} r="7" fill={arms[1][2]>70&&pose==='point'?accent:stroke}/>
   </g>;
 };
 

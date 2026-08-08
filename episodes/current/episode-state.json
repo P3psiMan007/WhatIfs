@@ -2,9 +2,9 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 16,
-  "updated_at": "2026-08-08T02:21:12.016Z",
-  "updated_by": "publish-grade-visual-guard",
+  "state_revision": 21,
+  "updated_at": "2026-08-08T07:13:29.537Z",
+  "updated_by": "episode-producer",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -52,9 +52,9 @@
       "en-US-BrianNeural"
     ],
     "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31225120874/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31225120874/artifact/episode-render/episode.mp4",
-    "qa_inputs_ready": false
+    "voice_asset": "github-actions://run/31245114773/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31245114773/artifact/episode-render/episode.mp4",
+    "qa_inputs_ready": true
   },
   "qa": {
     "status": "REWORK_REQUIRED",
@@ -208,6 +208,46 @@
       "from": "RENDERED",
       "to": "RENDERED",
       "reason": "patch"
+    },
+    {
+      "revision": 17,
+      "at": "2026-08-08T07:00:00.478Z",
+      "actor": "episode1-bespoke-visual-rebuild",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 18,
+      "at": "2026-08-08T07:00:00.509Z",
+      "actor": "episode1-bespoke-visual-rebuild",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "replace heuristic technical preview with bespoke scene-by-scene visual rebuild"
+    },
+    {
+      "revision": 19,
+      "at": "2026-08-08T07:00:22.068Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 20,
+      "at": "2026-08-08T07:13:29.505Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 21,
+      "at": "2026-08-08T07:13:29.537Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
     }
   ]
 }

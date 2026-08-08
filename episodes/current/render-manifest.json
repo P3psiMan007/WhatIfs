@@ -1,7 +1,7 @@
 {
   "episodeId": "20260807-episode",
-  "generatedAt": "2026-08-07T23:07:29.206Z",
-  "githubRunId": "31225120874",
+  "generatedAt": "2026-08-08T07:13:29.481Z",
+  "githubRunId": "31245114773",
   "artifactName": "episode-render",
   "filename": "episode.mp4",
   "thumbnailFilename": "thumbnail.png",
@@ -46,8 +46,8 @@
     ],
     "format": {
       "duration": "384.362667",
-      "size": "87601600",
-      "bit_rate": "1823311"
+      "size": "67924153",
+      "bit_rate": "1413751"
     }
   },
   "visualQa": {
@@ -57,9 +57,5 @@
     "maxBeatDuration": 6,
     "averageBeatDuration": 3.914
   },
-  "sourceCount": 7,
-  "visualGrade": "heuristic-placeholder",
-  "qaInputsReady": false,
-  "technicalPreview": true,
-  "publishBlocker": "publish_grade_visual_assets_missing"
+  "sourceCount": 7
 }

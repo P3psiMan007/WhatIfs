@@ -30,6 +30,15 @@ test('rendered heuristic output is downgraded to a technical preview', () => {
   assert.equal(decision.manifestPatch.technicalPreview, true);
 });
 
+test('already-recorded visual blocker is idempotent and does not bump state revision', () => {
+  const decision = visualGuardDecision({
+    state:{state:'RENDERED', production:{qa_inputs_ready:false}, qa:{user_action_required:'publish_grade_visual_assets_missing'}},
+    input:{scenes:[{visual:'clock'},{visual:'brain'}]},
+    manifest:{visualGrade:'heuristic-placeholder', qaInputsReady:false, technicalPreview:true, publishBlocker:'publish_grade_visual_assets_missing'},
+  });
+  assert.deepEqual(decision, {kind:'BLOCK_RECORDED', reason:'publish_grade_visual_assets_missing'});
+});
+
 test('rendered publish-grade assets remain eligible for independent QA', () => {
   const decision = visualGuardDecision({state:{state:'RENDERED'}, input:publishGradeInput, manifest:{}});
   assert.deepEqual(decision, {kind:'READY', reason:'publish_grade_visuals_verified'});

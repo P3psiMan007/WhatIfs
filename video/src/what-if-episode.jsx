@@ -27,6 +27,10 @@ function withLocalBeatOrdinals(beats){
   });
 }
 
+const HookHoursContrastOverlay=({palette})=><svg viewBox="0 0 1920 1080" width="1920" height="1080" style={{position:'absolute',inset:0,pointerEvents:'none'}}>
+  <text x="960" y="575" textAnchor="middle" style={{fill:palette.foreground,stroke:palette.background,strokeWidth:5,paintOrder:'stroke',fontFamily:font,fontSize:44,fontWeight:800,letterSpacing:1.54}}>8 HOURS</text>
+</svg>;
+
 export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
@@ -37,6 +41,7 @@ export const WhatIfEpisode=(props)=>{
       const durationInFrames=Math.max(1,Math.ceil(Number(beat.duration||1)*fps));
       return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.5*fps))}>
         <SleepScene beat={beat} beatOrdinal={beat.localBeatOrdinal} palette={palette}/>
+        {beat.sceneId==='scene-01'&&beat.localBeatOrdinal===3?<HookHoursContrastOverlay palette={palette}/>:null}
       </Sequence>;
     })}
     {props.audio?<Audio src={staticFile(props.audio)}/>:null}

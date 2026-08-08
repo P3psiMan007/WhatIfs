@@ -8,10 +8,12 @@ on:
       - "episodes/current/qa-review.json"
       - "episodes/current/episode-state.json"
       - "episodes/current/render-manifest.json"
+      - "episodes/current/thumbnail-source.json"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "youtube_uploader/**"
       - "scripts/verify_render_artifact.py"
+      - "scripts/prepare_thumbnail_override.py"
       - ".github/workflows/upload-youtube.yml"
 
 permissions:
@@ -75,6 +77,7 @@ jobs:
         run: |
           python -m unittest discover -s youtube_uploader -p 'test_*.py' -v
           python -m unittest scripts.test_verify_render_artifact -v
+          python -m unittest scripts.test_prepare_thumbnail_override -v
           node --test tools/publishing-control-plane.test.mjs
 
       - name: Resolve exact approved render source
@@ -119,6 +122,23 @@ jobs:
             --downloaded-dir incoming-render \
             --output /tmp/render-identity.json
 
+      - name: Prepare approved package thumbnail
+        if: steps.gate.outputs.eligible == 'true'
+        id: package_thumbnail
+        shell: bash
+        run: |
+          if [ -f episodes/current/thumbnail-source.json ]; then
+            python scripts/prepare_thumbnail_override.py \
+              --source episodes/current/thumbnail-source.json \
+              --render-manifest episodes/current/render-manifest.json \
+              --output /tmp/package-thumbnail.jpg
+            test -s /tmp/package-thumbnail.jpg
+            echo "path=/tmp/package-thumbnail.jpg" >> "$GITHUB_OUTPUT"
+          else
+            test -s incoming-render/dist/thumbnail.png
+            echo "path=incoming-render/dist/thumbnail.png" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish private, verify, then promote same video public
         if: steps.gate.outputs.eligible == 'true'
         env:
@@ -128,7 +148,7 @@ jobs:
         run: |
           python -m youtube_uploader.publisher \
             --video incoming-render/dist/episode.mp4 \
-            --thumbnail incoming-render/dist/thumbnail.png \
+            --thumbnail "${{ steps.package_thumbnail.outputs.path }}" \
             --identity /tmp/render-identity.json \
             --qa-review episodes/current/qa-review.json \
             --episode-state episodes/current/episode-state.json \

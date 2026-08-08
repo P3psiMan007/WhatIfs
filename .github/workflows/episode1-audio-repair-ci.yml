@@ -1,0 +1,22 @@
+name: Episode 1 Audio Repair CI
+
+on:
+  pull_request:
+    paths:
+      - "scripts/normalize_render_audio.py"
+      - "scripts/test_normalize_render_audio.py"
+      - ".github/workflows/episode1-audio-repair.yml"
+      - ".github/workflows/episode1-audio-repair-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run regression tests
+        run: python -m unittest scripts.test_normalize_render_audio -v
+      - name: Compile repair script
+        run: python -m py_compile scripts/normalize_render_audio.py

@@ -1,0 +1,135 @@
+name: Episode 1 Audio Repair
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/episode1-audio-repair.yml"
+      - "scripts/normalize_render_audio.py"
+      - "scripts/test_normalize_render_audio.py"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: episode1-audio-repair
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run audio repair regression tests
+        run: python -m unittest scripts.test_normalize_render_audio -v
+
+      - name: Download exact verified Kokoro source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf incoming repaired
+          mkdir -p incoming repaired
+          gh run download 31280891352 -n episode-render -D incoming
+          test -s incoming/dist/episode.mp4
+          test -s incoming/dist/thumbnail.png
+          test -s incoming/episodes/current/render-manifest.json
+          test -s incoming/episodes/current/production-input.json
+
+      - name: Repair audio only and preserve video stream
+        run: |
+          cp -a incoming/. repaired/
+          python scripts/normalize_render_audio.py incoming/dist/episode.mp4 repaired/dist/episode.mp4
+          src_video_hash=$(ffmpeg -v error -i incoming/dist/episode.mp4 -map 0:v:0 -c copy -f hash -hash sha256 - | sed 's/^SHA256=//')
+          out_video_hash=$(ffmpeg -v error -i repaired/dist/episode.mp4 -map 0:v:0 -c copy -f hash -hash sha256 - | sed 's/^SHA256=//')
+          test "$src_video_hash" = "$out_video_hash"
+          echo "video_stream_sha256=$out_video_hash"
+
+      - name: Patch exact repaired manifest and canonical state
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          repaired = Path('repaired')
+          manifest_path = repaired/'episodes/current/render-manifest.json'
+          manifest = json.loads(manifest_path.read_text())
+          probe = json.loads(subprocess.check_output([
+              'ffprobe','-v','error','-show_streams','-show_format','-of','json',
+              str(repaired/'dist/episode.mp4')
+          ], text=True))
+          manifest['generatedAt'] = datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
+          manifest['githubRunId'] = os.environ['GITHUB_RUN_ID']
+          manifest['artifactName'] = 'episode-render-normalized'
+          manifest['technical'] = probe
+          manifest['audioQa'] = {
+              'repair': 'audio-only-gain-plus-limiter',
+              'sourceRunId': '31280891352',
+              'sourceArtifactId': '9028666919',
+              'targetIntegratedLufs': [-17.5, -15.0],
+              'maximumTruePeakDbfs': -1.0,
+              'videoStreamPreserved': True,
+          }
+          manifest_path.write_text(json.dumps(manifest, indent=2)+'\n')
+
+          canonical_manifest = Path('episodes/current/render-manifest.json')
+          canonical_manifest.write_text(json.dumps(manifest, indent=2)+'\n')
+          canonical_input = Path('episodes/current/production-input.json')
+          canonical_input.write_text((repaired/'episodes/current/production-input.json').read_text())
+
+          state_path = Path('episodes/current/episode-state.json')
+          state = json.loads(state_path.read_text())
+          state['state'] = 'RENDERED'
+          state['state_revision'] = int(state.get('state_revision', 0)) + 1
+          state['updated_at'] = datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
+          state['updated_by'] = 'episode1-audio-repair'
+          prod = state.setdefault('production', {})
+          prod['voice_candidates'] = ['am_michael']
+          prod['selected_voice'] = 'am_michael'
+          prod['voice_asset'] = f"github-actions://run/{os.environ['GITHUB_RUN_ID']}/artifact/episode-render-normalized/narration.mp3"
+          prod['render_asset'] = f"github-actions://run/{os.environ['GITHUB_RUN_ID']}/artifact/episode-render-normalized/episode.mp4"
+          prod['qa_inputs_ready'] = True
+          state['qa'] = {
+              'status': 'AWAITING_INDEPENDENT_QA',
+              'scores': {},
+              'top_issues': [],
+              'required_fixes': [],
+              'user_action_required': None,
+          }
+          state_path.write_text(json.dumps(state, indent=2)+'\n')
+          PY
+          cp episodes/current/render-manifest.json repaired/episodes/current/render-manifest.json
+
+      - name: Upload repaired exact artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-render-normalized
+          path: |
+            repaired/dist/episode.mp4
+            repaired/dist/thumbnail.png
+            repaired/dist/contact-sheet.jpg
+            repaired/dist/first-30s-contact-sheet.jpg
+            repaired/public/narration.mp3
+            repaired/public/narration.srt
+            repaired/episodes/current/render-manifest.json
+            repaired/episodes/current/production-input.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Persist repaired canonical render identity
+        run: |
+          git config user.name "whatifs-audio-repair"
+          git config user.email "whatifs-audio-repair@users.noreply.github.com"
+          git add episodes/current/episode-state.json episodes/current/render-manifest.json episodes/current/production-input.json
+          git commit -m "chore: persist normalized Episode 1 Kokoro render"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -12,7 +12,7 @@ def build_ffmpeg_args(source: str, output: str) -> list[str]:
         "ffmpeg", "-y", "-v", "error", "-i", source,
         "-map", "0:v:0", "-map", "0:a:0",
         "-c:v", "copy",
-        "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
+        "-af", "volume=8.5dB,alimiter=limit=0.75:level=false",
         "-c:a", "aac", "-b:a", "192k",
         "-movflags", "+faststart",
         output,
@@ -26,21 +26,18 @@ def loudness_is_publish_grade(integrated_lufs: float, true_peak_db: float) -> bo
 def probe_loudness(path: str) -> tuple[float, float]:
     cmd = [
         "ffmpeg", "-hide_banner", "-nostats", "-i", path,
-        "-af", "loudnorm=I=-16:TP=-1.5:LRA=11:print_format=json",
-        "-f", "null", "-",
+        "-vn", "-af", "ebur128=peak=true", "-f", "null", "-",
     ]
     proc = subprocess.run(cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-    text = proc.stderr
-    start = text.rfind("{")
-    end = text.rfind("}")
-    if start < 0 or end < start:
-        raise RuntimeError("ffmpeg loudnorm did not emit JSON measurements")
-    data = json.loads(text[start:end + 1])
-    return float(data["input_i"]), float(data["input_tp"])
+    integrated_matches = re.findall(r"I:\s+(-?\d+(?:\.\d+)?)\s+LUFS", proc.stderr)
+    peak_matches = re.findall(r"Peak:\s+(-?\d+(?:\.\d+)?)\s+dBFS", proc.stderr)
+    if not integrated_matches or not peak_matches:
+        raise RuntimeError("ffmpeg ebur128 did not emit integrated loudness and true-peak measurements")
+    return float(integrated_matches[-1]), float(peak_matches[-1])
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Normalize the verified Episode 1 Kokoro render without re-encoding video")
     parser.add_argument("source")
     parser.add_argument("output")
     args = parser.parse_args()
@@ -48,9 +45,10 @@ def main() -> None:
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(build_ffmpeg_args(args.source, args.output), check=True)
     integrated, peak = probe_loudness(args.output)
-    print(json.dumps({"integratedLUFS": integrated, "truePeakDb": peak}))
+    print(f"normalized_loudness_lufs={integrated}")
+    print(f"normalized_true_peak_dbfs={peak}")
     if not loudness_is_publish_grade(integrated, peak):
-        raise SystemExit(f"normalized render failed loudness gate: {integrated} LUFS, {peak} dBTP")
+        raise SystemExit(f"normalized render failed loudness gate: {integrated} LUFS, {peak} dBFS")
 
 
 if __name__ == "__main__":

@@ -6,6 +6,12 @@ const baseInput={
   episodeId:'20260807-episode',
   scenes:Array.from({length:9},(_,i)=>({id:`scene-${String(i+1).padStart(2,'0')}`,headline:`S${i+1}`,narration:'x'})),
 };
+const blockedState={
+  episode_id:'20260807-episode',
+  state:'RENDERED',
+  production:{qa_inputs_ready:false,render_asset:'github-actions://old'},
+  qa:{status:'REWORK_REQUIRED',user_action_required:'publish_grade_visual_assets_missing'},
+};
 
 test('activation binds all nine real scene assets before labeling the current input publish-grade',()=>{
   const next=buildPublishGradeVisualInput(baseInput);
@@ -19,9 +25,10 @@ test('activation rejects wrong episode or incomplete scene coverage',()=>{
   assert.throws(()=>buildPublishGradeVisualInput({...baseInput,scenes:baseInput.scenes.slice(0,8)}),/coverage mismatch/i);
 });
 
-test('only the known blocked technical preview is invalidated for a fresh bespoke render',()=>{
-  assert.equal(shouldInvalidateTechnicalPreview({episode_id:'20260807-episode',state:'RENDERED',production:{qa_inputs_ready:false,render_asset:'github-actions://old'}}),true);
-  assert.equal(shouldInvalidateTechnicalPreview({episode_id:'20260807-episode',state:'RENDERED',production:{qa_inputs_ready:true,render_asset:'github-actions://new'}}),false);
-  assert.equal(shouldInvalidateTechnicalPreview({episode_id:'20260807-episode',state:'QA_PASSED',production:{qa_inputs_ready:true,render_asset:'x'}}),false);
-  assert.equal(shouldInvalidateTechnicalPreview({episode_id:'other',state:'RENDERED',production:{qa_inputs_ready:false,render_asset:'x'}}),false);
+test('only the exact known placeholder blocker is invalidated for a fresh bespoke render',()=>{
+  assert.equal(shouldInvalidateTechnicalPreview(blockedState),true);
+  assert.equal(shouldInvalidateTechnicalPreview({...blockedState,qa:{...blockedState.qa,user_action_required:'different_rework_reason'}}),false);
+  assert.equal(shouldInvalidateTechnicalPreview({...blockedState,production:{qa_inputs_ready:true,render_asset:'github-actions://new'}}),false);
+  assert.equal(shouldInvalidateTechnicalPreview({...blockedState,state:'QA_PASSED',production:{qa_inputs_ready:true,render_asset:'x'}}),false);
+  assert.equal(shouldInvalidateTechnicalPreview({...blockedState,episode_id:'other'}),false);
 });

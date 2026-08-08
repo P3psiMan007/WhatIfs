@@ -1,10 +1,10 @@
 {
-  "revision": 18,
-  "updatedAt": "2026-08-08T10:36:43.121Z",
-  "kind": "PRODUCER_RAN",
-  "reason": null,
-  "details": null,
+  "revision": 19,
+  "updatedAt": "2026-08-08T11:03:18Z",
+  "kind": "QA_BLOCKED",
+  "reason": "edge_tts_commercial_rights_unverified",
+  "details": "Independent QA reviewed corrected render run 31252577314. Creative/technical corrections are materially improved, but mandatory policy/copyright evidence is incomplete because Microsoft does not publicly document explicit commercial/monetized-use rights for Edge Read Aloud voices accessed via edge-tts. QA review also found payoff narration pacing above the publish-grade bar. See episodes/current/qa-review.json. Fail closed; do not publish.",
   "episodeId": "20260807-episode",
   "state": "RENDERED",
-  "stateRevision": 54
+  "stateRevision": 55
 }

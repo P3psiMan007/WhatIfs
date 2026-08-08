@@ -8,7 +8,7 @@ on:
       - ".github/workflows/youtube-scope-check.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   check:
@@ -16,6 +16,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -42,5 +44,33 @@ jobs:
           }), encoding='utf-8')
           path.chmod(0o600)
           PY
-      - name: Verify whether token has Factory V2 public-management scope
-        run: python scripts/verify_token.py --token-file /tmp/youtube_token.json
+      - name: Check public-management scope and write non-secret result
+        shell: bash
+        run: |
+          set +e
+          python scripts/verify_token.py --token-file /tmp/youtube_token.json
+          rc=$?
+          set -e
+          python - "$rc" <<'PY'
+          import json, sys
+          from datetime import datetime, timezone
+          from pathlib import Path
+          rc = int(sys.argv[1])
+          Path('queue/youtube-scope-status.json').write_text(json.dumps({
+              'checkedAt': datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
+              'promotionScope': rc == 0,
+              'status': 'management_scope_present' if rc == 0 else 'management_scope_absent_or_invalid',
+              'secretMaterialPersisted': False,
+          }, indent=2) + '\n', encoding='utf-8')
+          PY
+      - name: Persist non-secret scope result
+        run: |
+          git config user.name "whatifs-scope-check"
+          git config user.email "whatifs-scope-check@users.noreply.github.com"
+          git add queue/youtube-scope-status.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "chore: record YouTube scope check"
+          git pull --rebase --autostash origin main
+          git push

@@ -40,6 +40,19 @@ test('sleep scene plates are illustrated environments rather than sparse diagram
   }
 });
 
+test('authored sleep visuals cannot reintroduce the rejected waking-life arithmetic claim', () => {
+  const source=fs.readFileSync(path.join(process.cwd(),'video/src/sleep-scenes.jsx'),'utf8');
+  assert.doesNotMatch(source,/NEARLY\s+1\/3\s+MORE\s+WAKING\s+LIFE/i);
+  assert.match(source,/A THIRD OF EACH DAY BACK/i,'payoff should use the corrected day-share framing');
+});
+
+test('primary doodle characters use a filled silhouette layer instead of bare stick-only anatomy', () => {
+  const source=fs.readFileSync(path.join(process.cwd(),'video/src/doodle-primitives.jsx'),'utf8');
+  assert.match(source,/data-character-quality="filled-v4"/,'DoodlePerson must opt into the filled-v4 character treatment');
+  assert.match(source,/fill=\{bodyFill\}/,'DoodlePerson needs a filled torso silhouette');
+  assert.match(source,/strokeWidth="10"/,'DoodlePerson needs a stronger outer contour');
+});
+
 test('sleep visual registry fails closed for unknown or missing scene ids', () => {
   assert.equal(getSleepSceneSpec('scene-99'), null);
   assert.throws(() => assertSleepVisualCoverage(['scene-01','scene-02']), /coverage mismatch/i);

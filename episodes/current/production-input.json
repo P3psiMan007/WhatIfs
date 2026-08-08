@@ -153,5 +153,6 @@
   ],
   "visualGrade": "publish-grade",
   "thumbnailRevision": "framing-v2",
-  "hookContrastRevision": "hours-v2"
+  "hookContrastRevision": "hours-v2",
+  "lateBeatRevision": "aligned-v2"
 }

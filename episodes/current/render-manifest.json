@@ -1,7 +1,7 @@
 {
   "episodeId": "20260807-episode",
-  "generatedAt": "2026-08-08T07:57:42.856Z",
-  "githubRunId": "31246775861",
+  "generatedAt": "2026-08-08T08:24:57.528Z",
+  "githubRunId": "31247808228",
   "artifactName": "episode-render",
   "filename": "episode.mp4",
   "thumbnailFilename": "thumbnail.png",
@@ -46,8 +46,8 @@
     ],
     "format": {
       "duration": "384.362667",
-      "size": "67927294",
-      "bit_rate": "1413816"
+      "size": "67882883",
+      "bit_rate": "1412892"
     }
   },
   "visualQa": {

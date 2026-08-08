@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 31,
-  "updated_at": "2026-08-08T07:57:42.914Z",
+  "state_revision": 36,
+  "updated_at": "2026-08-08T08:24:57.583Z",
   "updated_by": "episode-producer",
   "lock": {
     "active": false,
@@ -52,8 +52,8 @@
       "en-US-BrianNeural"
     ],
     "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31246775861/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31246775861/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31247808228/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31247808228/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
@@ -324,6 +324,46 @@
     {
       "revision": 31,
       "at": "2026-08-08T07:57:42.914Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 32,
+      "at": "2026-08-08T08:11:30.735Z",
+      "actor": "episode1-late-beat-repair",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 33,
+      "at": "2026-08-08T08:11:30.768Z",
+      "actor": "episode1-late-beat-repair",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender after QA inspection found late visual beats cycling to earlier scene phases; keep later visuals aligned to the spoken payoff"
+    },
+    {
+      "revision": 34,
+      "at": "2026-08-08T08:11:45.739Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 35,
+      "at": "2026-08-08T08:24:57.554Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 36,
+      "at": "2026-08-08T08:24:57.583Z",
       "actor": "episode-producer",
       "from": "VOICE_READY",
       "to": "RENDERED",

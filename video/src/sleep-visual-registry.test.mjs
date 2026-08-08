@@ -25,6 +25,21 @@ test('sleep episode visual registry covers exactly nine canonical scenes with un
   assert.equal(assertSleepVisualCoverage(SLEEP_SCENE_IDS), true);
 });
 
+test('sleep scene plates are illustrated environments rather than sparse diagram backgrounds', () => {
+  for (const sceneId of SLEEP_SCENE_IDS) {
+    const assetPath=SLEEP_SCENE_ASSETS[sceneId];
+    const fullPath=path.join(process.cwd(),'public',assetPath);
+    const svg=fs.readFileSync(fullPath,'utf8');
+    assert.match(svg,/data-quality="illustrated-v3"/,`${sceneId} must opt into the illustrated-v3 art direction`);
+    assert.match(svg,/<g[^>]+id="environment"/,`${sceneId} needs an environment layer`);
+    assert.match(svg,/<g[^>]+id="characters"/,`${sceneId} needs a character/story layer`);
+    assert.match(svg,/<g[^>]+id="depth"/,`${sceneId} needs foreground/background depth`);
+    const solidFills=[...svg.matchAll(/fill="(#[0-9a-fA-F]{6})"/g)].map((match)=>match[1].toLowerCase());
+    assert.ok(new Set(solidFills).size>=4,`${sceneId} needs at least four solid fill colors for illustrated separation`);
+    assert.ok(Buffer.byteLength(svg,'utf8')>1700,`${sceneId} is too sparse to qualify as an illustrated scene plate`);
+  }
+});
+
 test('sleep visual registry fails closed for unknown or missing scene ids', () => {
   assert.equal(getSleepSceneSpec('scene-99'), null);
   assert.throws(() => assertSleepVisualCoverage(['scene-01','scene-02']), /coverage mismatch/i);

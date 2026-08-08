@@ -10,7 +10,8 @@ from scripts.verify_render_artifact import parse_render_asset_uri, verify_artifa
 class RenderArtifactTests(TestCase):
     def _write_fixture(self, root: Path, run_id="123", artifact_name="episode-render"):
         downloaded = root / "downloaded"
-        downloaded.mkdir()
+        (downloaded / "dist").mkdir(parents=True)
+        (downloaded / "episodes" / "current").mkdir(parents=True)
         manifest = {
             "episodeId": "ep-1",
             "githubRunId": run_id,
@@ -24,9 +25,11 @@ class RenderArtifactTests(TestCase):
         canonical = root / "render-manifest.json"
         payload = json.dumps(manifest, indent=2) + "\n"
         canonical.write_text(payload, encoding="utf-8")
-        (downloaded / "render-manifest.json").write_text(payload, encoding="utf-8")
-        (downloaded / "episode.mp4").write_bytes(b"video-bytes")
-        (downloaded / "thumbnail.png").write_bytes(b"thumb-bytes")
+        (downloaded / "episodes" / "current" / "render-manifest.json").write_text(
+            payload, encoding="utf-8"
+        )
+        (downloaded / "dist" / "episode.mp4").write_bytes(b"video-bytes")
+        (downloaded / "dist" / "thumbnail.png").write_bytes(b"thumb-bytes")
         qa = root / "qa-review.json"
         qa.write_text(
             json.dumps(
@@ -59,6 +62,8 @@ class RenderArtifactTests(TestCase):
             result = verify_artifact(qa, canonical, downloaded)
             self.assertEqual(result["runId"], "123")
             self.assertEqual(result["artifactName"], "episode-render")
+            self.assertTrue(result["videoPath"].endswith("dist/episode.mp4"))
+            self.assertTrue(result["thumbnailPath"].endswith("dist/thumbnail.png"))
             self.assertEqual(
                 result["videoSha256"], hashlib.sha256(b"video-bytes").hexdigest()
             )
@@ -71,7 +76,7 @@ class RenderArtifactTests(TestCase):
             root = Path(tmp)
             qa, canonical, downloaded, manifest = self._write_fixture(root)
             manifest["githubRunId"] = "999"
-            (downloaded / "render-manifest.json").write_text(
+            (downloaded / "episodes" / "current" / "render-manifest.json").write_text(
                 json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
             )
             with self.assertRaisesRegex(ValueError, "manifest checksum"):
@@ -90,7 +95,7 @@ class RenderArtifactTests(TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             qa, canonical, downloaded, _ = self._write_fixture(root)
-            (downloaded / "episode.mp4").unlink()
+            (downloaded / "dist" / "episode.mp4").unlink()
             with self.assertRaisesRegex(FileNotFoundError, "episode.mp4"):
                 verify_artifact(qa, canonical, downloaded)
 
@@ -98,6 +103,6 @@ class RenderArtifactTests(TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             qa, canonical, downloaded, _ = self._write_fixture(root)
-            (downloaded / "thumbnail.png").unlink()
+            (downloaded / "dist" / "thumbnail.png").unlink()
             with self.assertRaisesRegex(FileNotFoundError, "thumbnail.png"):
                 verify_artifact(qa, canonical, downloaded)

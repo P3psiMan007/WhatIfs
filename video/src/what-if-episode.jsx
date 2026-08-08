@@ -3,6 +3,7 @@ import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoCon
 import {Audio} from '@remotion/media';
 import {SleepScene,SleepThumbnailArt} from './sleep-scenes.jsx';
 import {getSleepThumbnailArtPlacement} from './thumbnail-layout.mjs';
+import {getSleepBeatPhase} from './sleep-beat-phase.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
@@ -39,8 +40,9 @@ export const WhatIfEpisode=(props)=>{
     {beats.map((beat)=>{
       const from=Math.max(0,Math.floor(Number(beat.start||0)*fps));
       const durationInFrames=Math.max(1,Math.ceil(Number(beat.duration||1)*fps));
+      const visualBeatOrdinal=getSleepBeatPhase(beat.sceneId,beat.localBeatOrdinal)+1;
       return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.5*fps))}>
-        <SleepScene beat={beat} beatOrdinal={beat.localBeatOrdinal} palette={palette}/>
+        <SleepScene beat={beat} beatOrdinal={visualBeatOrdinal} palette={palette}/>
         {beat.sceneId==='scene-01'&&beat.localBeatOrdinal===3?<HookHoursContrastOverlay palette={palette}/>:null}
       </Sequence>;
     })}

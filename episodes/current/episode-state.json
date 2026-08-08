@@ -2,9 +2,9 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 62,
-  "updated_at": "2026-08-08T23:40:33.708Z",
-  "updated_by": "publish-grade-visual-guard",
+  "state_revision": 63,
+  "updated_at": "2026-08-08T23:59:03.510112Z",
+  "updated_by": "episode1-audio-repair",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -52,19 +52,15 @@
       "am_michael"
     ],
     "selected_voice": "am_michael",
-    "voice_asset": "github-actions://run/31283336381/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31283336381/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31285143280/artifact/episode-render-normalized/narration.mp3",
+    "render_asset": "github-actions://run/31285143280/artifact/episode-render-normalized/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
-    "status": "REWORK_REQUIRED",
+    "status": "AWAITING_INDEPENDENT_QA",
     "scores": {},
-    "top_issues": [
-      "Prior narration provider lacked sufficiently explicit commercial-use evidence and payoff delivery was rushed."
-    ],
-    "required_fixes": [
-      "Regenerate narration with Apache-2.0 Kokoro-82M at the slower documentary pacing preset, regenerate captions/render, then independently review changed artifacts."
-    ],
+    "top_issues": [],
+    "required_fixes": [],
     "user_action_required": null
   },
   "analytics": {

@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 43,
-  "updated_at": "2026-08-08T09:27:37.753Z",
+  "state_revision": 49,
+  "updated_at": "2026-08-08T10:04:54.420Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -52,8 +52,8 @@
       "en-US-BrianNeural"
     ],
     "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31250080188/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31250080188/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31251384878/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31251384878/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
@@ -419,6 +419,54 @@
     {
       "revision": 43,
       "at": "2026-08-08T09:27:37.753Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 44,
+      "at": "2026-08-08T09:50:18.800Z",
+      "actor": "episode1-illustrated-v3-repair",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 45,
+      "at": "2026-08-08T09:50:18.831Z",
+      "actor": "episode1-illustrated-v3-repair",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender after direct quality review found sparse diagram-like art; upgrade all scene plates to illustrated-v3 narrative environments"
+    },
+    {
+      "revision": 46,
+      "at": "2026-08-08T09:50:40.742Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 47,
+      "at": "2026-08-08T10:04:54.052Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 48,
+      "at": "2026-08-08T10:04:54.084Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 49,
+      "at": "2026-08-08T10:04:54.420Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

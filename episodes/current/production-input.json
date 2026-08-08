@@ -36,31 +36,45 @@
   "sources": [
     {
       "url": "https://www.nhlbi.nih.gov/health/heart-healthy-living/sleep",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     },
     {
       "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/health-effects",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     },
     {
       "url": "https://www.nih.gov/news-events/news-releases/nih-funded-study-shows-sound-sleep-supports-immune-function",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     },
     {
       "url": "https://www.nhlbi.nih.gov/events/2024/sleep-and-circadian-rhythms-cardiovascular-resilience-mechanisms-implications-and",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     },
     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/irregular-sleep-patterns-may-raise-risk-heart-disease",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     },
     {
       "url": "https://www.nichd.nih.gov/health/topics/sleep/conditioninfo/inadequate-sleep",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     },
     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/sleep-exercise-may-reduce-mutation-driven-inflammation",
-      "claims": ["See durable research ledger for verified claim and safe-use context."]
+      "claims": [
+        "See durable research ledger for verified claim and safe-use context."
+      ]
     }
   ],
   "scenes": [
@@ -140,5 +154,6 @@
   "visualGrade": "publish-grade",
   "thumbnailRevision": "framing-v2",
   "hookContrastRevision": "hours-v2",
-  "lateBeatRevision": "aligned-v2"
+  "lateBeatRevision": "aligned-v2",
+  "illustratedSceneRevision": "illustrated-v3"
 }

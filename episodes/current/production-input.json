@@ -3,7 +3,10 @@
   "title": "What If Humans Never Needed Sleep?",
   "description": "A factual thought experiment from What If Explains: What if humans never needed sleep? Sources and caveats are preserved in the episode research ledger.",
   "narrator": {
-    "voice": "en-US-BrianNeural",
+    "provider": "kokoro-82m",
+    "model": "hexgrad/Kokoro-82M",
+    "license": "Apache-2.0",
+    "voice": "am_michael",
     "rate": "+4%"
   },
   "palette": {

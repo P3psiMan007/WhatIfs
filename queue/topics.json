@@ -1,5 +1,11 @@
 {
   "queue_version": "1.0",
+  "revision": 1,
+  "research_snapshot": {
+    "at": "2026-08-08T00:03:00Z",
+    "method": "current web + YouTube + Reddit/community demand, then editorial scoring",
+    "notes": "Only candidates scoring >=8.8 overall were enqueued. Saturated or weak-filler ideas were rejected."
+  },
   "topics": [
     {
       "id": "sleep-no-need",
@@ -9,6 +15,102 @@
       "enabled": true,
       "consumedAt": "2026-08-07T20:33:26.931Z",
       "episodeId": "20260807-episode"
+    },
+    {
+      "id": "super-solar-storm",
+      "topic": "What if the strongest solar storm we can realistically get hit Earth?",
+      "hookPromise": "Start with beautiful worldwide auroras, then escalate through satellites, navigation, radio, power-grid stress, and the surprising parts modern infrastructure can actually survive.",
+      "source": "growth-research-2026-08-08",
+      "enabled": true,
+      "consumedAt": null,
+      "evidenceSignals": [
+        "NASA Goddard reported on 2026-07-15 that a NASA-led Nature paper suggests the assumed ceiling on Earth's response to solar storms may be an illusion.",
+        "A June 2026 astronomy community question asked how a Carrington-scale event would look and how damaging a visible event could be.",
+        "An April 2026 Reddit discussion explicitly asked why extreme solar storms can threaten technology for months or years, showing active lay curiosity around the exact consequence chain."
+      ],
+      "score": {
+        "universalCuriosity": 9.4,
+        "titleOpenLoop": 9.3,
+        "thumbnailMystery": 9.5,
+        "paradox": 8.6,
+        "first30SecondHook": 9.5,
+        "escalation": 9.6,
+        "visualPotential": 9.7,
+        "evidenceDepth": 9.7,
+        "noveltyTiming": 9.5,
+        "saturation": 7.8,
+        "advertiserFit": 8.5,
+        "misleadingRiskSafety": 9.0,
+        "overall": 9.2
+      },
+      "packages": [
+        {
+          "id": "A",
+          "title": "What If the Biggest Solar Storm Hit Earth?",
+          "thumbnailText": "THE GRID GOES DARK?",
+          "thumbnailConcept": "Earth under an enormous red-orange solar eruption, one hemisphere lit by aurora while city lights flicker out."
+        },
+        {
+          "id": "B",
+          "title": "A Super Solar Storm Could Hit Earth — What Happens Next?",
+          "thumbnailText": "18 HOURS WARNING",
+          "thumbnailConcept": "A CME racing from the Sun toward Earth with a simple countdown arc between them."
+        },
+        {
+          "id": "C",
+          "title": "What Would a Carrington Event Do to the Modern World?",
+          "thumbnailText": "NO GPS. NO GRID?",
+          "thumbnailConcept": "A modern city beneath extreme aurora, satellite and power-line silhouettes splitting the frame."
+        }
+      ]
+    },
+    {
+      "id": "water-on-sun",
+      "topic": "What if we tried to put out the Sun with water?",
+      "hookPromise": "Take the campfire intuition seriously, scale the water from oceans to planet-sized amounts, and reveal why adding water does not extinguish a star — it can add fuel and mass instead.",
+      "source": "growth-research-2026-08-08",
+      "enabled": true,
+      "consumedAt": null,
+      "evidenceSignals": [
+        "A June 2026 r/theydidthemath request asking how much water or ice would be needed to quench the Sun drew 142 points and 115 comments.",
+        "The core paradox is scientifically explainable with stellar structure, fusion, gravity, heating, and the composition of water rather than requiring unsupported speculation.",
+        "The premise has a simple visual ladder: bucket, ocean, water planet, stellar-scale mass, then the counterintuitive hotter/more massive outcome."
+      ],
+      "score": {
+        "universalCuriosity": 9.3,
+        "titleOpenLoop": 9.5,
+        "thumbnailMystery": 9.6,
+        "paradox": 9.7,
+        "first30SecondHook": 9.6,
+        "escalation": 9.2,
+        "visualPotential": 9.8,
+        "evidenceDepth": 8.8,
+        "noveltyTiming": 9.1,
+        "saturation": 8.6,
+        "advertiserFit": 8.0,
+        "misleadingRiskSafety": 8.4,
+        "overall": 9.1
+      },
+      "packages": [
+        {
+          "id": "A",
+          "title": "What If We Poured Earth's Oceans Into the Sun?",
+          "thumbnailText": "MORE FIRE?",
+          "thumbnailConcept": "A blue wall of ocean falling into the Sun while the impact region glows brighter instead of dimmer."
+        },
+        {
+          "id": "B",
+          "title": "How Much Water Would It Take to Put Out the Sun?",
+          "thumbnailText": "IMPOSSIBLE?",
+          "thumbnailConcept": "Tiny Earth-sized water droplet beside the gigantic Sun with a scale bracket emphasizing the mismatch."
+        },
+        {
+          "id": "C",
+          "title": "Can Water Extinguish a Star?",
+          "thumbnailText": "WATER = FUEL?",
+          "thumbnailConcept": "A split water molecule approaching the solar surface, hydrogen highlighted as it joins the star."
+        }
+      ]
     }
   ]
 }

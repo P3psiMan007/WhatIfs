@@ -1,6 +1,6 @@
 {
   "autonomy_version": "1.1",
-  "revision": 1,
+  "revision": 2,
   "autoPublishEnabled": true,
   "requiredCoreScore": 9,
   "publishReadyStates": [
@@ -25,7 +25,8 @@
     "promoteSameVideoIdOnly": true
   },
   "publication": {
-    "failClosedOnUncertainty": true
+    "failClosedOnUncertainty": true,
+    "youtubeApiProjectStatus": "unknown"
   },
   "recording": {
     "requireVideoId": true,

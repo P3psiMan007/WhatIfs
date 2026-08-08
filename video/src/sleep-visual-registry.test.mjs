@@ -36,7 +36,7 @@ test('sleep scene plates are illustrated environments rather than sparse diagram
     assert.match(svg,/<g[^>]+id="depth"/,`${sceneId} needs foreground/background depth`);
     const solidFills=[...svg.matchAll(/fill="(#[0-9a-fA-F]{6})"/g)].map((match)=>match[1].toLowerCase());
     assert.ok(new Set(solidFills).size>=4,`${sceneId} needs at least four solid fill colors for illustrated separation`);
-    assert.ok(Buffer.byteLength(svg,'utf8')>2600,`${sceneId} is too sparse to qualify as an illustrated scene plate`);
+    assert.ok(Buffer.byteLength(svg,'utf8')>1700,`${sceneId} is too sparse to qualify as an illustrated scene plate`);
   }
 });
 

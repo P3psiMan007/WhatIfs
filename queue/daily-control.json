@@ -1,6 +1,6 @@
 {
   "control_version": "1.0",
-  "revision": 3,
+  "revision": 4,
   "date": "2026-08-08",
   "pauseAllProduction": false,
   "pausePublishing": false,
@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "External connector retrigger for the canonical Kokoro narration rebuild after QA blocked the legacy Edge narration; preserve all QA and publication gates."
+  "notes": "Force the canonical Kokoro narration rebuild through a reviewed merge event; preserve all QA and publication gates."
 }

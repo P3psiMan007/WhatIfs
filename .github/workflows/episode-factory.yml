@@ -205,5 +205,12 @@ jobs:
             exit 0
           fi
           git commit -m "chore: advance automatic video production"
-          git pull --rebase origin main
-          git push
+          # The factory also rewrites tracked files that are intentionally not
+          # persisted (queue/daily-control.json, config/autonomy.json,
+          # episodes/current/script.md, episodes/current/research.md). Those
+          # leave the tree dirty, and a plain `git pull --rebase` aborts with
+          # "cannot pull with rebase: You have unstaged changes", stranding the
+          # state commit on the runner. --autostash sets them aside for the
+          # rebase and restores them afterwards.
+          git pull --rebase --autostash origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

@@ -39,8 +39,12 @@ test('already-recorded visual blocker is idempotent and does not bump state revi
   assert.deepEqual(decision, {kind:'BLOCK_RECORDED', reason:'publish_grade_visual_assets_missing'});
 });
 
-test('rendered publish-grade assets remain eligible for independent QA', () => {
-  const decision = visualGuardDecision({state:{state:'RENDERED'}, input:publishGradeInput, manifest:{}});
+test('rendered publish-grade assets remain eligible for independent QA when canonical flags are already clean', () => {
+  const decision = visualGuardDecision({
+    state:{state:'RENDERED', production:{qa_inputs_ready:true}, qa:{user_action_required:null}},
+    input:publishGradeInput,
+    manifest:{visualGrade:'publish-grade', qaInputsReady:true, technicalPreview:false, publishBlocker:null},
+  });
   assert.deepEqual(decision, {kind:'READY', reason:'publish_grade_visuals_verified'});
 });
 

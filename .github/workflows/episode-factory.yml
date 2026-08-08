@@ -19,6 +19,8 @@ on:
       - "tools/episode1-hook-contrast-rebuild.test.mjs"
       - "tools/episode1-late-beat-rebuild.mjs"
       - "tools/episode1-late-beat-rebuild.test.mjs"
+      - "tools/episode1-illustrated-v3-rebuild.mjs"
+      - "tools/episode1-illustrated-v3-rebuild.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
@@ -48,6 +50,8 @@ on:
       - "tools/episode1-hook-contrast-rebuild.test.mjs"
       - "tools/episode1-late-beat-rebuild.mjs"
       - "tools/episode1-late-beat-rebuild.test.mjs"
+      - "tools/episode1-illustrated-v3-rebuild.mjs"
+      - "tools/episode1-illustrated-v3-rebuild.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
@@ -83,7 +87,7 @@ jobs:
       - name: Install video dependencies
         run: npm install --no-audit --no-fund
       - name: Run state, orchestration, producer, rebuild, packaging, beat alignment, registry, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test

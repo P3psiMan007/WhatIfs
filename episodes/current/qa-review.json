@@ -1,0 +1,72 @@
+{
+  "qaReviewVersion": "1.0",
+  "episodeId": "20260807-episode",
+  "reviewedStateRevision": 55,
+  "reviewedRenderAsset": "github-actions://run/31252577314/artifact/episode-render/episode.mp4",
+  "reviewedAt": "2026-08-08T11:03:18Z",
+  "authority": "critic-qa-independent",
+  "status": "REWORK_REQUIRED",
+  "publishDecision": "BLOCK",
+  "changedArtifactsReviewed": [
+    "episodes/current/script.md",
+    "episodes/current/production-input.json",
+    "episodes/current/render-manifest.json",
+    "public/narration.mp3",
+    "public/narration.srt",
+    "dist/episode.mp4",
+    "dist/thumbnail.png",
+    "dist/first-30s-contact-sheet.jpg",
+    "dist/contact-sheet.jpg"
+  ],
+  "coreScores": {
+    "factual": 9.6,
+    "package": 9.3,
+    "retention": 9.1,
+    "narration": 8.8,
+    "visual": 9.1,
+    "technical": 9.8,
+    "policy": 8.0,
+    "copyright": 8.0
+  },
+  "additionalScores": {
+    "endingPayoff": 8.8,
+    "advertiserSuitability": 9.8,
+    "misleadingRisk": 9.5,
+    "captionSafety": 9.5
+  },
+  "verifiedPasses": [
+    "The corrected payoff now says roughly a third of each day back as waking time in canonical script, narration captions, and the final rendered payoff.",
+    "Chosen package A title and 8 HOURS BACK thumbnail accurately match the recovered-time promise.",
+    "First 30 seconds progress sentence-by-sentence through last bedtime, impossible-premise caveat, recovered hours, and the ownership-of-time hook with no dead frame found in the QA contact sheet.",
+    "Full-video contact-sheet review shows distinct bespoke scene storytelling across biology, circadian rhythm, economy, boundaries, relationships, psychology, and payoff.",
+    "Technical output is H.264 1920x1080 at 30 fps, about 385.1 seconds, with measured per-scene sync, 99 visual beats, 8 beats in the first 30 seconds, and no beat over 6 seconds.",
+    "No third-party footage, music, photographs, logos, or copied visual assets were identified; current visuals are deterministic checked-in SVG/React artwork created for this episode."
+  ],
+  "failures": [
+    {
+      "gate": "narration",
+      "severity": "publish-blocking",
+      "finding": "The ending does not yet meet a 9/10 narration bar on objective pacing evidence: median caption speech pace is about 152 WPM, but key payoff lines spike to about 220-241 WPM, including the sentence about the last part of the day the world cannot ask us to give back. The climax needs more breathing room before independent creative listening can support a publish-grade pass.",
+      "requiredFix": "Regenerate the payoff narration with slower phrasing and/or stronger sentence breaks while preserving the corrected meaning, then re-review the changed payoff audio, captions, and ending render."
+    },
+    {
+      "gate": "policy/copyright",
+      "severity": "owner-only-blocker",
+      "finding": "Narration is generated through the third-party edge-tts client against Microsoft Edge Read Aloud voices. As of 2026-08-08, Microsoft has no public documentation explicitly granting commercial or monetized-use rights for Edge Read Aloud voices or edge-tts; Microsoft Q&A recommends direct clarification for certainty. The project therefore lacks mandatory commercial-rights evidence for monetized publishing.",
+      "requiredFix": "Before monetized/public publishing, obtain durable rights evidence for this narration route from Microsoft or replace narration with a voice/provider whose commercial-use terms are explicit and compatible. Do not purchase credentials or paid resources automatically."
+    }
+  ],
+  "externalBlocker": {
+    "id": "edge_tts_commercial_rights_unverified",
+    "idempotent": true,
+    "ownerActionRequired": true,
+    "evidence": [
+      "https://learn.microsoft.com/en-us/answers/questions/5925556/commercial-use-of-edge-read-aloud-voices-via-edge",
+      "https://github.com/rany2/edge-tts/blob/master/README.md"
+    ]
+  },
+  "postPublishAnalytics": {
+    "due": false,
+    "reason": "No verified published-video record exists for this episode."
+  }
+}

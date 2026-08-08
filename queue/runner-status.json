@@ -1,9 +1,9 @@
 {
-  "revision": 19,
-  "updatedAt": "2026-08-08T11:03:18Z",
+  "revision": 20,
+  "updatedAt": "2026-08-08T14:36:39Z",
   "kind": "QA_BLOCKED",
-  "reason": "edge_tts_commercial_rights_unverified",
-  "details": "Independent QA reviewed corrected render run 31252577314. Creative/technical corrections are materially improved, but mandatory policy/copyright evidence is incomplete because Microsoft does not publicly document explicit commercial/monetized-use rights for Edge Read Aloud voices accessed via edge-tts. QA review also found payoff narration pacing above the publish-grade bar. See episodes/current/qa-review.json. Fail closed; do not publish.",
+  "reason": "factory_dispatch_not_observed_after_kokoro_input_fix",
+  "details": "Canonical production input was corrected to Kokoro and queue/daily-control.json was revision-bumped to retrigger Episode Factory, but no new Factory workflow run or persisted episode-state/render revision has appeared after commit 3ac7a985f1c3398696f8bb5896c0d3801dac5de2. The current episode remains on the older Edge-based render/state, so independent QA cannot review the intended Kokoro narration or advance QA. This is fail-closed: do not publish. GitHub documents that events caused by GITHUB_TOKEN do not recursively create workflow runs except workflow_dispatch/repository_dispatch; the available connector does not expose a workflow-dispatch action. Next safe recovery is a real Episode Factory workflow_dispatch (or the next scheduled Factory run), then review only the newly generated Kokoro artifacts.",
   "episodeId": "20260807-episode",
   "state": "RENDERED",
   "stateRevision": 55

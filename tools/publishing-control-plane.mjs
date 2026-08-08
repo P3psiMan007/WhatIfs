@@ -19,6 +19,12 @@ const REQUIRED_VERIFICATION_FLAGS = [
   'promoteSameVideoIdOnly',
 ];
 
+const YOUTUBE_API_PROJECT_STATUSES = new Set([
+  'unknown',
+  'audited',
+  'legacy-pre-2020',
+]);
+
 const fail = (message) => {
   throw new Error(message);
 };
@@ -53,6 +59,9 @@ export function validatePublishingControls(autonomy, daily) {
 
   if (!autonomy.publication || autonomy.publication.failClosedOnUncertainty !== true) {
     fail('failClosedOnUncertainty must be true');
+  }
+  if (!YOUTUBE_API_PROJECT_STATUSES.has(autonomy.publication.youtubeApiProjectStatus)) {
+    fail('youtubeApiProjectStatus must be unknown, audited, or legacy-pre-2020');
   }
 
   if (daily.control_version !== '1.0') fail('unsupported control_version');

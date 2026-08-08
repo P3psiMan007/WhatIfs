@@ -1,1 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440"><rect width="2560" height="1440" fill="#0b0d12"/><g fill="none" stroke="#eae7e1" stroke-linecap="round" stroke-linejoin="round"><rect x="180" y="250" width="1010" height="860" rx="28" opacity=".19" stroke-width="8"/><path d="M180 690h1010M690 250v860" opacity=".15" stroke-width="7"/><rect x="285" y="760" width="300" height="150" rx="22" opacity=".25" stroke-width="7"/><path d="M285 785v-80M585 785v-80M285 910v65M585 910v65" opacity=".3" stroke-width="8"/><path d="M760 400h300v260H760zM760 760h300v220H760z" opacity=".15" stroke-width="7"/><g opacity=".22" stroke="#ffb340" stroke-width="9"><path d="M1430 360 C1580 300 1730 350 1820 480M1430 1050 C1580 1110 1730 1060 1820 930"/><path d="M1410 360l60-55M1410 1050l60 55"/></g><circle cx="2130" cy="690" r="180" opacity=".2" stroke-width="8"/><path d="M2040 630q90-110 180 0M2060 745q70 85 140 0" opacity=".25" stroke="#ffb340" stroke-width="8"/><path d="M1950 960 Q2130 850 2310 960" opacity=".16" stroke-width="8"/></g><text x="1510" y="720" fill="#ffb340" opacity=".18" font-family="Arial" font-size="68" font-weight="900">OVERLAP</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440" data-quality="illustrated-v3">
+<rect width="2560" height="1440" fill="#0b0d12"/>
+<g id="environment">
+  <path d="M0 0H2560V1440H0Z" fill="#172447"/>
+  <path d="M0 1040H2560V1440H0Z" fill="#3a2b22"/>
+  <rect x="140" y="200" width="2280" height="830" rx="40" fill="#2b2f3d" stroke="#eae7e1" stroke-width="15"/>
+  <path d="M1280 200V1030M140 610H2420" stroke="#eae7e1" stroke-width="12" opacity=".45"/>
+  <rect x="260" y="690" width="480" height="220" rx="28" fill="#6d3f25" stroke="#eae7e1" stroke-width="12"/>
+  <rect x="1550" y="680" width="520" height="240" rx="28" fill="#6d3f25" stroke="#eae7e1" stroke-width="12"/>
+  <rect x="320" y="340" width="520" height="190" fill="#0b0d12" stroke="#eae7e1" stroke-width="12"/>
+  <rect x="1680" y="330" width="520" height="200" fill="#0b0d12" stroke="#eae7e1" stroke-width="12"/>
+  <circle cx="1280" cy="400" r="120" fill="#ffb340" opacity=".22"/>
+</g>
+<g id="characters">
+  <circle cx="820" cy="790" r="75" fill="#eae7e1" stroke="#0b0d12" stroke-width="16"/>
+  <path d="M820 865v220M820 930l-110 70M820 930l115 70M820 1085l-80 115M820 1085l90 115" fill="none" stroke="#eae7e1" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="1710" cy="790" r="75" fill="#eae7e1" stroke="#0b0d12" stroke-width="16"/>
+  <path d="M1710 865v220M1710 930l-110 70M1710 930l115 70M1710 1085l-80 115M1710 1085l90 115" fill="none" stroke="#eae7e1" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="1280" cy="800" r="58" fill="#ffb340" stroke="#eae7e1" stroke-width="12"/>
+  <path d="M1280 858v150M1280 905l-80 55M1280 905l80 55" fill="none" stroke="#ffb340" stroke-width="18" stroke-linecap="round"/>
+  <path d="M945 760Q1280 585 1590 760" fill="none" stroke="#ffb340" stroke-width="14" stroke-dasharray="28 22"/>
+</g>
+<g id="depth">
+  <path d="M0 1210Q500 1120 960 1220T1900 1210T2560 1160V1440H0Z" fill="#0b0d12" opacity=".7"/>
+  <circle cx="2330" cy="150" r="160" fill="#ffb340" opacity=".09"/>
+  <path d="M90 120h680M1800 120h680" stroke="#ffb340" stroke-width="9" opacity=".25"/>
+</g>
+</svg>

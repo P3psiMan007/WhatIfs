@@ -1,0 +1,180 @@
+name: Normalize current render audio
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/normalize_render_audio.py"
+      - "scripts/test_normalize_render_audio.py"
+      - ".github/workflows/normalize-render-audio.yml"
+  pull_request:
+    paths:
+      - "scripts/normalize_render_audio.py"
+      - "scripts/test_normalize_render_audio.py"
+      - ".github/workflows/normalize-render-audio.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('normalize-render-audio-pr-{0}', github.event.pull_request.number) || 'normalize-render-audio-main' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify normalization helper
+        run: |
+          python -m py_compile scripts/normalize_render_audio.py
+          python -m unittest scripts.test_normalize_render_audio -v
+
+  repair:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify FFmpeg is available
+        run: |
+          command -v ffmpeg
+          command -v ffprobe
+          ffmpeg -version | head -n 1
+
+      - name: Resolve exact current source artifact
+        id: source
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          manifest = json.loads(Path('episodes/current/render-manifest.json').read_text())
+          audio = manifest.get('audioQa') or {}
+          if audio.get('normalized') is True:
+              raise SystemExit('Current canonical render is already audio-normalized; refusing to normalize twice.')
+          run_id = str(manifest.get('githubRunId') or '')
+          artifact = str(manifest.get('artifactName') or '')
+          if not run_id.isdigit() or not artifact:
+              raise SystemExit('Current render manifest has no valid source run/artifact identity.')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              print(f'run_id={run_id}', file=out)
+              print(f'artifact_name={artifact}', file=out)
+          print(f'Audio repair source: run={run_id} artifact={artifact}')
+          PY
+
+      - name: Download exact current render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+          ARTIFACT_NAME: ${{ steps.source.outputs.artifact_name }}
+        run: |
+          rm -rf incoming repaired
+          mkdir -p incoming
+          gh run download "$SOURCE_RUN_ID" -n "$ARTIFACT_NAME" -D incoming
+          test -s incoming/dist/episode.mp4
+          test -s incoming/dist/thumbnail.png
+          test -s incoming/public/narration.mp3
+          test -s incoming/public/narration.srt
+          test -s incoming/episodes/current/render-manifest.json
+          test -s incoming/episodes/current/production-input.json
+          cp -a incoming repaired
+
+      - name: Normalize audio only and preserve video stream
+        env:
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+        run: |
+          mv repaired/dist/episode.mp4 /tmp/source-episode.mp4
+          python scripts/normalize_render_audio.py \
+            --input-video /tmp/source-episode.mp4 \
+            --output-video repaired/dist/episode.mp4 \
+            --manifest-in repaired/episodes/current/render-manifest.json \
+            --manifest-out repaired/episodes/current/render-manifest.json \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-run-id "$SOURCE_RUN_ID"
+          test -s repaired/dist/episode.mp4
+
+      - name: Regenerate objective QA evidence for normalized artifact
+        run: |
+          python scripts/extract_qa_evidence.py \
+            --srt repaired/public/narration.srt \
+            --production-input repaired/episodes/current/production-input.json \
+            --render-manifest repaired/episodes/current/render-manifest.json \
+            --rights-evidence docs/licenses/kokoro-82m.md \
+            --output repaired/episodes/current/qa-evidence.json
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          evidence_path = Path('repaired/episodes/current/qa-evidence.json')
+          manifest = json.loads(Path('repaired/episodes/current/render-manifest.json').read_text())
+          evidence = json.loads(evidence_path.read_text())
+          evidence['render']['audioQa'] = manifest.get('audioQa') or {}
+          evidence['sourceWorkflow'] = {
+              'name': 'Normalize current render audio',
+              'runId': str(os.environ['GITHUB_RUN_ID']),
+          }
+          evidence_path.write_text(json.dumps(evidence, indent=2) + '\n')
+          audio = evidence['render']['audioQa']
+          if audio.get('normalized') is not True:
+              raise SystemExit('normalized audio evidence missing')
+          if not (-16.5 <= float(audio['integratedLufs']) <= -15.5):
+              raise SystemExit(f"loudness evidence out of range: {audio}")
+          if float(audio['truePeakDbfs']) > -1.0:
+              raise SystemExit(f"true peak evidence out of range: {audio}")
+          PY
+
+      - name: Upload exact normalized render artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-render
+          path: |
+            repaired/dist/episode.mp4
+            repaired/dist/thumbnail.png
+            repaired/dist/contact-sheet.jpg
+            repaired/dist/first-30s-contact-sheet.jpg
+            repaired/public/narration.mp3
+            repaired/public/narration.srt
+            repaired/episodes/current/render-manifest.json
+            repaired/episodes/current/production-input.json
+            repaired/episodes/current/qa-evidence.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Persist normalized manifest and evidence only
+        env:
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+        shell: bash
+        run: |
+          git config user.name "whatifs-audio-normalizer"
+          git config user.email "whatifs-audio-normalizer@users.noreply.github.com"
+          git pull --rebase origin main
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          current = json.loads(Path('episodes/current/render-manifest.json').read_text())
+          source = os.environ['SOURCE_RUN_ID']
+          if str(current.get('githubRunId')) != source:
+              raise SystemExit(
+                  f"Canonical render changed during audio repair: expected source run {source}, "
+                  f"found {current.get('githubRunId')}"
+              )
+          PY
+          cp repaired/episodes/current/render-manifest.json episodes/current/render-manifest.json
+          cp repaired/episodes/current/qa-evidence.json episodes/current/qa-evidence.json
+          git add episodes/current/render-manifest.json episodes/current/qa-evidence.json
+          git commit -m "qa: normalize final render audio for publish"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

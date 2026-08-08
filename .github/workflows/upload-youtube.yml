@@ -35,6 +35,10 @@ jobs:
         with:
           python-version: "3.11"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Evaluate publication gate
         id: gate
         shell: bash
@@ -102,9 +106,9 @@ jobs:
           rm -rf incoming-render
           mkdir -p incoming-render
           gh run download "$RUN_ID" -n "$ARTIFACT_NAME" -D incoming-render
-          test -s incoming-render/episode.mp4
-          test -s incoming-render/thumbnail.png
-          test -s incoming-render/render-manifest.json
+          test -s incoming-render/dist/episode.mp4
+          test -s incoming-render/dist/thumbnail.png
+          test -s incoming-render/episodes/current/render-manifest.json
 
       - name: Verify exact artifact identity
         if: steps.gate.outputs.eligible == 'true'
@@ -123,8 +127,8 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: |
           python -m youtube_uploader.publisher \
-            --video incoming-render/episode.mp4 \
-            --thumbnail incoming-render/thumbnail.png \
+            --video incoming-render/dist/episode.mp4 \
+            --thumbnail incoming-render/dist/thumbnail.png \
             --identity /tmp/render-identity.json \
             --qa-review episodes/current/qa-review.json \
             --episode-state episodes/current/episode-state.json \

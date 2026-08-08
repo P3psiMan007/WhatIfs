@@ -47,9 +47,11 @@ def verify_artifact(
     qa_review = json.loads(qa_review_path.read_text(encoding="utf-8"))
     ref = parse_render_asset_uri(qa_review.get("reviewedRenderAsset", ""))
 
-    downloaded_manifest_path = downloaded_dir / "render-manifest.json"
+    downloaded_manifest_path = downloaded_dir / "episodes" / "current" / "render-manifest.json"
     if not downloaded_manifest_path.is_file():
-        raise FileNotFoundError(f"Missing downloaded render-manifest.json: {downloaded_manifest_path}")
+        raise FileNotFoundError(
+            f"Missing downloaded render-manifest.json: {downloaded_manifest_path}"
+        )
     if not canonical_manifest_path.is_file():
         raise FileNotFoundError(f"Missing canonical render manifest: {canonical_manifest_path}")
 
@@ -75,11 +77,12 @@ def verify_artifact(
             f"Render filename mismatch: QA={ref.filename!r} manifest={manifest.get('filename')!r}"
         )
 
-    video_path = downloaded_dir / ref.filename
+    dist_dir = downloaded_dir / "dist"
+    video_path = dist_dir / ref.filename
     thumbnail_name = manifest.get("thumbnailFilename")
     if not isinstance(thumbnail_name, str) or not thumbnail_name:
         raise ValueError("Render manifest is missing thumbnailFilename")
-    thumbnail_path = downloaded_dir / thumbnail_name
+    thumbnail_path = dist_dir / thumbnail_name
 
     if not video_path.is_file():
         raise FileNotFoundError(f"Missing approved video file: {video_path}")

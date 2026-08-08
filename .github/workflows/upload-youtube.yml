@@ -137,6 +137,28 @@ jobs:
             --daily-control queue/daily-control.json \
             --publication-record episodes/current/publication.json
 
+      # This runs even if the publisher stopped after an irreversible private
+      # upload (for example because the old refresh token lacks videos.update
+      # scope). Persisting the video ID makes the next run resume the SAME
+      # private video rather than uploading a duplicate.
+      - name: Persist publication progress
+        if: always() && steps.gate.outputs.eligible == 'true'
+        shell: bash
+        run: |
+          git config user.name "whatifs-publisher"
+          git config user.email "whatifs-publisher@users.noreply.github.com"
+          git add queue/daily-control.json
+          if [ -f episodes/current/publication.json ]; then
+            git add episodes/current/publication.json
+          fi
+          if git diff --cached --quiet; then
+            echo "No publication progress to persist."
+            exit 0
+          fi
+          git commit -m "chore: record YouTube publication progress"
+          git pull --rebase origin main
+          git push
+
       - name: Require verified public proof
         if: steps.gate.outputs.eligible == 'true'
         run: |
@@ -154,18 +176,3 @@ jobs:
               raise SystemExit("publication record does not prove public privacy transition")
           print(f"Verified public YouTube video: https://www.youtube.com/watch?v={yt['videoId']}")
           PY
-
-      - name: Persist publication proof and daily counter
-        if: steps.gate.outputs.eligible == 'true'
-        shell: bash
-        run: |
-          git config user.name "whatifs-publisher"
-          git config user.email "whatifs-publisher@users.noreply.github.com"
-          git add episodes/current/publication.json queue/daily-control.json
-          if git diff --cached --quiet; then
-            echo "No publication state changes to persist."
-            exit 0
-          fi
-          git commit -m "chore: record verified YouTube publication"
-          git pull --rebase origin main
-          git push

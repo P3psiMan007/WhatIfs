@@ -36,45 +36,31 @@
   "sources": [
     {
       "url": "https://www.nhlbi.nih.gov/health/heart-healthy-living/sleep",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     },
     {
       "url": "https://www.nhlbi.nih.gov/health/sleep-deprivation/health-effects",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     },
     {
       "url": "https://www.nih.gov/news-events/news-releases/nih-funded-study-shows-sound-sleep-supports-immune-function",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     },
     {
       "url": "https://www.nhlbi.nih.gov/events/2024/sleep-and-circadian-rhythms-cardiovascular-resilience-mechanisms-implications-and",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     },
     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/irregular-sleep-patterns-may-raise-risk-heart-disease",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     },
     {
       "url": "https://www.nichd.nih.gov/health/topics/sleep/conditioninfo/inadequate-sleep",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     },
     {
       "url": "https://www.nih.gov/news-events/nih-research-matters/sleep-exercise-may-reduce-mutation-driven-inflammation",
-      "claims": [
-        "See durable research ledger for verified claim and safe-use context."
-      ]
+      "claims": ["See durable research ledger for verified claim and safe-use context."]
     }
   ],
   "scenes": [
@@ -147,7 +133,7 @@
       "headline": "PAYOFF",
       "subhead": null,
       "visual": "hourglass",
-      "narration": "So would a sleepless humanity be better off? Biologically, under our impossible premise, probably in many ways: more usable time and no fatigue tax. Socially, it is less obvious. We would gain nearly a third more waking life — and immediately have to decide who gets to claim it. Your employer? Your family? The economy? The internet? Or you? Maybe sleep is not only time we lose. Maybe it is the last part of the day that the world cannot ask us to give back. And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do.",
+      "narration": "So would a sleepless humanity be better off? Biologically, under our impossible premise, probably in many ways: more usable time and no fatigue tax. Socially, it is less obvious. We would gain roughly a third of each day back as waking time — and immediately have to decide who gets to claim it. Your employer? Your family? The economy? The internet? Or you? Maybe sleep is not only time we lose. Maybe it is the last part of the day that the world cannot ask us to give back. And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do.",
       "visualAsset": "visuals/20260807-episode/scene-09.svg"
     }
   ],

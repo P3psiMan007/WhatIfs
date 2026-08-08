@@ -53,7 +53,7 @@ class VerifierTests(TestCase):
             timeout_seconds=10,
             poll_seconds=1,
             sleep_fn=lambda seconds: sleeps.append(seconds),
-            monotonic_fn=iter([0, 0, 1, 1]).__next__,
+            monotonic_fn=iter([0, 0, 1]).__next__,
         )
         self.assertEqual(result["processingDetails"]["processingStatus"], "succeeded")
         self.assertEqual(sleeps, [1])
@@ -89,11 +89,12 @@ class VerifierTests(TestCase):
             verify_thumbnail_state({"snippet": {"thumbnails": {}}}, thumbnail_set_succeeded=True)
         )
 
-    def test_promote_public_updates_same_video_id(self):
+    def test_promote_public_updates_same_video_id_and_omits_read_only_status(self):
         youtube = Mock()
         existing = {
             "id": "abc",
             "status": {
+                "uploadStatus": "processed",
                 "privacyStatus": "private",
                 "selfDeclaredMadeForKids": False,
                 "embeddable": True,
@@ -113,3 +114,5 @@ class VerifierTests(TestCase):
         kwargs = youtube.videos.return_value.update.call_args.kwargs
         self.assertEqual(kwargs["body"]["id"], "abc")
         self.assertEqual(kwargs["body"]["status"]["privacyStatus"], "public")
+        self.assertNotIn("uploadStatus", kwargs["body"]["status"])
+        self.assertEqual(kwargs["body"]["status"]["license"], "youtube")

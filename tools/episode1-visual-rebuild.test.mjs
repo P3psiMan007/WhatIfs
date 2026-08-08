@@ -24,6 +24,12 @@ test('plans one revision-safe rebuild only for the stale placeholder render',()=
   assert.equal(plan.productionPatch.qa_inputs_ready,false);
 });
 
+test('does not invalidate a newly rendered episode after canonical input was already upgraded',()=>{
+  const upgraded=applyVisualAssetsToInput(input);
+  const plan=planEpisode1VisualRebuild({state:{...state,production:{...state.production,render_asset:'github-actions://new/episode.mp4'}},input:upgraded,assetsReady:true});
+  assert.deepEqual(plan,{kind:'NOOP',reason:'visual_input_already_upgraded'});
+});
+
 test('does not rebuild an already active or completed episode',()=>{
   for(const next of ['VOICE_READY','QA_PASSED','AUTO_PUBLISH_READY','PUBLISHED']){
     assert.equal(planEpisode1VisualRebuild({state:{...state,state:next},input,assetsReady:true}).kind,'NOOP');

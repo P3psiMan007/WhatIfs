@@ -16,7 +16,22 @@ export function isPublishGradeVisualInput(input) {
 export function visualGuardDecision({state, input, manifest}) {
   if (state?.state !== 'RENDERED') return {kind:'NOOP', reason:'not_rendered'};
   const publishGrade = isPublishGradeVisualInput(input);
-  if (publishGrade) return {kind:'READY', reason:'publish_grade_visuals_verified'};
+  if (publishGrade) {
+    const staleBlocker = state?.qa?.user_action_required === BLOCKER
+      || manifest?.qaInputsReady === false
+      || manifest?.technicalPreview === true
+      || manifest?.publishBlocker === BLOCKER
+      || manifest?.visualGrade !== 'publish-grade';
+    if (staleBlocker) {
+      return {
+        kind:'CLEAR',
+        reason:'publish_grade_visuals_verified',
+        patch:{production:{qa_inputs_ready:true}, qa:{user_action_required:null}},
+        manifestPatch:{visualGrade:'publish-grade', qaInputsReady:true, technicalPreview:false, publishBlocker:null},
+      };
+    }
+    return {kind:'READY', reason:'publish_grade_visuals_verified'};
+  }
   const alreadyRecorded = state?.production?.qa_inputs_ready === false
     && state?.qa?.user_action_required === BLOCKER
     && manifest?.qaInputsReady === false
@@ -57,13 +72,14 @@ function main() {
   const input = readJson(inputPath);
   const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
   const decision = visualGuardDecision({state,input,manifest});
-  if (decision.kind !== 'BLOCK') {
+  if (!['BLOCK','CLEAR'].includes(decision.kind)) {
     console.log(`VISUAL_GUARD_${decision.kind} ${decision.reason}`);
     return;
   }
   runState(['patch', String(state.state_revision), state.episode_id, 'publish-grade-visual-guard', JSON.stringify(decision.patch)]);
   if (manifest) writeJson(manifestPath, {...manifest, ...decision.manifestPatch});
-  console.error(`VISUAL_GUARD_BLOCKED ${decision.reason}`);
+  if (decision.kind === 'BLOCK') console.error(`VISUAL_GUARD_BLOCKED ${decision.reason}`);
+  else console.log(`VISUAL_GUARD_CLEAR ${decision.reason}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

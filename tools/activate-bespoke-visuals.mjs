@@ -5,6 +5,7 @@ import {SLEEP_SCENE_ASSETS,assertSleepVisualCoverage} from '../video/src/sleep-v
 
 const EPISODE_ID='20260807-episode';
 const ACTOR='bespoke-visual-activation';
+const BLOCKER='publish_grade_visual_assets_missing';
 const INPUT_PATH=process.env.PRODUCTION_INPUT_PATH||'episodes/current/production-input.json';
 const STATE_PATH=process.env.EPISODE_STATE_PATH||'episodes/current/episode-state.json';
 
@@ -23,6 +24,7 @@ export function shouldInvalidateTechnicalPreview(state){
   return state?.episode_id===EPISODE_ID
     && state?.state==='RENDERED'
     && state?.production?.qa_inputs_ready===false
+    && state?.qa?.user_action_required===BLOCKER
     && typeof state?.production?.render_asset==='string'
     && state.production.render_asset.length>0;
 }

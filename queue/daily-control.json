@@ -1,6 +1,6 @@
 {
   "control_version": "1.0",
-  "revision": 0,
+  "revision": 1,
   "date": "2026-08-08",
   "pauseAllProduction": false,
   "pausePublishing": false,
@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "Fail closed if this file is missing, stale for the active control date, internally inconsistent, or cannot be revision-safely updated."
+  "notes": "Fail closed if this file is missing, stale for the active control date, internally inconsistent, or cannot be revision-safely updated. QA self-heal retrigger after Kokoro narration repair."
 }

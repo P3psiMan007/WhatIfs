@@ -12,7 +12,7 @@ def build_ffmpeg_args(source: str, output: str) -> list[str]:
         "ffmpeg", "-y", "-v", "error", "-i", source,
         "-map", "0:v:0", "-map", "0:a:0",
         "-c:v", "copy",
-        "-af", "volume=8.5dB,alimiter=limit=0.75:level=false",
+        "-af", "volume=8.5dB,alimiter=limit=0.70:level=false",
         "-c:a", "aac", "-b:a", "192k",
         "-movflags", "+faststart",
         output,

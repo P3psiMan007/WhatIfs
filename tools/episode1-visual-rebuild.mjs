@@ -20,8 +20,16 @@ export function applyVisualAssetsToInput(input){
   };
 }
 
+function isVisualInputAlreadyUpgraded(input){
+  if(input?.visualGrade!=='publish-grade') return false;
+  const scenes=Array.isArray(input?.scenes)?input.scenes:[];
+  try { assertSleepVisualCoverage(scenes.map((scene)=>scene?.id)); } catch { return false; }
+  return scenes.every((scene)=>scene.visualAsset===SLEEP_SCENE_ASSETS[scene.id]);
+}
+
 export function planEpisode1VisualRebuild({state,input,assetsReady}){
   if(state?.episode_id!==EPISODE_ID || input?.episodeId!==EPISODE_ID) return {kind:'NOOP',reason:'another_episode'};
+  if(isVisualInputAlreadyUpgraded(input)) return {kind:'NOOP',reason:'visual_input_already_upgraded'};
   if(state?.state!=='RENDERED') return {kind:'NOOP',reason:`state_${state?.state||'unknown'}`};
   if(state?.qa?.user_action_required!==BLOCKER) return {kind:'NOOP',reason:'blocker_changed'};
   if(!assetsReady) return {kind:'BLOCKED',reason:'bespoke_visual_assets_incomplete'};

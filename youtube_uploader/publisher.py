@@ -132,7 +132,10 @@ def publish_episode(
     """
     record_path = Path(publication_record_path)
     existing = load_publication_record(record_path)
-    youtube = youtube or build_youtube_service()
+    # When a real service is created here, OAuth is refreshed and the scope
+    # needed for the eventual same-video public promotion is proven BEFORE any
+    # upload side effect. Tests inject a mock service and skip real OAuth.
+    youtube = youtube or build_youtube_service(require_publication_scope=True)
     title = render_manifest.get("title") or ""
     description = render_manifest.get("description") or ""
 

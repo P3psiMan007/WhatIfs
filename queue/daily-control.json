@@ -1,6 +1,6 @@
 {
   "control_version": "1.0",
-  "revision": 6,
+  "revision": 7,
   "date": "2026-08-09",
   "pauseAllProduction": false,
   "pausePublishing": false,
@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "Forced external retrigger at user request for canonical Kokoro final rebuild. Do not wait for cron. Preserve strict 9/10 QA and verified private-first publishing."
+  "notes": "Clean external retrigger after verified Episode Factory persistence fix. Complete canonical Kokoro render persistence, strict 9/10 independent QA, and verified private-first YouTube upload without waiting for cron."
 }

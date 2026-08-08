@@ -1,7 +1,7 @@
 {
   "control_version": "1.0",
-  "revision": 4,
-  "date": "2026-08-08",
+  "revision": 5,
+  "date": "2026-08-09",
   "pauseAllProduction": false,
   "pausePublishing": false,
   "dailyPublishQuota": 1,
@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "Force the canonical Kokoro narration rebuild through a reviewed merge event; preserve all QA and publication gates."
+  "notes": "Immediate external Factory V2 kick for the canonical Kokoro final rebuild; do not wait for cron. Preserve strict 9/10 QA and private-first verified publishing."
 }

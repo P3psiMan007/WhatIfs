@@ -44,6 +44,18 @@ test('rendered publish-grade assets remain eligible for independent QA', () => {
   assert.deepEqual(decision, {kind:'READY', reason:'publish_grade_visuals_verified'});
 });
 
+test('publish-grade assets clear a stale visual-assets blocker revision-safely', () => {
+  const decision = visualGuardDecision({
+    state:{state:'RENDERED', production:{qa_inputs_ready:true}, qa:{user_action_required:'publish_grade_visual_assets_missing'}},
+    input:publishGradeInput,
+    manifest:{visualGrade:'heuristic-placeholder', qaInputsReady:false, technicalPreview:true, publishBlocker:'publish_grade_visual_assets_missing'},
+  });
+  assert.equal(decision.kind, 'CLEAR');
+  assert.equal(decision.reason, 'publish_grade_visuals_verified');
+  assert.deepEqual(decision.patch, {production:{qa_inputs_ready:true}, qa:{user_action_required:null}});
+  assert.deepEqual(decision.manifestPatch, {visualGrade:'publish-grade', qaInputsReady:true, technicalPreview:false, publishBlocker:null});
+});
+
 test('non-rendered states are not mutated', () => {
   const decision = visualGuardDecision({state:{state:'VOICE_READY'}, input:{}, manifest:null});
   assert.deepEqual(decision, {kind:'NOOP', reason:'not_rendered'});

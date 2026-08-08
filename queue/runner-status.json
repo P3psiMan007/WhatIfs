@@ -1,9 +1,8 @@
 {
-  "revision": 8,
-  "updatedAt": "2026-08-08T00:04:00.000Z",
+  "revision": 9,
+  "updatedAt": "2026-08-08T00:10:50.324Z",
   "kind": "BLOCKED",
   "reason": "publish_grade_visual_assets_missing",
-  "details": "Current V2 render is a technical preview using heuristic SVG/icon compositions, not publish-grade scene assets. Read-only Higgsfield preflight on 2026-08-08 found free plan, 0 credits, expired free trial, and no unlimited generations; generating the required scene art there would consume paid credits. No other configured no-cost publish-grade visual provider is available. Preserve QA fail-closed and do not regenerate until a no-cost/included provider or owner-approved credits exist.",
   "episodeId": "20260807-episode",
   "state": "RENDERED",
   "stateRevision": 14

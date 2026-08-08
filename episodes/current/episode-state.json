@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 55,
-  "updated_at": "2026-08-08T10:36:43.446Z",
+  "state_revision": 62,
+  "updated_at": "2026-08-08T23:40:33.708Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -49,23 +49,21 @@
     "estimated_duration_min": 6.52,
     "pronunciation_dictionary": [],
     "voice_candidates": [
-      "en-US-BrianNeural"
+      "am_michael"
     ],
-    "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31252577314/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31252577314/artifact/episode-render/episode.mp4",
+    "selected_voice": "am_michael",
+    "voice_asset": "github-actions://run/31283336381/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31283336381/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
     "status": "REWORK_REQUIRED",
     "scores": {},
     "top_issues": [
-      "Payoff incorrectly said an illustrative eight-hour sleep removal yields nearly a third more waking life; 16 waking hours increasing to 24 is about 50% more waking time, while eight hours is one-third of the total day."
+      "Prior narration provider lacked sufficiently explicit commercial-use evidence and payoff delivery was rushed."
     ],
     "required_fixes": [
-      "Use the corrected payoff wording: gain roughly a third of each day back as waking time.",
-      "Regenerate narration and render so the corrected factual wording is present in audio, captions, and video.",
-      "Re-run changed-artifact QA on the corrected payoff, narration, captions, and final render before any QA pass."
+      "Regenerate narration with Apache-2.0 Kokoro-82M at the slower documentary pacing preset, regenerate captions/render, then independently review changed artifacts."
     ],
     "user_action_required": null
   },
@@ -515,6 +513,62 @@
     {
       "revision": 55,
       "at": "2026-08-08T10:36:43.446Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 56,
+      "at": "2026-08-08T23:17:29.329Z",
+      "actor": "critic-qa-self-heal",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 57,
+      "at": "2026-08-08T23:17:29.361Z",
+      "actor": "critic-qa-self-heal",
+      "from": "RENDERED",
+      "to": "SCRIPTED",
+      "reason": "invalidate legacy narration/render for Apache-2.0 Kokoro rebuild"
+    },
+    {
+      "revision": 58,
+      "at": "2026-08-08T23:21:43.157Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 59,
+      "at": "2026-08-08T23:21:43.191Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "VOICE_READY",
+      "reason": "per-scene narration generated, concatenated, and probed"
+    },
+    {
+      "revision": 60,
+      "at": "2026-08-08T23:40:33.253Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 61,
+      "at": "2026-08-08T23:40:33.285Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 62,
+      "at": "2026-08-08T23:40:33.708Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

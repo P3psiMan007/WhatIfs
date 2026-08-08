@@ -9,15 +9,15 @@ const defaultProps={
   durationSeconds:12,
   audio:null,
   palette,
-  captions:[{start:0,end:4,text:'Imagine never needing to sleep again.'}],
-  scenes:[{id:'a',start:0,duration:6,headline:'NO MORE SLEEP',narration:'Imagine never needing to sleep again.',visual:'clock'}],
+  captions:[{start:0,end:4,text:'Tonight, you go to bed for the last time.'},{start:4,end:8,text:'Tomorrow, sleep is unnecessary.'},{start:8,end:12,text:'You gain roughly eight extra hours every day.'}],
+  scenes:[{id:'scene-01',start:0,duration:12,headline:'HOOK',narration:'Tonight, you go to bed for the last time.'}],
   beats:[
-    {id:'a-1',start:0,duration:4,sceneId:'a',sceneHeadline:'HOOK',text:'Imagine never needing to sleep again.',callout:'NO MORE SLEEP',visual:'clock',layout:0},
-    {id:'a-2',start:4,duration:4,sceneId:'a',sceneHeadline:'HOOK',text:'You gain eight extra hours.',callout:'EIGHT HOURS',visual:'hourglass',layout:1},
-    {id:'a-3',start:8,duration:4,sceneId:'a',sceneHeadline:'PAYOFF',text:'Those hours may stop belonging to you.',callout:null,visual:'scale',layout:2},
+    {id:'scene-01-beat-001',start:0,duration:4,sceneId:'scene-01',sceneHeadline:'HOOK',text:'Tonight, you go to bed for the last time.',callout:'LAST SLEEP'},
+    {id:'scene-01-beat-002',start:4,duration:4,sceneId:'scene-01',sceneHeadline:'HOOK',text:'Tomorrow, sleep is unnecessary.',callout:'AWAKE'},
+    {id:'scene-01-beat-003',start:8,duration:4,sceneId:'scene-01',sceneHeadline:'HOOK',text:'You gain roughly eight extra hours every day.',callout:'8 HOURS'},
   ],
 };
-const thumbnailProps={episodeId:'preview',title:'What If Humans Never Needed Sleep?',thumbnailText:'8 HOURS BACK',palette,visual:'clock'};
+const thumbnailProps={episodeId:'preview',title:'What If Humans Never Needed Sleep?',thumbnailText:'8 HOURS BACK',palette};
 
 export const RemotionRoot=()=> <>
   <Composition id="WhatIfEpisode" component={WhatIfEpisode} width={1920} height={1080} fps={30} durationInFrames={360} defaultProps={defaultProps} calculateMetadata={({props})=>({durationInFrames:Math.max(1,Math.ceil(Number(props.durationSeconds||12)*30))})}/>

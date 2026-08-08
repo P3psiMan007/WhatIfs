@@ -1,41 +1,56 @@
 import React from 'react';
-import {AbsoluteFill,Easing,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
+import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
+import {SleepScene,SleepThumbnailArt} from './sleep-scenes.jsx';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
 
-const Icon=({kind,accent,foreground,progress=0,size=390})=>{
-  const common={fill:'none',stroke:foreground,strokeWidth:7,strokeLinecap:'round',strokeLinejoin:'round'};
-  const glow={filter:'drop-shadow(0 0 20px rgba(255,179,64,.34))'};
-  const shell=(children)=><svg viewBox="0 0 420 360" width={size} height={size*360/420} style={glow}>{children}</svg>;
-  if(kind==='clock') return shell(<><circle cx="210" cy="180" r="126" {...common}/><line x1="210" y1="180" x2="210" y2="92" {...common}/><line x1="210" y1="180" x2={274+progress*35} y2={211-progress*22} stroke={accent} strokeWidth="11" strokeLinecap="round"/><circle cx="210" cy="180" r="12" fill={accent}/>{[0,90,180,270].map((d)=>{const r=d*Math.PI/180;return <line key={d} x1={210+Math.cos(r)*105} y1={180+Math.sin(r)*105} x2={210+Math.cos(r)*121} y2={180+Math.sin(r)*121} stroke={accent} strokeWidth="8" strokeLinecap="round"/>})}</>);
-  if(kind==='hourglass') return shell(<><path d="M128 50 H292 M128 310 H292 M151 55 C151 125 190 143 210 180 C231 143 269 125 269 55 M151 305 C151 235 190 217 210 180 C231 217 269 235 269 305" {...common}/><path d={`M174 100 H246 L210 ${160+progress*22} Z`} fill={accent}/><path d="M174 272 H246 L210 215 Z" fill={accent} opacity=".75"/></>);
-  if(kind==='brain') return shell(<><path d="M128 250 C88 220 93 171 121 151 C108 110 145 75 181 91 C201 55 256 66 264 104 C306 105 326 145 306 177 C333 212 302 259 263 257 C240 287 192 282 174 253 C155 260 140 257 128 250Z" {...common}/>{[[150,155],[202,125],[250,153],[171,209],[231,216]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="10" fill={i===2?accent:foreground}/>)}<path d="M150 155 L202 125 L250 153 M150 155 L171 209 L231 216 L250 153 M202 125 L231 216" stroke={accent} strokeWidth="5" fill="none"/></>);
-  if(kind==='city') return shell(<>{[45,115,200,290,350].map((x,i)=>{const h=[155,230,195,265,135][i];const y=320-h;return <g key={x}><rect x={x} y={y} width="55" height={h} rx="5" {...common}/>{Array.from({length:5}).map((_,j)=><rect key={j} x={x+13+(j%2)*23} y={y+28+Math.floor(j/2)*45} width="9" height="14" rx="2" fill={accent} opacity={.4+.5*((i+j)%2)}/>)}</g>})}<line x1="20" y1="320" x2="400" y2="320" {...common}/></>);
-  if(kind==='sunmoon') return shell(<><circle cx="125" cy="172" r="55" stroke={accent} strokeWidth="9" fill="none"/>{Array.from({length:8}).map((_,i)=>{const a=i*Math.PI/4;return <line key={i} x1={125+Math.cos(a)*76} y1={172+Math.sin(a)*76} x2={125+Math.cos(a)*98} y2={172+Math.sin(a)*98} stroke={accent} strokeWidth="7"/>})}<path d="M316 109 C259 120 254 207 310 231 C272 253 222 226 216 180 C210 136 245 99 290 97 C300 97 309 101 316 109Z" {...common}/></>);
-  if(kind==='work') return shell(<><rect x="73" y="127" width="274" height="169" rx="20" {...common}/><path d="M157 127 V92 H263 V127" {...common}/><line x1="73" y1="195" x2="347" y2="195" stroke={accent} strokeWidth="9"/><rect x="185" y="180" width="50" height="31" rx="8" fill={accent}/><circle cx="331" cy="72" r="43" fill="#0b0d12" stroke={foreground} strokeWidth="7"/><line x1="331" y1="72" x2="331" y2="47" stroke={accent} strokeWidth="7"/><line x1="331" y1="72" x2="351" y2="83" stroke={accent} strokeWidth="7"/></>);
-  if(kind==='scale') return shell(<><line x1="210" y1="68" x2="210" y2="300" {...common}/><line x1="118" y1="300" x2="302" y2="300" {...common}/><line x1="102" y1={124-progress*15} x2="318" y2={124+progress*15} stroke={accent} strokeWidth="10"/><path d="M102 124 L62 232 H142 Z M318 124 L278 232 H358 Z" {...common}/></>);
-  if(kind==='split') return shell(<><circle cx="120" cy="150" r="62" {...common}/><circle cx="300" cy="150" r="62" {...common}/><path d="M93 179 Q120 197 147 179 M273 179 Q300 197 327 179" {...common}/><line x1="210" y1="55" x2="210" y2="305" stroke={accent} strokeWidth="8" strokeDasharray="18 18"/><path d="M76 284 Q120 250 164 284 M256 284 Q300 250 344 284" {...common}/></>);
-  return shell(<><g opacity=".25">{Array.from({length:6}).map((_,i)=><line key={'h'+i} x1="42" y1={60+i*48} x2="380" y2={60+i*48} stroke={foreground} strokeWidth="2"/>)}{Array.from({length:8}).map((_,i)=><line key={'v'+i} x1={48+i*46} y1="48" x2={48+i*46} y2="318" stroke={foreground} strokeWidth="2"/>)}</g><polyline points={`45,258 98,232 150,262 205,174 260,192 315,108 378,${112-progress*35}`} fill="none" stroke={accent} strokeWidth="10" strokeLinecap="round" strokeLinejoin="round"/><circle cx="315" cy="108" r="11" fill={accent}/></>);
+const Captions=({captions,palette})=>{
+  const frame=useCurrentFrame(); const {fps}=useVideoConfig(); const t=frame/fps;
+  const cue=(captions||[]).find((c)=>t>=Number(c.start)&&t<Number(c.end));
+  if(!cue)return null;
+  const cueFrame=Math.max(0,frame-Math.floor(Number(cue.start)*fps));
+  const opacity=interpolate(cueFrame,[0,4],[0,1],clamp);
+  return <div style={{position:'absolute',left:160,right:160,bottom:38,display:'flex',justifyContent:'center',pointerEvents:'none',opacity}}>
+    <div style={{maxWidth:1280,fontFamily:font,fontSize:34,lineHeight:1.2,fontWeight:700,color:palette.foreground,textAlign:'center',background:'rgba(11,13,18,.76)',border:'1px solid rgba(234,231,225,.11)',borderRadius:18,padding:'11px 21px 12px',boxShadow:'0 10px 42px rgba(0,0,0,.42)',textShadow:'0 3px 12px rgba(0,0,0,.7)'}}>{cue.text}</div>
+  </div>;
 };
 
-const Beat=({beat,palette})=>{
-  const frame=useCurrentFrame();const {fps}=useVideoConfig();const duration=Math.max(1,Number(beat.duration||1)*fps);
-  const enter=interpolate(frame,[0,.42*fps],[0,1],{...clamp,easing:Easing.bezier(.16,1,.3,1)});const leave=interpolate(frame,[Math.max(0,duration-.3*fps),duration],[1,0],clamp);const opacity=Math.min(enter,leave);
-  const progress=interpolate(frame,[0,duration],[0,1],clamp);const accent=palette.accent;const fg=palette.foreground;const hero=beat.callout||beat.sceneHeadline;const heroSize=hero.length>20?88:hero.length>12?108:132;
-  const icon=<Icon kind={beat.visual} accent={accent} foreground={fg} progress={progress} size={beat.layout===1?300:405}/>;
-  const sceneLabel=<div style={{fontFamily:font,fontSize:23,fontWeight:800,letterSpacing:6,color:accent,marginBottom:25}}>WHAT IF EXPLAINS · {beat.sceneHeadline}</div>;
-  const heroText=<div style={{fontFamily:font,fontSize:heroSize,lineHeight:.92,letterSpacing:-4,fontWeight:900,color:fg,maxWidth:900,textTransform:'uppercase'}}>{hero}</div>;
-  const motion={opacity,transform:`translateY(${interpolate(enter,[0,1],[34,0])}px) scale(${.94+.06*enter})`};
-  if(beat.layout===1) return <AbsoluteFill style={{...motion,padding:'88px 120px 165px',alignItems:'center',justifyContent:'center',textAlign:'center'}}><div style={{position:'absolute',right:115,top:110,opacity:.55}}>{icon}</div><div style={{fontFamily:font,fontSize:26,fontWeight:800,letterSpacing:7,color:accent,marginBottom:26}}>WHAT IF EXPLAINS</div><div style={{fontFamily:font,fontSize:heroSize+18,lineHeight:.88,letterSpacing:-6,fontWeight:900,color:fg,maxWidth:1300,textTransform:'uppercase'}}>{hero}</div><div style={{width:360,height:8,borderRadius:99,background:'rgba(234,231,225,.12)',marginTop:42,overflow:'hidden'}}><div style={{width:`${Math.max(8,progress*100)}%`,height:'100%',background:accent}}/></div></AbsoluteFill>;
-  if(beat.layout===2) return <AbsoluteFill style={{...motion,padding:'92px 118px 165px',display:'flex',flexDirection:'row-reverse',alignItems:'center',gap:100}}><div style={{width:520,display:'flex',justifyContent:'center',transform:`rotate(${interpolate(progress,[0,1],[-2,3])}deg)`}}>{icon}</div><div style={{flex:1}}>{sceneLabel}{heroText}<div style={{marginTop:34,width:150,height:12,background:accent,borderRadius:20}}/></div></AbsoluteFill>;
-  if(beat.layout===3) return <AbsoluteFill style={{...motion,padding:'100px 120px 165px',justifyContent:'center'}}><div style={{position:'absolute',left:100,top:90,width:14,height:720,background:accent,borderRadius:20,opacity:.85}}/><div style={{marginLeft:70,display:'flex',alignItems:'center',gap:100}}><div style={{flex:1}}>{sceneLabel}{heroText}<div style={{fontFamily:font,fontSize:31,lineHeight:1.25,color:fg,opacity:.55,marginTop:30,maxWidth:790}}>A consequence of the current thought experiment</div></div>{icon}</div></AbsoluteFill>;
-  return <AbsoluteFill style={{...motion,padding:'92px 118px 165px',display:'flex',flexDirection:'row',alignItems:'center',gap:105}}><div style={{width:520,display:'flex',justifyContent:'center',transform:`translateY(${interpolate(progress,[0,1],[-12,12])}px)`}}>{icon}</div><div style={{flex:1}}>{sceneLabel}{heroText}<div style={{marginTop:34,display:'flex',gap:9}}>{Array.from({length:6}).map((_,i)=><div key={i} style={{width:i===Math.floor(progress*6)?72:24,height:9,borderRadius:20,background:i<=Math.floor(progress*6)?accent:'rgba(234,231,225,.16)',transition:'none'}}/>)}</div></div></AbsoluteFill>;
+function withLocalBeatOrdinals(beats){
+  const counts={};
+  return (beats||[]).map((beat)=>{
+    const sceneId=beat?.sceneId||'unknown';
+    counts[sceneId]=(counts[sceneId]||0)+1;
+    return {...beat,localBeatOrdinal:counts[sceneId]};
+  });
+}
+
+export const WhatIfEpisode=(props)=>{
+  const {fps}=useVideoConfig();
+  const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
+  const beats=withLocalBeatOrdinals(props.beats||[]);
+  return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden'}}>
+    {beats.map((beat)=>{
+      const from=Math.max(0,Math.floor(Number(beat.start||0)*fps));
+      const durationInFrames=Math.max(1,Math.ceil(Number(beat.duration||1)*fps));
+      return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.5*fps))}>
+        <SleepScene beat={beat} beatOrdinal={beat.localBeatOrdinal} palette={palette}/>
+      </Sequence>;
+    })}
+    {props.audio?<Audio src={staticFile(props.audio)}/>:null}
+    <Captions captions={props.captions||[]} palette={palette}/>
+  </AbsoluteFill>;
 };
 
-const Captions=({captions,palette})=>{const frame=useCurrentFrame();const {fps}=useVideoConfig();const t=frame/fps;const cue=(captions||[]).find((c)=>t>=Number(c.start)&&t<Number(c.end));if(!cue)return null;const cueFrame=Math.max(0,frame-Math.floor(cue.start*fps));return <div style={{position:'absolute',left:230,right:230,bottom:65,display:'flex',justifyContent:'center',opacity:interpolate(cueFrame,[0,5],[0,1],clamp)}}><div style={{fontFamily:font,fontSize:40,lineHeight:1.25,fontWeight:700,color:palette.foreground,textAlign:'center',background:'rgba(11,13,18,.86)',border:'1px solid rgba(234,231,225,.18)',borderRadius:22,padding:'14px 24px',boxShadow:'0 16px 60px rgba(0,0,0,.35)'}}>{cue.text}</div></div>};
-
-export const WhatIfEpisode=(props)=>{const frame=useCurrentFrame();const {fps}=useVideoConfig();const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden'}}><div style={{position:'absolute',inset:-200,background:`radial-gradient(circle at ${20+Math.sin(frame/80)*8}% 34%, rgba(255,179,64,.15), transparent 29%), radial-gradient(circle at 80% 73%, rgba(255,179,64,.07), transparent 27%)`}}/><div style={{position:'absolute',inset:0,opacity:.1,backgroundImage:'linear-gradient(rgba(234,231,225,.12) 1px, transparent 1px),linear-gradient(90deg, rgba(234,231,225,.12) 1px, transparent 1px)',backgroundSize:'90px 90px',transform:`translate(${-frame%90}px,${-(frame*.35)%90}px)`}}/>{(props.beats||[]).map((beat)=>{const from=Math.max(0,Math.floor(Number(beat.start||0)*fps));const durationInFrames=Math.max(1,Math.ceil(Number(beat.duration||1)*fps));return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames}><Beat beat={beat} palette={palette}/></Sequence>})}{props.audio?<Audio src={staticFile(props.audio)}/>:null}<Captions captions={props.captions||[]} palette={palette}/><div style={{position:'absolute',top:48,right:66,fontFamily:font,fontSize:20,fontWeight:800,letterSpacing:4,color:palette.foreground,opacity:.3}}>{props.episodeId}</div></AbsoluteFill>};
-
-export const WhatIfThumbnail=(props)=>{const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};return <AbsoluteFill style={{background:palette.background,overflow:'hidden',fontFamily:font}}><div style={{position:'absolute',inset:-120,background:'radial-gradient(circle at 76% 48%, rgba(255,179,64,.22), transparent 32%)'}}/><div style={{position:'absolute',left:64,top:54,fontSize:21,fontWeight:800,letterSpacing:6,color:palette.accent}}>WHAT IF EXPLAINS</div><div style={{position:'absolute',left:68,top:150,width:690,fontSize:112,lineHeight:.88,letterSpacing:-5,fontWeight:900,color:palette.foreground,textTransform:'uppercase'}}>{props.thumbnailText||'WHAT IF?'}</div><div style={{position:'absolute',left:72,bottom:70,width:650,height:9,borderRadius:20,background:palette.accent}}/><div style={{position:'absolute',right:45,top:120,transform:'scale(1.18)'}}><Icon kind={props.visual||'clock'} accent={palette.accent} foreground={palette.foreground} progress={.72} size={430}/></div><div style={{position:'absolute',right:58,bottom:45,fontSize:18,fontWeight:700,letterSpacing:3,color:palette.foreground,opacity:.35}}>{props.episodeId}</div></AbsoluteFill>};
+export const WhatIfThumbnail=(props)=>{
+  const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
+  return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden',fontFamily:font}}>
+    <div style={{position:'absolute',inset:-100,background:'radial-gradient(circle at 77% 48%, rgba(255,179,64,.20), transparent 34%), radial-gradient(circle at 30% 68%, rgba(234,231,225,.055), transparent 31%)'}}/>
+    <div style={{position:'absolute',inset:0,opacity:.055,backgroundImage:'radial-gradient(circle, rgba(234,231,225,.9) .7px, transparent .9px)',backgroundSize:'12px 12px'}}/>
+    <div style={{position:'absolute',left:56,top:46,fontSize:18,fontWeight:900,letterSpacing:5,color:palette.accent}}>WHAT IF EXPLAINS</div>
+    <div style={{position:'absolute',left:58,top:142,width:650,fontSize:108,lineHeight:.86,letterSpacing:-5,fontWeight:900,color:palette.foreground,textTransform:'uppercase',zIndex:3}}>8 HOURS<br/><span style={{color:palette.accent}}>BACK</span></div>
+    <div style={{position:'absolute',left:62,bottom:62,width:510,height:8,borderRadius:99,background:palette.accent,zIndex:3}}/>
+    <div style={{position:'absolute',inset:0,translate:'260px 0px',scale:.67,transformOrigin:'center'}}><SleepThumbnailArt palette={palette}/></div>
+  </AbsoluteFill>;
+};

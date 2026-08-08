@@ -11,6 +11,8 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/edge-tts"
+      - "tools/narration-provider-repair.mjs"
       - "tools/episode1-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.test.mjs"
       - "tools/episode1-thumbnail-rebuild.mjs"
@@ -44,6 +46,8 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/edge-tts"
+      - "tools/narration-provider-repair.mjs"
       - "tools/episode1-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.test.mjs"
       - "tools/episode1-thumbnail-rebuild.mjs"
@@ -88,8 +92,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - name: Install video dependencies
         run: npm install --no-audit --no-fund
+      - name: Validate narration self-heal scripts
+        run: |
+          python -m py_compile tools/edge-tts
+          node --check tools/narration-provider-repair.mjs
+          ! grep -q "pip install.*edge-tts" .github/workflows/episode-factory.yml
+          grep -q "kokoro==0.9.4" .github/workflows/episode-factory.yml
+          grep -q "Apache-2.0" tools/narration-provider-repair.mjs
       - name: Run state, orchestration, producer, rebuild, packaging, beat alignment, registry, and visual guard tests
         run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
@@ -119,15 +133,21 @@ jobs:
       - name: Install deterministic production dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg espeak-ng
           npm install --no-audit --no-fund
-          python -m pip install --disable-pip-version-check edge-tts==7.2.8
+          python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile==0.13.1
+          chmod +x tools/edge-tts
+          echo "$GITHUB_WORKSPACE/tools" >> "$GITHUB_PATH"
       - name: Verify required media tooling
         run: |
           command -v ffmpeg
           command -v ffprobe
+          command -v edge-tts
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
+          python -c "from kokoro import KPipeline; print('Kokoro import OK')"
+      - name: Invalidate legacy narration and select Kokoro when applicable
+        run: node tools/narration-provider-repair.mjs
       - name: Activate one-shot late-beat QA repair when applicable
         run: node tools/episode1-late-beat-rebuild.mjs
       - name: Activate one-shot hook contrast QA repair when applicable

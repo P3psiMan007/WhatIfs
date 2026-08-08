@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+"""Compatibility CLI for the producer's legacy edge-tts invocation.
+
+This executable intentionally has the legacy command name so episode-producer.mjs
+can remain unchanged while narration is generated locally with Apache-2.0 Kokoro.
+Supported flags are only the subset the producer uses.
+"""
+import argparse
+import re
+import subprocess
+import tempfile
+from pathlib import Path
+
+import numpy as np
+import soundfile as sf
+from kokoro import KPipeline
+
+
+def stamp(seconds: float) -> str:
+    ms = max(0, round(seconds * 1000))
+    h, rem = divmod(ms, 3_600_000)
+    m, rem = divmod(rem, 60_000)
+    s, ms = divmod(rem, 1000)
+    return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
+
+
+def sentences(text: str):
+    parts = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text.strip()))
+    return [p.strip() for p in parts if p.strip()]
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--file", required=True)
+    p.add_argument("--voice", default="af_heart")
+    p.add_argument("--rate", default="+0%")
+    p.add_argument("--write-media", required=True)
+    p.add_argument("--write-subtitles", required=True)
+    args = p.parse_args()
+
+    text = Path(args.file).read_text(encoding="utf-8").strip()
+    if not text:
+        raise SystemExit("empty narration input")
+
+    # Keep the legacy percentage-rate input, but deliberately slow the old +4%
+    # preset to a natural documentary pace. Kokoro speed 0.92 also gives payoff
+    # lines more breathing room than the prior Edge TTS render.
+    speed = 0.92
+    m = re.fullmatch(r"([+-]?)(\d+)%", args.rate.strip())
+    if m and args.rate.strip() not in {"+4%", "4%"}:
+        pct = int(m.group(2)) * (-1 if m.group(1) == "-" else 1)
+        speed = max(0.78, min(1.08, 0.92 * (1 + pct / 100)))
+
+    voice = args.voice if args.voice.startswith(("af_", "am_", "bf_", "bm_")) else "am_michael"
+    pipeline = KPipeline(lang_code="a")
+
+    audio_parts = []
+    cues = []
+    cursor = 0.0
+    for sentence in sentences(text):
+        chunks = []
+        for _graphemes, _phonemes, audio in pipeline(sentence, voice=voice, speed=speed):
+            chunks.append(np.asarray(audio, dtype=np.float32))
+        if not chunks:
+            continue
+        rendered = np.concatenate(chunks)
+        duration = len(rendered) / 24000.0
+        audio_parts.append(rendered)
+        cues.append((cursor, cursor + duration, sentence))
+        # 140 ms scene-internal pause improves phrasing without bloating captions.
+        silence = np.zeros(round(0.14 * 24000), dtype=np.float32)
+        audio_parts.append(silence)
+        cursor += duration + 0.14
+
+    if not cues:
+        raise SystemExit("Kokoro produced no narration")
+
+    combined = np.concatenate(audio_parts)
+    media = Path(args.write_media)
+    media.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as td:
+        wav = Path(td) / "narration.wav"
+        sf.write(wav, combined, 24000)
+        subprocess.run([
+            "ffmpeg", "-y", "-v", "error", "-i", str(wav),
+            "-c:a", "libmp3lame", "-b:a", "128k", str(media)
+        ], check=True)
+
+    srt = Path(args.write_subtitles)
+    srt.parent.mkdir(parents=True, exist_ok=True)
+    srt.write_text("\n\n".join(
+        f"{i}\n{stamp(start)} --> {stamp(end)}\n{text}"
+        for i, (start, end, text) in enumerate(cues, 1)
+    ) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

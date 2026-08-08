@@ -138,6 +138,8 @@ jobs:
         run: node tools/episode1-visual-rebuild.mjs
       - name: Activate one-shot illustrated-v3 Episode 1 repair
         run: node tools/episode1-illustrated-v3-rebuild.mjs
+      - name: Activate one-shot character-payoff v4 Episode 1 repair
+        run: node tools/episode1-character-payoff-v4-rebuild.mjs
       - name: Advance factory and run built-in producer
         shell: bash
         run: |

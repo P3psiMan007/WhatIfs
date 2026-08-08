@@ -1,59 +1,167 @@
-name: Upload video to YouTube (private)
+name: Publish verified episode to YouTube
 
-# Manual trigger only. This never runs automatically on push - a YouTube
-# upload is a real-world side effect and should always be an explicit
-# action, even though the resulting video is private.
 on:
   workflow_dispatch:
-    inputs:
-      video_path:
-        description: "Path to the .mp4 file (relative to repo root)"
-        required: true
-      title:
-        description: "Video title"
-        required: true
-      description:
-        description: "Video description"
-        required: false
-        default: ""
-      thumbnail_path:
-        description: "Path to a thumbnail image, relative to repo root (optional)"
-        required: false
-        default: ""
-      tags:
-        description: "Comma-separated tags (optional)"
-        required: false
-        default: ""
+  push:
+    branches: [main]
+    paths:
+      - "episodes/current/qa-review.json"
+      - "episodes/current/episode-state.json"
+      - "episodes/current/render-manifest.json"
+      - "config/autonomy.json"
+      - "queue/daily-control.json"
+      - "youtube_uploader/**"
+      - "scripts/verify_render_artifact.py"
+      - ".github/workflows/upload-youtube.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: publish-current-episode
+  cancel-in-progress: false
 
 jobs:
-  upload:
+  publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Evaluate publication gate
+        id: gate
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from youtube_uploader.publish_gate import evaluate_publication_gate
 
-      - name: Upload to YouTube (always private)
+          load = lambda p: json.loads(Path(p).read_text(encoding="utf-8"))
+          decision = evaluate_publication_gate(
+              load("episodes/current/qa-review.json"),
+              load("episodes/current/episode-state.json"),
+              load("config/autonomy.json"),
+              load("queue/daily-control.json"),
+          )
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              print(f"eligible={'true' if decision.allowed else 'false'}", file=out)
+          if decision.allowed:
+              print("Publication gate PASS")
+          else:
+              print("Publication gate BLOCKED")
+              for reason in decision.reasons:
+                  print(f"- {reason}")
+          PY
+
+      - name: Install dependencies
+        if: steps.gate.outputs.eligible == 'true'
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Run publishing tests before side effects
+        if: steps.gate.outputs.eligible == 'true'
+        run: |
+          python -m unittest discover -s youtube_uploader -p 'test_*.py' -v
+          python -m unittest scripts.test_verify_render_artifact -v
+          node --test tools/publishing-control-plane.test.mjs
+
+      - name: Resolve exact approved render source
+        if: steps.gate.outputs.eligible == 'true'
+        id: source
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from scripts.verify_render_artifact import parse_render_asset_uri
+
+          qa = json.loads(Path("episodes/current/qa-review.json").read_text(encoding="utf-8"))
+          ref = parse_render_asset_uri(qa["reviewedRenderAsset"])
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              print(f"run_id={ref.run_id}", file=out)
+              print(f"artifact_name={ref.artifact_name}", file=out)
+          print(f"Approved source: run={ref.run_id} artifact={ref.artifact_name}")
+          PY
+
+      - name: Download exact render artifact
+        if: steps.gate.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+          ARTIFACT_NAME: ${{ steps.source.outputs.artifact_name }}
+        run: |
+          rm -rf incoming-render
+          mkdir -p incoming-render
+          gh run download "$RUN_ID" -n "$ARTIFACT_NAME" -D incoming-render
+          test -s incoming-render/episode.mp4
+          test -s incoming-render/thumbnail.png
+          test -s incoming-render/render-manifest.json
+
+      - name: Verify exact artifact identity
+        if: steps.gate.outputs.eligible == 'true'
+        run: |
+          python scripts/verify_render_artifact.py \
+            --qa-review episodes/current/qa-review.json \
+            --canonical-manifest episodes/current/render-manifest.json \
+            --downloaded-dir incoming-render \
+            --output /tmp/render-identity.json
+
+      - name: Publish private, verify, then promote same video public
+        if: steps.gate.outputs.eligible == 'true'
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          VIDEO_PATH: ${{ github.event.inputs.video_path }}
-          TITLE: ${{ github.event.inputs.title }}
-          DESCRIPTION: ${{ github.event.inputs.description }}
-          THUMBNAIL_PATH: ${{ github.event.inputs.thumbnail_path }}
-          TAGS: ${{ github.event.inputs.tags }}
         run: |
-          ARGS=(--video "$VIDEO_PATH" --title "$TITLE" --description "$DESCRIPTION")
-          if [ -n "$THUMBNAIL_PATH" ]; then
-            ARGS+=(--thumbnail "$THUMBNAIL_PATH")
+          python -m youtube_uploader.publisher \
+            --video incoming-render/episode.mp4 \
+            --thumbnail incoming-render/thumbnail.png \
+            --identity /tmp/render-identity.json \
+            --qa-review episodes/current/qa-review.json \
+            --episode-state episodes/current/episode-state.json \
+            --render-manifest episodes/current/render-manifest.json \
+            --autonomy config/autonomy.json \
+            --daily-control queue/daily-control.json \
+            --publication-record episodes/current/publication.json
+
+      - name: Require verified public proof
+        if: steps.gate.outputs.eligible == 'true'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          record = json.loads(Path("episodes/current/publication.json").read_text(encoding="utf-8"))
+          yt = record.get("youtube") or {}
+          if not yt.get("videoId"):
+              raise SystemExit("publication record missing YouTube video ID")
+          if not yt.get("publicVerifiedAt"):
+              raise SystemExit("publication record missing verified public timestamp")
+          if "public" not in (yt.get("privacyTransitions") or []):
+              raise SystemExit("publication record does not prove public privacy transition")
+          print(f"Verified public YouTube video: https://www.youtube.com/watch?v={yt['videoId']}")
+          PY
+
+      - name: Persist publication proof and daily counter
+        if: steps.gate.outputs.eligible == 'true'
+        shell: bash
+        run: |
+          git config user.name "whatifs-publisher"
+          git config user.email "whatifs-publisher@users.noreply.github.com"
+          git add episodes/current/publication.json queue/daily-control.json
+          if git diff --cached --quiet; then
+            echo "No publication state changes to persist."
+            exit 0
           fi
-          if [ -n "$TAGS" ]; then
-            ARGS+=(--tags "$TAGS")
-          fi
-          python -m youtube_uploader.uploader "${ARGS[@]}"
+          git commit -m "chore: record verified YouTube publication"
+          git pull --rebase origin main
+          git push

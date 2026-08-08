@@ -1,8 +1,8 @@
 """Reusable YouTube upload primitives.
 
 Safety invariant: video insertion always starts PRIVATE. Public promotion is
-implemented separately in ``youtube_uploader.verifier`` and is only called by
-the fail-closed publisher after processing/metadata/thumbnail verification.
+implemented separately and may use a broader OAuth service only after the
+private upload has passed processing/metadata/thumbnail verification.
 """
 from __future__ import annotations
 
@@ -13,18 +13,31 @@ from typing import Optional
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from .auth import credentials_from_env, ensure_publication_credentials
+from .auth import (
+    AUTHORIZE_SCOPES,
+    PRIVATE_VERIFY_SCOPES,
+    credentials_from_env,
+    ensure_publication_credentials,
+)
 
 API_SERVICE_NAME = "youtube"
 API_VERSION = "v3"
 PRIVACY_STATUS = "private"
 
 
-def build_youtube_service(*, require_publication_scope: bool = False):
-    credentials = credentials_from_env()
-    if require_publication_scope:
+def build_youtube_service(*, scopes=None, prove_publication_scope: bool = False):
+    credentials = credentials_from_env(scopes=scopes or PRIVATE_VERIFY_SCOPES)
+    if prove_publication_scope:
         ensure_publication_credentials(credentials)
     return build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+
+def build_public_promotion_service():
+    """Build a service that is proven capable of videos.update privacy changes."""
+    return build_youtube_service(
+        scopes=AUTHORIZE_SCOPES,
+        prove_publication_scope=True,
+    )
 
 
 def upload_private(

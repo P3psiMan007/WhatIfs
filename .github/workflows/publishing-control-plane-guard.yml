@@ -17,6 +17,8 @@ on:
       - "scripts/test_prepare_thumbnail_override.py"
       - "scripts/extract_qa_evidence.py"
       - "scripts/test_extract_qa_evidence.py"
+      - "scripts/install_youtube_refresh_secret.py"
+      - "scripts/test_install_youtube_refresh_secret.py"
       - ".github/workflows/post-factory-qa-evidence.yml"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
@@ -37,6 +39,8 @@ on:
       - "scripts/test_prepare_thumbnail_override.py"
       - "scripts/extract_qa_evidence.py"
       - "scripts/test_extract_qa_evidence.py"
+      - "scripts/install_youtube_refresh_secret.py"
+      - "scripts/test_install_youtube_refresh_secret.py"
       - ".github/workflows/post-factory-qa-evidence.yml"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
@@ -58,11 +62,12 @@ jobs:
         run: node --test tools/publishing-control-plane.test.mjs
       - name: Validate publishing controls
         run: node -e "import('./tools/publishing-control-plane.mjs').then(({validateFiles}) => validateFiles('config/autonomy.json','queue/daily-control.json'))"
-      - name: Test YouTube publishing backbone and QA evidence helpers
+      - name: Test YouTube publishing backbone and QA helpers
         run: |
           python -m unittest discover -s youtube_uploader -p 'test_*.py' -v
           python -m unittest scripts.test_verify_render_artifact -v
           python -m unittest scripts.test_prepare_thumbnail_override -v
           python -m unittest scripts.test_extract_qa_evidence -v
+          python -m unittest scripts.test_install_youtube_refresh_secret -v
       - name: Compile publisher Python
-        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py scripts/prepare_thumbnail_override.py scripts/extract_qa_evidence.py
+        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py scripts/prepare_thumbnail_override.py scripts/extract_qa_evidence.py scripts/install_youtube_refresh_secret.py

@@ -1,55 +1,56 @@
-"""Shared authentication helpers for the YouTube uploader.
+"""Shared authentication helpers for the YouTube publisher lifecycle.
 
-Scope note: ``youtube.upload`` is the minimum YouTube Data API v3 scope that
-covers everything the automated pipeline needs: uploading videos, setting
-title/description/tags/category, controlling privacyStatus (private), and
-calling thumbnails.set. We deliberately do NOT request the broader
-``youtube`` or ``youtube.force-ssl`` scopes, which would also grant deleting
-videos, managing playlists, comments, etc.
+Factory V2 has two permission stages:
 
-``youtube.upload`` alone cannot call any read endpoint (channels.list,
-videos.list, etc. all return 403 insufficient_scope) - confirmed empirically
-against the live API, not assumed. Since a one-time harmless verification
-call is required after authorizing (see scripts/verify_token.py), the local
-authorization flow additionally requests ``youtube.readonly``, purely so
-that verification step is possible. The uploader pipeline itself
-(uploader.py) never calls any read-only endpoint and would work fine on a
-token that only had ``youtube.upload``.
+1. Private upload + read-back verification. The existing token can do this
+   with ``youtube.upload`` + ``youtube.readonly``.
+2. Promote that same verified video to public. YouTube's ``videos.update``
+   requires the broader ``youtube`` management scope.
 
-``yt-analytics.readonly`` (YouTube Analytics API - read-only channel/video
-performance data: views, watch time, etc.) is also requested up front, for
-future analytics features. Installed-app refresh tokens are minted with a
-fixed scope set at consent time and don't support adding scopes to an
-existing token later - any scope change requires re-running the consent
-flow and swapping in the new refresh token (see scripts/authorize.py).
+An older refresh token can therefore still produce a safe verified PRIVATE
+upload. It only needs one re-authorization before automatic public promotion.
 """
 from __future__ import annotations
 
 import os
 
+from google.auth.exceptions import RefreshError
+from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
-YOUTUBE_UPLOAD_SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+YOUTUBE_UPLOAD_SCOPE = "https://www.googleapis.com/auth/youtube.upload"
 YOUTUBE_READONLY_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
+YOUTUBE_MANAGE_SCOPE = "https://www.googleapis.com/auth/youtube"
 YT_ANALYTICS_READONLY_SCOPE = "https://www.googleapis.com/auth/yt-analytics.readonly"
 
-# Scopes requested during the one-time local authorization flow: the
-# functional upload scope, plus youtube.readonly (verification) and
-# yt-analytics.readonly (future analytics use).
-AUTHORIZE_SCOPES = YOUTUBE_UPLOAD_SCOPES + [YOUTUBE_READONLY_SCOPE, YT_ANALYTICS_READONLY_SCOPE]
+# These are the scopes the existing uploader token was originally authorized
+# for and are enough to create + verify a PRIVATE upload.
+PRIVATE_VERIFY_SCOPES = [
+    YOUTUBE_UPLOAD_SCOPE,
+    YOUTUBE_READONLY_SCOPE,
+    YT_ANALYTICS_READONLY_SCOPE,
+]
+
+# New authorizations request the additional management permission needed by
+# videos.update to promote the already-verified private video to public.
+AUTHORIZE_SCOPES = [
+    *PRIVATE_VERIFY_SCOPES,
+    YOUTUBE_MANAGE_SCOPE,
+]
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 
 
 def credentials_from_refresh_token(
-    client_id: str, client_secret: str, refresh_token: str, scopes=None
+    client_id: str,
+    client_secret: str,
+    refresh_token: str,
+    scopes=None,
 ) -> Credentials:
-    """Build a Credentials object from a stored refresh token.
+    """Build credentials from a stored refresh token.
 
-    No access token is embedded; google-auth silently mints a fresh access
-    token from the refresh token the first time it's needed. `scopes` is
-    informational here (the actual grant is fixed to whatever the refresh
-    token was issued with); defaults to the functional upload-only scope.
+    ``scopes`` must be derivable from the scopes originally granted to the
+    refresh token; constructing this object does not grant new privileges.
     """
     return Credentials(
         token=None,
@@ -57,17 +58,39 @@ def credentials_from_refresh_token(
         token_uri=TOKEN_URI,
         client_id=client_id,
         client_secret=client_secret,
-        scopes=scopes or YOUTUBE_UPLOAD_SCOPES,
+        scopes=scopes or AUTHORIZE_SCOPES,
     )
 
 
-def credentials_from_env() -> Credentials:
-    """Build credentials from environment variables.
+def ensure_publication_credentials(credentials: Credentials, *, request=None) -> Credentials:
+    """Prove the refresh token can mint credentials for public promotion."""
+    request = request or Request()
+    try:
+        credentials.refresh(request)
+    except RefreshError as exc:
+        raise RuntimeError(
+            "YouTube OAuth token cannot promote the verified private video to public; "
+            "re-authorize once with scripts/authorize.py and replace the GitHub refresh token."
+        ) from exc
 
-    Expects YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN
-    - the same names used for the GitHub Actions repository secrets, so this
-    works unchanged in CI and in a local shell with those vars exported.
-    """
+    requested = set(credentials.scopes or [])
+    if YOUTUBE_MANAGE_SCOPE not in requested:
+        raise RuntimeError(
+            "YouTube management scope is missing; re-authorize with scripts/authorize.py."
+        )
+
+    # Google may omit granted_scopes when granted=requested. If present, treat
+    # it as authoritative and fail closed when the management permission is absent.
+    granted = credentials.granted_scopes
+    if granted is not None and YOUTUBE_MANAGE_SCOPE not in set(granted):
+        raise RuntimeError(
+            "YouTube management scope was not granted; re-authorize with scripts/authorize.py."
+        )
+    return credentials
+
+
+def credentials_from_env(scopes=None) -> Credentials:
+    """Build publisher credentials from GitHub Actions/local environment vars."""
     try:
         client_id = os.environ["YOUTUBE_CLIENT_ID"]
         client_secret = os.environ["YOUTUBE_CLIENT_SECRET"]
@@ -78,4 +101,9 @@ def credentials_from_env() -> Credentials:
             "Expected YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN."
         ) from missing
 
-    return credentials_from_refresh_token(client_id, client_secret, refresh_token)
+    return credentials_from_refresh_token(
+        client_id,
+        client_secret,
+        refresh_token,
+        scopes=scopes or AUTHORIZE_SCOPES,
+    )

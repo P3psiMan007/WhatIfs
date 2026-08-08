@@ -7,6 +7,12 @@ on:
       - "queue/daily-control.json"
       - "episodes/episode-state.schema.json"
       - "docs/EPISODE_STATE_PROTOCOL.md"
+      - "tools/publishing-control-plane.mjs"
+      - "tools/publishing-control-plane.test.mjs"
+      - "youtube_uploader/**"
+      - "scripts/verify_render_artifact.py"
+      - "scripts/test_verify_render_artifact.py"
+      - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
   push:
     branches: [main]
@@ -15,6 +21,12 @@ on:
       - "queue/daily-control.json"
       - "episodes/episode-state.schema.json"
       - "docs/EPISODE_STATE_PROTOCOL.md"
+      - "tools/publishing-control-plane.mjs"
+      - "tools/publishing-control-plane.test.mjs"
+      - "youtube_uploader/**"
+      - "scripts/verify_render_artifact.py"
+      - "scripts/test_verify_render_artifact.py"
+      - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
 
 jobs:
@@ -25,35 +37,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install publisher dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: Test publishing controls
+        run: node --test tools/publishing-control-plane.test.mjs
       - name: Validate publishing controls
+        run: node -e "import('./tools/publishing-control-plane.mjs').then(({validateFiles}) => validateFiles('config/autonomy.json','queue/daily-control.json'))"
+      - name: Test YouTube publishing backbone
         run: |
-          node <<'NODE'
-          const fs = require('fs');
-          const autonomy = JSON.parse(fs.readFileSync('config/autonomy.json', 'utf8'));
-          const daily = JSON.parse(fs.readFileSync('queue/daily-control.json', 'utf8'));
-
-          const fail = (m) => { throw new Error(m); };
-          if (autonomy.autonomy_version !== '1.0') fail('unsupported autonomy_version');
-          if (!Number.isInteger(autonomy.revision) || autonomy.revision < 0) fail('invalid autonomy revision');
-          if (typeof autonomy.autoPublishEnabled !== 'boolean') fail('autoPublishEnabled must be boolean');
-          if (typeof autonomy.requiredCoreScore !== 'number' || autonomy.requiredCoreScore < 9) fail('requiredCoreScore must be >= 9');
-          if (!Array.isArray(autonomy.publishReadyStates) || !autonomy.publishReadyStates.includes('QA_PASSED') || !autonomy.publishReadyStates.includes('AUTO_PUBLISH_READY')) fail('publish-ready states missing');
-          const requiredGates = ['factual','package','retention','narration','visual','technical','policy','copyright'];
-          for (const gate of requiredGates) if (!autonomy.requiredGates.includes(gate)) fail(`required gate missing: ${gate}`);
-          if (autonomy.canary.requiredPrivateUploads !== 2) fail('canary must require exactly 2 initial private uploads');
-          if (!Number.isInteger(autonomy.canary.remainingPrivateUploads) || autonomy.canary.remainingPrivateUploads < 0 || autonomy.canary.remainingPrivateUploads > 2) fail('invalid canary remaining count');
-          if (autonomy.canary.successfulPrivateUploads + autonomy.canary.remainingPrivateUploads !== autonomy.canary.requiredPrivateUploads) fail('canary counters inconsistent');
-          if (autonomy.publication.firstTwoRealVideosPrivacy !== 'private') fail('canary uploads must be private');
-          if (autonomy.publication.allowPublicOrScheduledOnlyWhenCanaryComplete !== true) fail('public publishing must require canary completion');
-          if (autonomy.publication.requireAutoPublishEnabledForPublicOrScheduled !== true) fail('public publishing must require autoPublishEnabled');
-          if (autonomy.publication.failClosedOnUncertainty !== true) fail('fail-closed policy required');
-
-          if (daily.control_version !== '1.0') fail('unsupported control_version');
-          if (!Number.isInteger(daily.revision) || daily.revision < 0) fail('invalid daily-control revision');
-          if (typeof daily.pauseAllProduction !== 'boolean' || typeof daily.pausePublishing !== 'boolean') fail('pause switches must be boolean');
-          if (!Number.isInteger(daily.dailyPublishQuota) || daily.dailyPublishQuota < 0) fail('invalid daily quota');
-          if (!Number.isInteger(daily.publishedToday) || daily.publishedToday < 0 || daily.publishedToday > daily.dailyPublishQuota) fail('publishedToday exceeds quota');
-          if (!Number.isInteger(daily.minimumSpacingMinutes) || daily.minimumSpacingMinutes < 0) fail('invalid spacing');
-
-          console.log('Publishing control plane OK');
-          NODE
+          python -m unittest discover -s youtube_uploader -p 'test_*.py' -v
+          python -m unittest scripts.test_verify_render_artifact -v
+      - name: Compile publisher Python
+        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py

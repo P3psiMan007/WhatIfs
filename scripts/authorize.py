@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""One-time local OAuth authorization for the WhatIfs YouTube uploader.
+"""One-time local OAuth authorization for the WhatIfs YouTube publisher.
 
-Run this once, on a machine with a browser, to mint a refresh token. It does
-NOT print the client secret or refresh token to the terminal. Instead it
-writes them to a local, gitignored JSON file (outside the repo by default)
-for a follow-up step to load into GitHub Actions secrets.
+Run this on a machine with a browser to mint a refresh token. Factory V2
+needs authorization to upload a video privately, verify it, and change that
+same video's privacy status to public after QA. It does NOT print the client
+secret or refresh token to the terminal.
 
 Usage:
     python scripts/authorize.py [--client-secret PATH] [--out PATH]
@@ -39,8 +39,10 @@ def main() -> None:
     print("Requesting scopes:")
     for scope in AUTHORIZE_SCOPES:
         print(f"  - {scope}")
-    print("  (youtube.readonly is requested only to run a harmless post-auth")
-    print("   verification call; the automated upload pipeline never uses it.)")
+    print()
+    print("Factory V2 uses these scopes to upload privately, verify the exact")
+    print("video, promote that same video to public after strict QA, and later")
+    print("read channel analytics. It does not automatically delete videos.")
     print()
     print(">>> Your browser will open to a Google sign-in / consent screen.")
     print(">>> Select the Google account linked to your YouTube channel, then click Allow.")
@@ -51,14 +53,14 @@ def main() -> None:
         port=0,
         open_browser=True,
         success_message="Authorization complete. You can close this browser tab and return to the terminal.",
+        authorization_prompt_message="Please authorize Factory V2 in your browser.",
     )
 
     if not credentials.refresh_token:
         raise SystemExit(
-            "No refresh token was returned. This usually happens if this app was "
-            "already authorized before and Google reused a session without prompting "
-            "for consent again. Revoke prior access at "
-            "https://myaccount.google.com/permissions and re-run this script."
+            "No refresh token was returned. Revoke prior access at "
+            "https://myaccount.google.com/permissions and re-run this script "
+            "so Google shows the updated consent scopes."
         )
 
     out_path = Path(args.out)
@@ -72,7 +74,6 @@ def main() -> None:
     }
     out_path.write_text(json.dumps(payload, indent=2))
 
-    # Best-effort permission tightening (POSIX no-op on Windows, harmless either way)
     try:
         import os
 

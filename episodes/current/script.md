@@ -133,7 +133,7 @@ Biologically, under our impossible premise, probably in many ways: more usable t
 
 Socially, it is less obvious.
 
-We would gain nearly a third more waking life — and immediately have to decide who gets to claim it.
+We would gain roughly a third of each day back as waking time — and immediately have to decide who gets to claim it.
 
 Your employer? Your family? The economy? The internet?
 

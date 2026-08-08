@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 49,
-  "updated_at": "2026-08-08T10:04:54.420Z",
+  "state_revision": 55,
+  "updated_at": "2026-08-08T10:36:43.446Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -52,8 +52,8 @@
       "en-US-BrianNeural"
     ],
     "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31251384878/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31251384878/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31252577314/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31252577314/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
@@ -467,6 +467,54 @@
     {
       "revision": 49,
       "at": "2026-08-08T10:04:54.420Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 50,
+      "at": "2026-08-08T10:22:13.078Z",
+      "actor": "episode1-character-payoff-v4-repair",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 51,
+      "at": "2026-08-08T10:22:13.113Z",
+      "actor": "episode1-character-payoff-v4-repair",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender after direct QA found stale payoff arithmetic in authored visuals and stick-only primary characters; apply character-payoff-v4"
+    },
+    {
+      "revision": 52,
+      "at": "2026-08-08T10:22:31.649Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 53,
+      "at": "2026-08-08T10:36:43.076Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 54,
+      "at": "2026-08-08T10:36:43.106Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 55,
+      "at": "2026-08-08T10:36:43.446Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

@@ -155,5 +155,6 @@
   "thumbnailRevision": "framing-v2",
   "hookContrastRevision": "hours-v2",
   "lateBeatRevision": "aligned-v2",
-  "illustratedSceneRevision": "illustrated-v3"
+  "illustratedSceneRevision": "illustrated-v3",
+  "characterPayoffRevision": "character-payoff-v4"
 }

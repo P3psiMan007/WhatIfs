@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 
 BLOCKING_SEVERITIES = {"publish-blocking", "owner-only-blocker", "major"}
@@ -12,13 +13,25 @@ class GateDecision:
     reasons: tuple[str, ...]
 
 
+def _parse_timestamp(value: str) -> datetime:
+    if value.endswith("Z"):
+        value = value[:-1] + "+00:00"
+    parsed = datetime.fromisoformat(value)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
 def evaluate_publication_gate(
     qa_review: dict,
     episode_state: dict,
     autonomy: dict,
     daily: dict,
+    *,
+    now: datetime | None = None,
 ) -> GateDecision:
     reasons: list[str] = []
+    now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
 
     required_score = autonomy.get("requiredCoreScore", 9)
     required_gates = autonomy.get("requiredGates") or []
@@ -26,10 +39,24 @@ def evaluate_publication_gate(
 
     if autonomy.get("autoPublishEnabled") is not True:
         reasons.append("autoPublishEnabled is not true")
+    if daily.get("pauseAllProduction") is True:
+        reasons.append("all production is paused")
     if daily.get("pausePublishing") is True:
         reasons.append("publishing is paused")
     if daily.get("publishedToday", 0) >= daily.get("dailyPublishQuota", 0):
         reasons.append("daily publish quota reached")
+
+    spacing = daily.get("minimumSpacingMinutes", 0)
+    last_publication = daily.get("lastPublicationAt")
+    if isinstance(spacing, int) and spacing > 0 and last_publication:
+        try:
+            elapsed_minutes = (now - _parse_timestamp(last_publication)).total_seconds() / 60
+            if elapsed_minutes < spacing:
+                reasons.append(
+                    f"minimum spacing not elapsed: {elapsed_minutes:.1f} < {spacing} minutes"
+                )
+        except (TypeError, ValueError):
+            reasons.append("lastPublicationAt is invalid")
 
     if qa_review.get("status") != "QA_PASSED":
         reasons.append("QA status is not QA_PASSED")

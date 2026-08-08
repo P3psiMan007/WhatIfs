@@ -97,8 +97,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Restore npm download cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node22-npm-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node22-npm-
       - name: Install video dependencies
-        run: npm install --no-audit --no-fund
+        run: npm install --prefer-offline --no-audit --no-fund
       - name: Validate narration self-heal scripts
         run: |
           python -m py_compile tools/edge-tts
@@ -132,11 +139,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Restore production caches
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ~/.cache/pip
+            ~/.cache/huggingface/hub
+          key: ${{ runner.os }}-node22-py311-kokoro094-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node22-py311-kokoro094-
+            ${{ runner.os }}-node22-py311-
       - name: Install deterministic production dependencies
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg espeak-ng
-          npm install --no-audit --no-fund
+          missing=()
+          command -v ffmpeg >/dev/null 2>&1 || missing+=(ffmpeg)
+          command -v espeak-ng >/dev/null 2>&1 || missing+=(espeak-ng)
+          if [ "${#missing[@]}" -gt 0 ]; then
+            sudo apt-get update
+            sudo apt-get install -y "${missing[@]}"
+          fi
+          npm install --prefer-offline --no-audit --no-fund
           python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile==0.13.1
           chmod +x tools/edge-tts
           echo "$GITHUB_WORKSPACE/tools" >> "$GITHUB_PATH"

@@ -1,0 +1,105 @@
+name: Post-factory QA evidence
+
+on:
+  workflow_run:
+    workflows: ["Episode Factory"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: post-factory-qa-${{ github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  evidence:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download exact factory render artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          rm -rf incoming-render
+          mkdir -p incoming-render
+          gh run download "$SOURCE_RUN_ID" -n episode-render -D incoming-render
+          test -s incoming-render/dist/episode.mp4
+          test -s incoming-render/public/narration.srt
+          test -s incoming-render/episodes/current/render-manifest.json
+          test -s incoming-render/episodes/current/production-input.json
+
+      - name: Require artifact to identify source workflow run
+        env:
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          manifest = json.loads(Path("incoming-render/episodes/current/render-manifest.json").read_text(encoding="utf-8"))
+          expected = str(os.environ["SOURCE_RUN_ID"])
+          actual = str(manifest.get("githubRunId"))
+          if actual != expected:
+              raise SystemExit(f"render manifest run mismatch: expected={expected} actual={actual}")
+          print(f"Verified source factory run {expected}")
+          PY
+
+      - name: Extract objective QA evidence
+        env:
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          python scripts/extract_qa_evidence.py \
+            --srt incoming-render/public/narration.srt \
+            --production-input incoming-render/episodes/current/production-input.json \
+            --render-manifest incoming-render/episodes/current/render-manifest.json \
+            --rights-evidence docs/licenses/kokoro-82m.md \
+            --output /tmp/qa-evidence.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          p = Path('/tmp/qa-evidence.json')
+          evidence = json.loads(p.read_text(encoding='utf-8'))
+          evidence['sourceWorkflow'] = {
+              'name': 'Episode Factory',
+              'runId': str(os.environ['SOURCE_RUN_ID']),
+          }
+          Path('episodes/current/qa-evidence.json').write_text(json.dumps(evidence, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Persist evidence for independent QA
+        run: |
+          git config user.name "whatifs-qa-evidence"
+          git config user.email "whatifs-qa-evidence@users.noreply.github.com"
+          git add episodes/current/qa-evidence.json
+          if git diff --cached --quiet; then
+            echo "No new QA evidence to persist."
+            exit 0
+          fi
+          git commit -m "qa: record objective evidence for factory run ${{ github.event.workflow_run.id }}"
+          git pull --rebase origin main
+          git push
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qa-evidence-${{ github.event.workflow_run.id }}
+          path: episodes/current/qa-evidence.json
+          if-no-files-found: error
+          retention-days: 14

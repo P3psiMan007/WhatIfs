@@ -15,6 +15,8 @@ on:
       - "scripts/test_verify_render_artifact.py"
       - "scripts/prepare_thumbnail_override.py"
       - "scripts/test_prepare_thumbnail_override.py"
+      - "scripts/extract_qa_evidence.py"
+      - "scripts/test_extract_qa_evidence.py"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
   push:
@@ -32,6 +34,8 @@ on:
       - "scripts/test_verify_render_artifact.py"
       - "scripts/prepare_thumbnail_override.py"
       - "scripts/test_prepare_thumbnail_override.py"
+      - "scripts/extract_qa_evidence.py"
+      - "scripts/test_extract_qa_evidence.py"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
 
@@ -52,10 +56,11 @@ jobs:
         run: node --test tools/publishing-control-plane.test.mjs
       - name: Validate publishing controls
         run: node -e "import('./tools/publishing-control-plane.mjs').then(({validateFiles}) => validateFiles('config/autonomy.json','queue/daily-control.json'))"
-      - name: Test YouTube publishing backbone
+      - name: Test YouTube publishing backbone and QA evidence helpers
         run: |
           python -m unittest discover -s youtube_uploader -p 'test_*.py' -v
           python -m unittest scripts.test_verify_render_artifact -v
           python -m unittest scripts.test_prepare_thumbnail_override -v
+          python -m unittest scripts.test_extract_qa_evidence -v
       - name: Compile publisher Python
-        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py scripts/prepare_thumbnail_override.py
+        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py scripts/prepare_thumbnail_override.py scripts/extract_qa_evidence.py

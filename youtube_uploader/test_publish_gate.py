@@ -25,6 +25,7 @@ class PublishGateTests(TestCase):
         }
         state = {"state": "QA_PASSED", "state_revision": 56}
         autonomy = {
+            "autonomy_version": "1.1",
             "autoPublishEnabled": True,
             "requiredCoreScore": 9,
             "publishReadyStates": ["QA_PASSED", "AUTO_PUBLISH_READY"],
@@ -58,6 +59,13 @@ class PublishGateTests(TestCase):
     def test_blocks_unknown_youtube_api_project_audit_status_before_upload(self):
         qa, state, autonomy, daily = self.base()
         autonomy["publication"]["youtubeApiProjectStatus"] = "unknown"
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("YouTube API project", " ".join(result.reasons))
+
+    def test_blocks_missing_youtube_api_project_audit_status_for_v11(self):
+        qa, state, autonomy, daily = self.base()
+        del autonomy["publication"]["youtubeApiProjectStatus"]
         result = evaluate_publication_gate(qa, state, autonomy, daily)
         self.assertFalse(result.allowed)
         self.assertIn("YouTube API project", " ".join(result.reasons))

@@ -3,6 +3,15 @@ from __future__ import annotations
 import time
 
 
+WRITABLE_STATUS_FIELDS = (
+    "license",
+    "embeddable",
+    "publicStatsViewable",
+    "selfDeclaredMadeForKids",
+    "containsSyntheticMedia",
+)
+
+
 def fetch_video(youtube, video_id: str) -> dict:
     response = (
         youtube.videos()
@@ -67,12 +76,19 @@ def verify_privacy(video: dict, expected: str) -> bool:
 
 def promote_public(youtube, video_id: str) -> dict:
     current = fetch_video(youtube, video_id)
-    status = dict(current.get("status") or {})
-    if not status:
+    current_status = current.get("status") or {}
+    if not current_status:
         raise RuntimeError(f"YouTube status missing for {video_id}")
-    status["privacyStatus"] = "public"
+
+    writable_status = {
+        key: current_status[key]
+        for key in WRITABLE_STATUS_FIELDS
+        if key in current_status
+    }
+    writable_status["privacyStatus"] = "public"
+
     return (
         youtube.videos()
-        .update(part="status", body={"id": video_id, "status": status})
+        .update(part="status", body={"id": video_id, "status": writable_status})
         .execute()
     )

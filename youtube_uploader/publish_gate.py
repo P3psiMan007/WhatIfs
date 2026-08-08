@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 
 BLOCKING_SEVERITIES = {"publish-blocking", "owner-only-blocker", "major"}
+YOUTUBE_API_PUBLICATION_SAFE_STATUSES = {"audited", "legacy-pre-2020"}
 
 
 @dataclass(frozen=True)
@@ -112,5 +113,18 @@ def evaluate_publication_gate(
     publication = autonomy.get("publication") or {}
     if publication.get("failClosedOnUncertainty") is not True:
         reasons.append("failClosedOnUncertainty is not enabled")
+
+    # Factory V2.1 safety: YouTube officially locks uploads from newer,
+    # unaudited Data API projects to private viewing mode. The current project
+    # has not yet been proven audited or legacy/pre-2020, so videos.insert must
+    # fail BEFORE upload while status is missing/unknown. Older test fixtures
+    # without the version field remain compatible; real v1.1 config is strict.
+    if autonomy.get("autonomy_version") == "1.1":
+        api_project_status = publication.get("youtubeApiProjectStatus")
+        if api_project_status not in YOUTUBE_API_PUBLICATION_SAFE_STATUSES:
+            reasons.append(
+                "YouTube API project is not cleared for public-capable uploads: "
+                f"status={api_project_status!r}; require 'audited' or 'legacy-pre-2020'"
+            )
 
     return GateDecision(allowed=not reasons, reasons=tuple(reasons))

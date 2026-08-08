@@ -13,6 +13,8 @@ on:
       - "tools/episode-producer.test.mjs"
       - "tools/episode1-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.test.mjs"
+      - "tools/episode1-thumbnail-rebuild.mjs"
+      - "tools/episode1-thumbnail-rebuild.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
@@ -36,6 +38,8 @@ on:
       - "tools/episode-producer.test.mjs"
       - "tools/episode1-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.test.mjs"
+      - "tools/episode1-thumbnail-rebuild.mjs"
+      - "tools/episode1-thumbnail-rebuild.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
@@ -70,8 +74,8 @@ jobs:
           node-version: "22"
       - name: Install video dependencies
         run: npm install --no-audit --no-fund
-      - name: Run state, orchestration, producer, bespoke rebuild, visual registry, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/episode1-visual-rebuild.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
+      - name: Run state, orchestration, producer, rebuild, thumbnail layout, visual registry, and visual guard tests
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs video/src/thumbnail-layout.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test
@@ -108,6 +112,8 @@ jobs:
           command -v ffprobe
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
+      - name: Activate one-shot thumbnail QA repair when applicable
+        run: node tools/episode1-thumbnail-rebuild.mjs
       - name: Activate checked-in bespoke Episode 1 visuals
         run: node tools/episode1-visual-rebuild.mjs
       - name: Advance factory and run built-in producer

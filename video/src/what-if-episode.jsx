@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {SleepScene,SleepThumbnailArt} from './sleep-scenes.jsx';
+import {getSleepThumbnailArtPlacement} from './thumbnail-layout.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
@@ -45,12 +46,13 @@ export const WhatIfEpisode=(props)=>{
 
 export const WhatIfThumbnail=(props)=>{
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
+  const placement=getSleepThumbnailArtPlacement();
   return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden',fontFamily:font}}>
     <div style={{position:'absolute',inset:-100,background:'radial-gradient(circle at 77% 48%, rgba(255,179,64,.20), transparent 34%), radial-gradient(circle at 30% 68%, rgba(234,231,225,.055), transparent 31%)'}}/>
     <div style={{position:'absolute',inset:0,opacity:.055,backgroundImage:'radial-gradient(circle, rgba(234,231,225,.9) .7px, transparent .9px)',backgroundSize:'12px 12px'}}/>
     <div style={{position:'absolute',left:56,top:46,fontSize:18,fontWeight:900,letterSpacing:5,color:palette.accent}}>WHAT IF EXPLAINS</div>
     <div style={{position:'absolute',left:58,top:142,width:650,fontSize:108,lineHeight:.86,letterSpacing:-5,fontWeight:900,color:palette.foreground,textTransform:'uppercase',zIndex:3}}>8 HOURS<br/><span style={{color:palette.accent}}>BACK</span></div>
     <div style={{position:'absolute',left:62,bottom:62,width:510,height:8,borderRadius:99,background:palette.accent,zIndex:3}}/>
-    <div style={{position:'absolute',inset:0,translate:'260px 0px',scale:.67,transformOrigin:'center'}}><SleepThumbnailArt palette={palette}/></div>
+    <div style={{position:'absolute',left:0,top:0,width:1920,height:1080,transform:`translate(${placement.x}px, ${placement.y}px) scale(${placement.scale})`,transformOrigin:'top left'}}><SleepThumbnailArt palette={palette}/></div>
   </AbsoluteFill>;
 };

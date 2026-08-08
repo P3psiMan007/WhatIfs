@@ -17,6 +17,7 @@ on:
       - "scripts/test_prepare_thumbnail_override.py"
       - "scripts/extract_qa_evidence.py"
       - "scripts/test_extract_qa_evidence.py"
+      - ".github/workflows/post-factory-qa-evidence.yml"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
   push:
@@ -36,6 +37,7 @@ on:
       - "scripts/test_prepare_thumbnail_override.py"
       - "scripts/extract_qa_evidence.py"
       - "scripts/test_extract_qa_evidence.py"
+      - ".github/workflows/post-factory-qa-evidence.yml"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
 

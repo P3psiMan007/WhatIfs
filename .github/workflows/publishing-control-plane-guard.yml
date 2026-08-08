@@ -6,12 +6,15 @@ on:
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "episodes/episode-state.schema.json"
+      - "episodes/current/thumbnail-source.json"
       - "docs/EPISODE_STATE_PROTOCOL.md"
       - "tools/publishing-control-plane.mjs"
       - "tools/publishing-control-plane.test.mjs"
       - "youtube_uploader/**"
       - "scripts/verify_render_artifact.py"
       - "scripts/test_verify_render_artifact.py"
+      - "scripts/prepare_thumbnail_override.py"
+      - "scripts/test_prepare_thumbnail_override.py"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
   push:
@@ -20,12 +23,15 @@ on:
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "episodes/episode-state.schema.json"
+      - "episodes/current/thumbnail-source.json"
       - "docs/EPISODE_STATE_PROTOCOL.md"
       - "tools/publishing-control-plane.mjs"
       - "tools/publishing-control-plane.test.mjs"
       - "youtube_uploader/**"
       - "scripts/verify_render_artifact.py"
       - "scripts/test_verify_render_artifact.py"
+      - "scripts/prepare_thumbnail_override.py"
+      - "scripts/test_prepare_thumbnail_override.py"
       - ".github/workflows/upload-youtube.yml"
       - ".github/workflows/publishing-control-plane-guard.yml"
 
@@ -50,5 +56,6 @@ jobs:
         run: |
           python -m unittest discover -s youtube_uploader -p 'test_*.py' -v
           python -m unittest scripts.test_verify_render_artifact -v
+          python -m unittest scripts.test_prepare_thumbnail_override -v
       - name: Compile publisher Python
-        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py
+        run: python -m py_compile youtube_uploader/*.py scripts/verify_render_artifact.py scripts/prepare_thumbnail_override.py

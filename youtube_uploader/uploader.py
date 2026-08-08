@@ -13,15 +13,18 @@ from typing import Optional
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from .auth import credentials_from_env
+from .auth import credentials_from_env, ensure_publication_credentials
 
 API_SERVICE_NAME = "youtube"
 API_VERSION = "v3"
 PRIVACY_STATUS = "private"
 
 
-def build_youtube_service():
-    return build(API_SERVICE_NAME, API_VERSION, credentials=credentials_from_env())
+def build_youtube_service(*, require_publication_scope: bool = False):
+    credentials = credentials_from_env()
+    if require_publication_scope:
+        ensure_publication_credentials(credentials)
+    return build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
 
 def upload_private(

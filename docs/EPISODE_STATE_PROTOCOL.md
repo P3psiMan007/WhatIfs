@@ -32,15 +32,17 @@ Allowed block/reject branches include `RESEARCH_BLOCKED`, `VOICE_BLOCKED`, `QA_F
 
 ## Guarded publication rule
 
-Autonomous publication is allowed only through the repository's quality gates, canary rules, daily controls, and kill switches.
+Autonomous publication is allowed only through the repository's quality gates, per-video verification rules, daily controls, and kill switches.
 
 - If `config/autonomy.json` or `queue/daily-control.json` is missing, NOOP.
 - If `pausePublishing` or `pauseAllProduction` is true, NOOP.
 - Never infer readiness from a render existing. An episode must be explicitly `QA_PASSED` or `AUTO_PUBLISH_READY` and have complete passing publish-gate evidence.
-- Required factual, package, retention, narration, visual, technical, policy, and copyright gates must pass, and required core scores must meet the configured threshold.
+- Required factual, package, retention, narration, visual, technical, policy, and copyright gates must pass, and **every required core score must meet or exceed the configured threshold of 9.0**.
 - The selected title/thumbnail pair and metadata must accurately match the video.
 - Daily quota and minimum spacing must be respected.
-- The first two real videos are canaries and must upload **private only**. Canary count decreases only after YouTube processing, metadata, thumbnail integrity, and machine-verifiable checks succeed.
-- Public or scheduled publishing is allowed only after the canary requirement is complete and `autoPublishEnabled` is true.
+- Every real upload begins **private**. The exact uploaded video must finish YouTube processing successfully, metadata must match the canonical package, the custom-thumbnail API call must succeed, and machine-verifiable checks must pass before any public promotion.
+- Public promotion may target **only the same YouTube video ID** that passed private verification. A separate multi-video canary waiting period is not required.
+- Public publishing additionally requires `autoPublishEnabled` to be true.
 - All uncertainty fails closed. Never bypass kill switches, fabricate verification, spend money, or publish a failed episode.
-- Publication records must be revision-safe and include the YouTube video ID, chosen package, publication/schedule time, and experiment assignment.
+- Publication records must be revision-safe and include the YouTube video ID, chosen package, publication time, experiment assignment, and source render identity.
+- A completion claim is valid only after the publisher re-reads the YouTube video and verifies `privacyStatus=public` for the recorded video ID.

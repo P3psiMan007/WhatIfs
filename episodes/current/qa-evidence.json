@@ -1,0 +1,132 @@
+{
+  "evidenceVersion": "1.0",
+  "decisionAuthority": "independent QA; this file is evidence only and MUST NOT be treated as a PASS",
+  "render": {
+    "episodeId": "20260807-episode",
+    "episodeMatchesProduction": true,
+    "runId": "31283336381",
+    "artifactName": "episode-render",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "frameRate": "30/1",
+    "durationSeconds": 519.68,
+    "technicalShapeOk": true,
+    "visualQa": {
+      "syncBasis": "measured-per-scene-audio",
+      "totalBeats": 122,
+      "first30BeatCount": 9,
+      "maxBeatDuration": 5.95,
+      "averageBeatDuration": 4.156
+    },
+    "visualGrade": "publish-grade",
+    "qaInputsReady": true,
+    "publishBlocker": null
+  },
+  "captions": {
+    "cueCount": 96,
+    "overlapCount": 0,
+    "overlaps": [],
+    "invalidTimingCount": 0,
+    "invalidTimingCueNumbers": [],
+    "firstStart": 0.0,
+    "lastEnd": 519.918
+  },
+  "narration": {
+    "provider": "kokoro-82m",
+    "model": "hexgrad/Kokoro-82M",
+    "license": "Apache-2.0",
+    "voice": "am_michael",
+    "cueCount": 96,
+    "medianWpm": 114.9,
+    "p90Wpm": 146.8,
+    "maxWpm": 183.8,
+    "fastestCues": [
+      {
+        "start": 503.978,
+        "end": 509.853,
+        "wpm": 183.8,
+        "text": "Maybe it is the last part of the day that the world cannot ask us to give back."
+      },
+      {
+        "start": 481.923,
+        "end": 490.123,
+        "wpm": 168.3,
+        "text": "We would gain roughly a third of each day back as waking time \u2014 and immediately have to decide who gets to claim it."
+      },
+      {
+        "start": 0.0,
+        "end": 3.25,
+        "wpm": 166.2,
+        "text": "Tonight, you go to bed for the last time."
+      },
+      {
+        "start": 93.508,
+        "end": 96.883,
+        "wpm": 160.0,
+        "text": "But there is a catch hiding inside the premise."
+      },
+      {
+        "start": 420.269,
+        "end": 422.994,
+        "wpm": 154.1,
+        "text": "You wake up and call it tomorrow."
+      }
+    ]
+  },
+  "payoff": {
+    "cueCount": 12,
+    "medianWpm": 106.6,
+    "p90Wpm": 166.0,
+    "maxWpm": 183.8,
+    "fastestCues": [
+      {
+        "start": 503.978,
+        "end": 509.853,
+        "wpm": 183.8,
+        "text": "Maybe it is the last part of the day that the world cannot ask us to give back."
+      },
+      {
+        "start": 481.923,
+        "end": 490.123,
+        "wpm": 168.3,
+        "text": "We would gain roughly a third of each day back as waking time \u2014 and immediately have to decide who gets to claim it."
+      },
+      {
+        "start": 509.993,
+        "end": 519.918,
+        "wpm": 145.1,
+        "text": "And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do."
+      },
+      {
+        "start": 466.128,
+        "end": 469.753,
+        "wpm": 132.4,
+        "text": "So would a sleepless humanity be better off?"
+      },
+      {
+        "start": 500.163,
+        "end": 503.838,
+        "wpm": 130.6,
+        "text": "Maybe sleep is not only time we lose."
+      }
+    ]
+  },
+  "rights": {
+    "evidencePath": "docs/licenses/kokoro-82m.md",
+    "evidenceFileExists": true,
+    "kokoroEvidencePresent": true,
+    "modelMentioned": true,
+    "licenseMentioned": true,
+    "voiceMentioned": true,
+    "commercialUseMentioned": true,
+    "declaredProvider": "kokoro-82m",
+    "declaredModel": "hexgrad/Kokoro-82M",
+    "declaredLicense": "Apache-2.0",
+    "declaredVoice": "am_michael"
+  },
+  "sourceWorkflow": {
+    "name": "Episode Factory",
+    "runId": "31283336381"
+  }
+}

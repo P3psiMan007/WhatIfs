@@ -13,7 +13,12 @@ from .publication_record import (
     same_source_render,
 )
 from .publish_gate import evaluate_publication_gate
-from .uploader import build_youtube_service, set_thumbnail, upload_private
+from .uploader import (
+    build_public_promotion_service,
+    build_youtube_service,
+    set_thumbnail,
+    upload_private,
+)
 from .verifier import (
     fetch_video,
     promote_public,
@@ -124,18 +129,19 @@ def publish_episode(
     daily_control: dict,
     publication_record_path: str,
     youtube=None,
+    promotion_youtube=None,
 ) -> dict:
     """Publish one exact approved render via private → verify → public.
 
-    The function persists the YouTube video ID immediately after upload so a
-    retry can resume without duplicate-uploading the same render.
+    A legacy token may complete the private upload/verification stage even if
+    it cannot yet perform ``videos.update``. The exact private video ID is
+    persisted so a later run can resume public promotion after one-time OAuth
+    re-authorization without duplicate-uploading the render.
     """
     record_path = Path(publication_record_path)
     existing = load_publication_record(record_path)
-    # When a real service is created here, OAuth is refreshed and the scope
-    # needed for the eventual same-video public promotion is proven BEFORE any
-    # upload side effect. Tests inject a mock service and skip real OAuth.
-    youtube = youtube or build_youtube_service(require_publication_scope=True)
+    injected_youtube = youtube is not None
+    youtube = youtube or build_youtube_service()
     title = render_manifest.get("title") or ""
     description = render_manifest.get("description") or ""
 
@@ -146,8 +152,6 @@ def publish_episode(
             )
         existing = None
 
-    # Idempotent final-state fast path: verification only, no new publishing
-    # side effect and no daily-quota re-count.
     if existing is not None:
         yt_existing = _ensure_youtube_defaults(existing)
         existing_id = yt_existing.get("videoId")
@@ -209,8 +213,21 @@ def publish_episode(
         yt["privateVerifiedAt"] = yt.get("privateVerifiedAt") or _now()
         if "private" not in yt["privacyTransitions"]:
             yt["privacyTransitions"].append("private")
+        yt["lastError"] = None
         atomic_write_publication_record(record_path, record)
-        promote_public(youtube, video_id)
+
+        if promotion_youtube is None:
+            if injected_youtube:
+                promotion_youtube = youtube
+            else:
+                try:
+                    promotion_youtube = build_public_promotion_service()
+                except RuntimeError as exc:
+                    yt["lastError"] = str(exc)
+                    atomic_write_publication_record(record_path, record)
+                    raise RuntimeError(yt["lastError"]) from exc
+
+        promote_public(promotion_youtube, video_id)
     elif current_privacy != "public":
         yt["lastError"] = f"unexpected privacy status before promotion: {current_privacy!r}"
         atomic_write_publication_record(record_path, record)
@@ -230,8 +247,6 @@ def publish_episode(
         yt["privacyTransitions"].append("public")
     atomic_write_publication_record(record_path, record)
 
-    # Count the real publication once. lastCountedVideoId makes retries
-    # idempotent even if the workflow re-runs after committing daily-control.
     if daily_control.get("lastCountedVideoId") != video_id:
         daily_control["publishedToday"] = daily_control.get("publishedToday", 0) + 1
         daily_control["lastPublicationAt"] = published_at

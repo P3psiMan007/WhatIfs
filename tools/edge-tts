@@ -1,55 +1,108 @@
 #!/usr/bin/env python3
-"""Batch compatibility wrapper for the real edge-tts CLI.
+"""Strict Kokoro narration renderer for the Episode 1 producer batch interface.
 
-The producer uses --batch-json/--output-dir for efficient per-scene orchestration.
-This wrapper preserves that interface while delegating each scene to the exact
-requested Edge TTS voice and rate. It never substitutes narrator identity.
+Only the approved narrator is accepted. There is deliberately no narrator,
+provider, or voice fallback path.
 """
 import argparse
 import json
-import os
+import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
+try:
+    import numpy as np
+    import soundfile as sf
+    from kokoro import KPipeline
+except ImportError:
+    subprocess.run([
+        sys.executable, "-m", "pip", "install", "--disable-pip-version-check",
+        "kokoro==0.9.4", "soundfile", "numpy"
+    ], check=True)
+    import numpy as np
+    import soundfile as sf
+    from kokoro import KPipeline
 
-def real_edge_tts() -> str:
-    real = os.environ.get("EDGE_TTS_REAL", "").strip()
-    if not real:
-        raise SystemExit("EDGE_TTS_REAL is required; refusing narrator fallback")
-    return real
+APPROVED_VOICE = "af_heart"
+APPROVED_SPEED = 0.95
+SAMPLE_RATE = 24000
+
+
+def stamp(seconds: float) -> str:
+    ms = round(seconds * 1000)
+    h = ms // 3600000
+    ms %= 3600000
+    m = ms // 60000
+    ms %= 60000
+    s = ms // 1000
+    ms %= 1000
+    return f"{h:02}:{m:02}:{s:02},{ms:03}"
+
+
+def render_scene(pipeline: KPipeline, text: str, media: Path, subtitles: Path) -> None:
+    audio_parts = []
+    cues = []
+    cursor = 0.0
+    sentences = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text) if p.strip()]
+    if not sentences:
+        raise SystemExit("empty narration input; refusing silent fallback")
+
+    for sentence in sentences:
+        rendered = [np.asarray(audio, dtype=np.float32) for _, _, audio in pipeline(sentence, voice=APPROVED_VOICE, speed=APPROVED_SPEED)]
+        if not rendered:
+            raise SystemExit("Kokoro produced no narration; refusing silent fallback")
+        audio = np.concatenate(rendered)
+        duration = len(audio) / SAMPLE_RATE
+        audio_parts.append(audio)
+        cues.append((cursor, cursor + duration, sentence))
+        silence = np.zeros(round(0.12 * SAMPLE_RATE), dtype=np.float32)
+        audio_parts.append(silence)
+        cursor += duration + 0.12
+
+    combined = np.concatenate(audio_parts)
+    with tempfile.TemporaryDirectory() as td:
+        wav = Path(td) / "voice.wav"
+        sf.write(wav, combined, SAMPLE_RATE)
+        subprocess.run([
+            "ffmpeg", "-y", "-v", "error", "-i", str(wav),
+            "-c:a", "libmp3lame", "-b:a", "160k", str(media)
+        ], check=True)
+
+    subtitles.write_text(
+        "\n\n".join(
+            f"{i}\n{stamp(start)} --> {stamp(end)}\n{text}"
+            for i, (start, end, text) in enumerate(cues, 1)
+        ) + "\n",
+        encoding="utf-8",
+    )
 
 
 def render_batch(batch_json: str, output_dir: str) -> None:
     payload = json.loads(Path(batch_json).read_text(encoding="utf-8"))
-    voice = str(payload["voice"]).strip()
-    rate = str(payload.get("rate", "+0%")).strip()
+    voice = str(payload.get("voice") or "").strip()
+    rate = str(payload.get("rate") or "").strip()
     scenes = payload.get("scenes") or []
-    if not voice:
-        raise SystemExit("batch narration voice is empty; refusing narrator fallback")
+
+    if voice != APPROVED_VOICE:
+        raise SystemExit(f"narrator must be {APPROVED_VOICE}; refusing fallback from {voice or '<empty>'}")
+    if rate not in {"0.95", "0.950", "95%"}:
+        raise SystemExit(f"narrator speed must be 0.95; refusing fallback from {rate or '<empty>'}")
     if not scenes:
         raise SystemExit("batch narration contains no scenes")
 
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    executable = real_edge_tts()
+    pipeline = KPipeline(lang_code="a")
+
     for index, scene in enumerate(scenes, 1):
         text = str(scene.get("text") or "").strip()
         if not text:
             raise SystemExit(f"empty narration input for scene {index}")
         stem = f"scene-{index:02d}"
-        source = out / f"{stem}.txt"
-        media = out / f"{stem}.mp3"
-        subtitles = out / f"{stem}.srt"
-        source.write_text(text + "\n", encoding="utf-8")
-        subprocess.run([
-            executable,
-            "--file", str(source),
-            "--voice", voice,
-            f"--rate={rate}",
-            "--write-media", str(media),
-            "--write-subtitles", str(subtitles),
-        ], check=True)
+        (out / f"{stem}.txt").write_text(text + "\n", encoding="utf-8")
+        render_scene(pipeline, text, out / f"{stem}.mp3", out / f"{stem}.srt")
 
 
 def main() -> None:
@@ -57,14 +110,11 @@ def main() -> None:
     parser.add_argument("--batch-json")
     parser.add_argument("--output-dir")
     args, remaining = parser.parse_known_args()
-    if args.batch_json:
-        if not args.output_dir:
-            raise SystemExit("--output-dir is required with --batch-json")
-        render_batch(args.batch_json, args.output_dir)
-        return
-
-    executable = real_edge_tts()
-    os.execv(executable, [executable, *remaining])
+    if remaining:
+        raise SystemExit("direct edge-tts compatibility mode is disabled; approved Kokoro batch only")
+    if not args.batch_json or not args.output_dir:
+        raise SystemExit("--batch-json and --output-dir are required")
+    render_batch(args.batch_json, args.output_dir)
 
 
 if __name__ == "__main__":

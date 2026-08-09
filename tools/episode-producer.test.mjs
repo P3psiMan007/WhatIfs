@@ -15,7 +15,7 @@ import {isPublishGradeVisualInput} from './publish-grade-visual-guard.mjs';
 
 const validInput = {
   episodeId: 'ep1',
-  narrator: { voice: 'en-US-BrianNeural', rate: '+4%' },
+  narrator: { voice: 'af_heart', rate: '0.95' },
   title: 'What If Humans Never Needed Sleep?',
   description: 'A factual hypothetical explainer.',
   packages: [{ id: 'A', title: 'What If Humans Never Needed Sleep?', thumbnailText: '8 HOURS BACK' }],
@@ -63,15 +63,15 @@ test('publish-grade visual readiness requires explicit grade and per-scene asset
   assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}), false);
 });
 
-test('Edge batch compatibility shim delegates every scene to the exact requested Edge voice with no fallback', () => {
-  assert.equal(fs.existsSync('tools/edge-tts'), true, 'safe batch compatibility shim must exist');
+test('narration batch shim is locked to Kokoro af_heart with no narrator fallback', () => {
+  assert.equal(fs.existsSync('tools/edge-tts'), true, 'strict narration shim must exist');
   const shim = fs.readFileSync('tools/edge-tts','utf8');
   assert.match(shim, /--batch-json/);
-  assert.match(shim, /subprocess\.run/);
-  assert.match(shim, /--voice/);
-  assert.match(shim, /payload\["voice"\]/);
-  assert.doesNotMatch(shim, /am_michael|kokoro/i);
-  assert.doesNotMatch(shim, /voice\s*=\s*["'][^"']+Neural["']/);
+  assert.match(shim, /KPipeline/);
+  assert.match(shim, /APPROVED_VOICE = "af_heart"/);
+  assert.match(shim, /APPROVED_SPEED = 0\.95/);
+  assert.match(shim, /refusing fallback/);
+  assert.doesNotMatch(shim, /am_michael|en-US-BrianNeural/);
 });
 
 test('parses SRT captions into second-based cues', () => {

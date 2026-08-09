@@ -6,6 +6,7 @@ const episode = fs.readFileSync('video/src/what-if-episode.jsx','utf8');
 const assetScene = fs.readFileSync('video/src/sleep-asset-scene.jsx','utf8');
 const scene01 = fs.readFileSync('public/visuals/20260807-episode/scene-01.svg','utf8');
 const narratorRepair = fs.readFileSync('tools/narration-provider-repair.mjs','utf8');
+const narrationShim = fs.readFileSync('tools/edge-tts','utf8');
 const workflow = fs.readFileSync('.github/workflows/episode-factory.yml','utf8');
 
 test('authored sleep scene art has exactly one render owner in the episode', () => {
@@ -17,10 +18,14 @@ test('authored sleep scene art has exactly one render owner in the episode', () 
   assert.match(assetScene, /if \(!spec\) throw new Error/);
 });
 
-test('factory restores the exact approved narrator instead of silently substituting Kokoro', () => {
-  assert.match(narratorRepair, /en-US-BrianNeural/);
-  assert.doesNotMatch(narratorRepair, /voice:\s*['"]am_michael['"]/);
-  assert.doesNotMatch(narratorRepair, /qa\?\.status\s*===\s*['"]QA_PASSED['"]/);
-  assert.match(workflow, /edge-tts==7\.2\.8/);
-  assert.doesNotMatch(workflow, /kokoro==/);
+test('factory locks the exact approved female Kokoro narrator with no fallback', () => {
+  assert.match(narratorRepair, /approvedVoice = 'af_heart'/);
+  assert.match(narratorRepair, /approvedRate = '0\.95'/);
+  assert.match(narratorRepair, /provider: 'kokoro'/);
+  assert.doesNotMatch(narratorRepair, /en-US-BrianNeural|am_michael/);
+  assert.match(narrationShim, /APPROVED_VOICE = "af_heart"/);
+  assert.match(narrationShim, /APPROVED_SPEED = 0\.95/);
+  assert.match(narrationShim, /refusing fallback/);
+  assert.doesNotMatch(narrationShim, /en-US-BrianNeural|am_michael/);
+  assert.match(workflow, /narration-provider-repair\.mjs/);
 });

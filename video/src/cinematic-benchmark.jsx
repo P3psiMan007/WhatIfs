@@ -8,10 +8,10 @@ export const WhatIfCinematicBenchmark=()=>{
   const {fps}=useVideoConfig();
   const palette={bg:'#090c12',fg:'#f0eee8',accent:'#ffb340'};
   const shots=[
-    {start:0,end:4.7,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:c07e6450-2b34-49ec-aec7-9499bd2094be',from:1.03,to:1.09,x0:-12,x1:10},
-    {start:4.2,end:10.7,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:63246ed7-bf56-46ce-931b-48c800b3a661',from:1.02,to:1.08,x0:8,x1:-10},
-    {start:10.2,end:17.7,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:722cf062-0d56-4e4c-ab85-43e13e4a6cd5',from:1.025,to:1.105,x0:-8,x1:8},
-    {start:17.2,end:24,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:87d19717-40f8-42e7-8feb-aa1baf7242cb',from:1.02,to:1.075,x0:6,x1:-6},
+    {start:0,end:4.4,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:c07e6450-2b34-49ec-aec7-9499bd2094be',from:1.03,to:1.09,x0:-12,x1:10},
+    {start:4.4,end:10.2,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:63246ed7-bf56-46ce-931b-48c800b3a661',from:1.02,to:1.08,x0:8,x1:-10},
+    {start:10.2,end:17,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:722cf062-0d56-4e4c-ab85-43e13e4a6cd5',from:1.025,to:1.105,x0:-8,x1:8},
+    {start:17,end:24,url:'https://photoshop-api.adobe.io/v2/short-url/urn:aaid:ps:US:87d19717-40f8-42e7-8feb-aa1baf7242cb',from:1.02,to:1.075,x0:6,x1:-6},
   ];
   const t=frame/fps;
   const captions=[
@@ -26,16 +26,14 @@ export const WhatIfCinematicBenchmark=()=>{
     [19.5,24,'But within a few years, those eight hours might stop belonging to you.'],
   ];
   const cue=captions.find(([s,e])=>t>=s&&t<e);
-  const calloutOpacity=interpolate(frame,[13.5*fps,13.9*fps,16.8*fps,17.2*fps],[0,1,1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
+  const calloutOpacity=interpolate(frame,[13.5*fps,13.9*fps,16.6*fps,17*fps],[0,1,1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
   return <AbsoluteFill style={{backgroundColor:palette.bg,overflow:'hidden',fontFamily:'Arial, Helvetica, sans-serif'}}>
-    {shots.map((shot,index)=>{
+    {shots.map((shot)=>{
       if(t<shot.start||t>=shot.end)return null;
       const local=(t-shot.start)/(shot.end-shot.start);
-      const fadeIn=index===0?1:interpolate(local,[0,.10],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
-      const fadeOut=index===shots.length-1?1:interpolate(local,[.90,1],[1,0],{extrapolateLeft:'clamp',extrapolateRight:'clamp'});
       const scale=interpolate(local,[0,1],[shot.from,shot.to]);
       const x=interpolate(local,[0,1],[shot.x0,shot.x1]);
-      return <AbsoluteFill key={shot.url} style={{opacity:Math.min(fadeIn,fadeOut)}}>
+      return <AbsoluteFill key={shot.url}>
         <Img src={shot.url} style={{width:'100%',height:'100%',objectFit:'cover',transform:`translateX(${x}px) scale(${scale})`,filter:'saturate(.92) contrast(1.04)'}}/>
       </AbsoluteFill>;
     })}

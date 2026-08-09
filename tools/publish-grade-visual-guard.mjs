@@ -6,6 +6,47 @@ const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const writeJson = (p, value) => fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
 const BLOCKER = 'publish_grade_visual_assets_missing';
 
+function parseStamp(value) {
+  const m=String(value).trim().match(/(\d+):(\d+):(\d+),(\d+)/);
+  if(!m)return NaN;
+  return Number(m[1])*3600+Number(m[2])*60+Number(m[3])+Number(m[4])/1000;
+}
+function stamp(seconds) {
+  let ms=Math.max(0,Math.round(Number(seconds)*1000));
+  const h=Math.floor(ms/3600000); ms%=3600000;
+  const m=Math.floor(ms/60000); ms%=60000;
+  const s=Math.floor(ms/1000); ms%=1000;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+}
+
+export function clampSrtToDuration(text,durationSeconds) {
+  const limit=Number(durationSeconds);
+  if(!Number.isFinite(limit)||limit<=0)throw new Error('invalid caption clamp duration');
+  const kept=[];
+  for(const block of String(text||'').trim().split(/\r?\n\r?\n+/)) {
+    const lines=block.split(/\r?\n/); const timing=lines.findIndex((line)=>line.includes('-->'));
+    if(timing<0)continue;
+    const [from,to]=lines[timing].split('-->').map((v)=>v.trim());
+    const start=parseStamp(from); const end=parseStamp(to); const body=lines.slice(timing+1).join(' ').replace(/\s+/g,' ').trim();
+    if(!Number.isFinite(start)||!Number.isFinite(end)||!body||start>=limit)continue;
+    const clampedEnd=Math.min(end,limit);
+    if(clampedEnd<=start)continue;
+    kept.push({start,end:clampedEnd,body});
+  }
+  return kept.map((cue,index)=>`${index+1}\n${stamp(cue.start)} --> ${stamp(cue.end)}\n${cue.body}`).join('\n\n')+(kept.length?'\n':'');
+}
+
+function clampRenderedCaptions() {
+  const videoPath='dist/episode.mp4'; const srtPath='public/narration.srt';
+  if(!fs.existsSync(videoPath)||!fs.existsSync(srtPath))return;
+  const probe=spawnSync('ffprobe',['-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',videoPath],{encoding:'utf8'});
+  if(probe.status!==0)throw new Error('caption clamp could not probe rendered episode duration');
+  const duration=Number(String(probe.stdout||'').trim());
+  const before=fs.readFileSync(srtPath,'utf8'); const after=clampSrtToDuration(before,duration);
+  fs.writeFileSync(srtPath,after);
+  console.log(`CAPTION_CLAMP_OK duration=${duration.toFixed(3)}`);
+}
+
 export function isPublishGradeVisualInput(input) {
   return input?.visualGrade === 'publish-grade'
     && Array.isArray(input?.scenes)
@@ -41,16 +82,8 @@ export function visualGuardDecision({state, input, manifest}) {
   return {
     kind:'BLOCK',
     reason:BLOCKER,
-    patch:{
-      production:{qa_inputs_ready:false},
-      qa:{user_action_required:BLOCKER},
-    },
-    manifestPatch:{
-      visualGrade: input?.visualGrade || 'heuristic-placeholder',
-      qaInputsReady:false,
-      technicalPreview:true,
-      publishBlocker:BLOCKER,
-    },
+    patch:{production:{qa_inputs_ready:false},qa:{user_action_required:BLOCKER}},
+    manifestPatch:{visualGrade:input?.visualGrade||'heuristic-placeholder',qaInputsReady:false,technicalPreview:true,publishBlocker:BLOCKER},
   };
 }
 
@@ -64,22 +97,14 @@ function main() {
   const statePath = process.env.EPISODE_STATE_PATH || 'episodes/current/episode-state.json';
   const inputPath = process.env.PRODUCTION_INPUT_PATH || 'episodes/current/production-input.json';
   const manifestPath = process.env.RENDER_MANIFEST_PATH || 'episodes/current/render-manifest.json';
-  if (!fs.existsSync(statePath) || !fs.existsSync(inputPath)) {
-    console.log('VISUAL_GUARD_NOOP missing_state_or_input');
-    return;
-  }
-  const state = readJson(statePath);
-  const input = readJson(inputPath);
-  const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
+  if (!fs.existsSync(statePath) || !fs.existsSync(inputPath)) { console.log('VISUAL_GUARD_NOOP missing_state_or_input'); return; }
+  const state = readJson(statePath); const input = readJson(inputPath); const manifest = fs.existsSync(manifestPath) ? readJson(manifestPath) : null;
+  if(state?.state==='RENDERED')clampRenderedCaptions();
   const decision = visualGuardDecision({state,input,manifest});
-  if (!['BLOCK','CLEAR'].includes(decision.kind)) {
-    console.log(`VISUAL_GUARD_${decision.kind} ${decision.reason}`);
-    return;
-  }
+  if (!['BLOCK','CLEAR'].includes(decision.kind)) { console.log(`VISUAL_GUARD_${decision.kind} ${decision.reason}`); return; }
   runState(['patch', String(state.state_revision), state.episode_id, 'publish-grade-visual-guard', JSON.stringify(decision.patch)]);
   if (manifest) writeJson(manifestPath, {...manifest, ...decision.manifestPatch});
-  if (decision.kind === 'BLOCK') console.error(`VISUAL_GUARD_BLOCKED ${decision.reason}`);
-  else console.log(`VISUAL_GUARD_CLEAR ${decision.reason}`);
+  if (decision.kind === 'BLOCK') console.error(`VISUAL_GUARD_BLOCKED ${decision.reason}`); else console.log(`VISUAL_GUARD_CLEAR ${decision.reason}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

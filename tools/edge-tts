@@ -17,6 +17,7 @@ LOCKED_SPEED = 0.95
 SAMPLE_RATE = 24000
 EDGE_THRESHOLD = 0.002
 EDGE_PAD_SECONDS = 0.04
+FLOW_FILTER = "silenceremove=start_periods=1:start_duration=0.05:start_threshold=-42dB:start_silence=0.03:stop_periods=-1:stop_duration=0.35:stop_threshold=-42dB:stop_silence=0.12:detection=rms,loudnorm=I=-18:TP=-1.5:LRA=7"
 
 
 def load_pipeline():
@@ -48,11 +49,27 @@ def trim_edge_silence(audio: np.ndarray) -> np.ndarray:
     return audio[lo:hi]
 
 
+def probe_duration(file: Path) -> float:
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", str(file)],
+        check=True, capture_output=True, text=True,
+    )
+    duration = float(result.stdout.strip())
+    if duration <= 0:
+        raise SystemExit(f"invalid rendered narration duration for {file.name}")
+    return duration
+
+
 def render_batch(batch_json: str, output_dir: str) -> None:
     payload = json.loads(Path(batch_json).read_text(encoding="utf-8"))
+    provider = str(payload.get("provider") or "").strip()
     voice = str(payload.get("voice") or "").strip()
     speed = float(payload.get("speed", LOCKED_SPEED))
     scenes = payload.get("scenes") or []
+    # The current producer predates provider metadata in its batch payload, so an
+    # omitted provider is accepted. Any explicit non-Kokoro provider is rejected.
+    if provider and provider != "kokoro":
+        raise SystemExit(f"narration provider must be kokoro; got {provider}")
     if voice != LOCKED_VOICE:
         raise SystemExit(f"narrator must be {LOCKED_VOICE}; got {voice or 'missing'}")
     if abs(speed - LOCKED_SPEED) > 1e-9:
@@ -69,12 +86,25 @@ def render_batch(batch_json: str, output_dir: str) -> None:
         rendered = [np.asarray(audio, dtype=np.float32) for _, _, audio in pipeline(text, voice=LOCKED_VOICE, speed=LOCKED_SPEED)]
         if not rendered:
             raise SystemExit(f"narrator produced no audio for scene {index}")
-        audio = trim_edge_silence(np.concatenate(rendered))
-        duration = len(audio) / SAMPLE_RATE
+        raw_audio = np.concatenate(rendered)
+        if raw_audio.size == 0:
+            raise SystemExit(f"narrator produced empty audio for scene {index}")
+        audio = trim_edge_silence(raw_audio)
+        if audio.size == 0:
+            raise SystemExit(f"narrator produced silent audio for scene {index}")
         stem = f"scene-{index:02d}"
+        output_mp3 = out / f"{stem}.mp3"
         with tempfile.TemporaryDirectory() as td:
-            wav = Path(td) / "voice.wav"; sf.write(wav, audio, SAMPLE_RATE)
-            subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(wav), "-c:a", "libmp3lame", "-b:a", "128k", str(out / f"{stem}.mp3")], check=True)
+            wav = Path(td) / "voice.wav"
+            sf.write(wav, audio, SAMPLE_RATE)
+            # Compress only pauses quiet for >=350 ms, retaining a short breath,
+            # then normalize spoken-word level. No synthetic sentence gap is added.
+            subprocess.run([
+                "ffmpeg", "-y", "-v", "error", "-i", str(wav),
+                "-af", FLOW_FILTER,
+                "-c:a", "libmp3lame", "-b:a", "128k", str(output_mp3),
+            ], check=True)
+        duration = probe_duration(output_mp3)
         sentences = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text) if p.strip()] or [text]
         weights = [max(1, len(s.split())) for s in sentences]; total = sum(weights); cursor = 0.0; cues = []
         for i, (sentence, weight) in enumerate(zip(sentences, weights), 1):

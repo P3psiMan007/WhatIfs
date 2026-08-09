@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 80,
-  "updated_at": "2026-08-09T16:37:44.319Z",
+  "state_revision": 87,
+  "updated_at": "2026-08-09T17:21:12.675Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -52,18 +52,18 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31323107119/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31323107119/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31325045813/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31325045813/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
     "status": "REWORK_REQUIRED",
     "scores": {},
     "top_issues": [
-      "Any render made with a narrator other than locked female af_heart is rejected."
+      "The previous af_heart render used pauses and level that failed the user-approved narration-flow standard."
     ],
     "required_fixes": [
-      "Regenerate narration with af_heart at speed 0.95 with no fallback, then independently review the exact render before publication."
+      "Regenerate af_heart at speed 0.95 with continuous-v2 pause compression and spoken-word loudness normalization, then independently review the exact render."
     ],
     "user_action_required": null
   },
@@ -705,6 +705,62 @@
     {
       "revision": 80,
       "at": "2026-08-09T16:37:44.319Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 81,
+      "at": "2026-08-09T16:57:58.600Z",
+      "actor": "narrator-flow-repair",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 82,
+      "at": "2026-08-09T16:57:58.633Z",
+      "actor": "narrator-flow-repair",
+      "from": "RENDERED",
+      "to": "SCRIPTED",
+      "reason": "invalidate old render once and regenerate continuous-v2 af_heart narration"
+    },
+    {
+      "revision": 83,
+      "at": "2026-08-09T17:01:34.845Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 84,
+      "at": "2026-08-09T17:01:34.877Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "VOICE_READY",
+      "reason": "per-scene narration generated, concatenated, and probed"
+    },
+    {
+      "revision": 85,
+      "at": "2026-08-09T17:21:12.236Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 86,
+      "at": "2026-08-09T17:21:12.268Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 87,
+      "at": "2026-08-09T17:21:12.675Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

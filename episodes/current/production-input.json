@@ -6,7 +6,8 @@
     "provider": "kokoro",
     "voice": "af_heart",
     "speed": 0.95,
-    "locked": true
+    "locked": true,
+    "flowVersion": "continuous-v2"
   },
   "palette": {
     "background": "#0b0d12",

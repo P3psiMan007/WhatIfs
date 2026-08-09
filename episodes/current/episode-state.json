@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "SCRIPTED",
-  "state_revision": 67,
-  "updated_at": "2026-08-09T02:31:42.452Z",
-  "updated_by": "narrator-voice-lock-repair",
+  "state": "RENDERED",
+  "state_revision": 73,
+  "updated_at": "2026-08-09T02:53:12.828Z",
+  "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -51,10 +51,10 @@
     "voice_candidates": [
       "en-US-BrianNeural"
     ],
-    "selected_voice": null,
-    "voice_asset": null,
-    "render_asset": null,
-    "qa_inputs_ready": false
+    "selected_voice": "en-US-BrianNeural",
+    "voice_asset": "github-actions://run/31290820807/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31290820807/artifact/episode-render/episode.mp4",
+    "qa_inputs_ready": true
   },
   "qa": {
     "status": "REWORK_REQUIRED",
@@ -607,6 +607,54 @@
       "from": "QA_PASSED",
       "to": "SCRIPTED",
       "reason": "invalidate rejected render and restore exact approved narrator"
+    },
+    {
+      "revision": 68,
+      "at": "2026-08-09T02:41:38.843Z",
+      "actor": "narrator-voice-lock-repair",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 69,
+      "at": "2026-08-09T02:41:52.979Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 70,
+      "at": "2026-08-09T02:41:53.011Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "VOICE_READY",
+      "reason": "per-scene narration generated, concatenated, and probed"
+    },
+    {
+      "revision": 71,
+      "at": "2026-08-09T02:53:12.486Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 72,
+      "at": "2026-08-09T02:53:12.519Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 73,
+      "at": "2026-08-09T02:53:12.828Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
     }
   ]
 }

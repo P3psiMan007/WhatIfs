@@ -14,22 +14,24 @@ const runState = (args) => {
 if (!fs.existsSync(statePath) || !fs.existsSync(inputPath)) process.exit(0);
 let state = read(statePath);
 const input = read(inputPath);
-const alreadyKokoro = input?.narrator?.provider === 'kokoro-82m' && String(input?.narrator?.voice || '').startsWith('am_');
-const legacyVoice = String(state?.production?.selected_voice || '').includes('Neural') || String(input?.narrator?.voice || '').includes('Neural');
-if (alreadyKokoro && !legacyVoice) process.exit(0);
+
+const approvedVoice = 'en-US-BrianNeural';
+const currentVoice = String(input?.narrator?.voice || '');
+const selectedVoice = String(state?.production?.selected_voice || '');
+const needsRestore = currentVoice !== approvedVoice || selectedVoice === 'am_michael' || state?.qa?.status === 'QA_PASSED';
+if (!needsRestore) process.exit(0);
 
 input.narrator = {
-  provider: 'kokoro-82m',
-  model: 'hexgrad/Kokoro-82M',
-  license: 'Apache-2.0',
-  voice: 'am_michael',
-  rate: '+4%'
+  provider: 'edge-tts',
+  voice: approvedVoice,
+  rate: '+4%',
+  locked: true
 };
 write(inputPath, input);
 
-runState(['patch', String(state.state_revision), state.episode_id, 'critic-qa-self-heal', JSON.stringify({
+runState(['patch', String(state.state_revision), state.episode_id, 'narrator-voice-lock-repair', JSON.stringify({
   production: {
-    voice_candidates: ['kokoro-82m/am_michael'],
+    voice_candidates: [approvedVoice],
     selected_voice: null,
     voice_asset: null,
     render_asset: null,
@@ -38,10 +40,18 @@ runState(['patch', String(state.state_revision), state.episode_id, 'critic-qa-se
   qa: {
     status: 'REWORK_REQUIRED',
     scores: {},
-    top_issues: ['Prior narration provider lacked sufficiently explicit commercial-use evidence and payoff delivery was rushed.'],
-    required_fixes: ['Regenerate narration with Apache-2.0 Kokoro-82M at the slower documentary pacing preset, regenerate captions/render, then independently review changed artifacts.'],
+    top_issues: [
+      'Previous render silently substituted am_michael for the approved narrator.',
+      'Previous render composited procedural doodles over already-composed authored scene artwork.'
+    ],
+    required_fixes: [
+      'Regenerate narration with the exact locked narrator en-US-BrianNeural; do not substitute another voice.',
+      'Regenerate video with one visual owner per beat and independently review the exact render before any publication action.'
+    ],
     user_action_required: null
   }
 })]);
 state = read(statePath);
-runState(['transition', String(state.state_revision), state.episode_id, 'SCRIPTED', 'critic-qa-self-heal', 'invalidate legacy narration/render for Apache-2.0 Kokoro rebuild']);
+if (state.state !== 'SCRIPTED') {
+  runState(['transition', String(state.state_revision), state.episode_id, 'SCRIPTED', 'narrator-voice-lock-repair', 'invalidate rejected render and restore exact approved narrator']);
+}

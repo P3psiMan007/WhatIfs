@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
   "state": "RENDERED",
-  "state_revision": 73,
-  "updated_at": "2026-08-09T02:53:12.828Z",
+  "state_revision": 80,
+  "updated_at": "2026-08-09T16:37:44.319Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -49,23 +49,21 @@
     "estimated_duration_min": 6.52,
     "pronunciation_dictionary": [],
     "voice_candidates": [
-      "en-US-BrianNeural"
+      "af_heart"
     ],
-    "selected_voice": "en-US-BrianNeural",
-    "voice_asset": "github-actions://run/31290820807/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31290820807/artifact/episode-render/episode.mp4",
+    "selected_voice": "af_heart",
+    "voice_asset": "github-actions://run/31323107119/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31323107119/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": true
   },
   "qa": {
     "status": "REWORK_REQUIRED",
     "scores": {},
     "top_issues": [
-      "Previous render silently substituted an unapproved narrator for the locked narrator.",
-      "Previous render composited procedural doodles over already-composed authored scene artwork."
+      "Any render made with a narrator other than locked female af_heart is rejected."
     ],
     "required_fixes": [
-      "Regenerate narration with the exact locked narrator en-US-BrianNeural; do not substitute another voice.",
-      "Regenerate video with one visual owner per beat and independently review the exact render before any publication action."
+      "Regenerate narration with af_heart at speed 0.95 with no fallback, then independently review the exact render before publication."
     ],
     "user_action_required": null
   },
@@ -651,6 +649,62 @@
     {
       "revision": 73,
       "at": "2026-08-09T02:53:12.828Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 74,
+      "at": "2026-08-09T16:13:31.216Z",
+      "actor": "narrator-voice-lock-repair",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 75,
+      "at": "2026-08-09T16:13:31.247Z",
+      "actor": "narrator-voice-lock-repair",
+      "from": "RENDERED",
+      "to": "SCRIPTED",
+      "reason": "invalidate rejected render and restore locked af_heart narrator"
+    },
+    {
+      "revision": 76,
+      "at": "2026-08-09T16:16:56.904Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 77,
+      "at": "2026-08-09T16:16:56.934Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "VOICE_READY",
+      "reason": "per-scene narration generated, concatenated, and probed"
+    },
+    {
+      "revision": 78,
+      "at": "2026-08-09T16:37:43.931Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 79,
+      "at": "2026-08-09T16:37:43.964Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 80,
+      "at": "2026-08-09T16:37:44.319Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

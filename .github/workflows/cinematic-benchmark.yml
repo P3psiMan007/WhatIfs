@@ -1,0 +1,25 @@
+name: Cinematic Benchmark
+
+on:
+  pull_request:
+    paths:
+      - "video/src/cinematic-benchmark*"
+      - "video/src/root.jsx"
+      - ".github/workflows/cinematic-benchmark.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+      - name: Cinematic benchmark contract
+        run: node --test video/src/cinematic-benchmark.test.mjs

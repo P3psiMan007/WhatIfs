@@ -15,18 +15,18 @@ if (!fs.existsSync(statePath) || !fs.existsSync(inputPath)) process.exit(0);
 let state = read(statePath);
 const input = read(inputPath);
 
-const approvedVoice = 'en-US-BrianNeural';
+const approvedVoice = 'af_heart';
+const approvedRate = '0.95';
 const currentVoice = String(input?.narrator?.voice || '');
+const currentRate = String(input?.narrator?.rate || '');
 const selectedVoice = String(state?.production?.selected_voice || '');
-// Repair only when the narrator identity itself is wrong. A later QA_PASSED
-// state with the approved narrator must never be invalidated again.
-const needsRestore = currentVoice !== approvedVoice || selectedVoice !== approvedVoice;
+const needsRestore = currentVoice !== approvedVoice || currentRate !== approvedRate || (selectedVoice && selectedVoice !== approvedVoice);
 if (!needsRestore) process.exit(0);
 
 input.narrator = {
-  provider: 'edge-tts',
+  provider: 'kokoro',
   voice: approvedVoice,
-  rate: '+4%',
+  rate: approvedRate,
   locked: true
 };
 write(inputPath, input);
@@ -43,17 +43,17 @@ runState(['patch', String(state.state_revision), state.episode_id, 'narrator-voi
     status: 'REWORK_REQUIRED',
     scores: {},
     top_issues: [
-      'Previous render silently substituted an unapproved narrator for the locked narrator.',
-      'Previous render composited procedural doodles over already-composed authored scene artwork.'
+      'Previous render used a rejected narrator instead of the approved female Kokoro narrator.',
+      'Previous render is invalid for final publication until narration and visuals are rebuilt in the approved cinematic style.'
     ],
     required_fixes: [
-      'Regenerate narration with the exact locked narrator en-US-BrianNeural; do not substitute another voice.',
-      'Regenerate video with one visual owner per beat and independently review the exact render before any publication action.'
+      'Regenerate narration with Kokoro af_heart at speed 0.95 with no narrator fallback.',
+      'Regenerate the video in the approved cinematic benchmark style and independently inspect the exact render before publication.'
     ],
     user_action_required: null
   }
 })]);
 state = read(statePath);
 if (state.state !== 'SCRIPTED') {
-  runState(['transition', String(state.state_revision), state.episode_id, 'SCRIPTED', 'narrator-voice-lock-repair', 'invalidate rejected render and restore exact approved narrator']);
+  runState(['transition', String(state.state_revision), state.episode_id, 'SCRIPTED', 'narrator-voice-lock-repair', 'invalidate rejected render and restore approved af_heart narrator']);
 }

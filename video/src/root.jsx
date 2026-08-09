@@ -1,6 +1,8 @@
 import React from 'react';
 import {Composition} from 'remotion';
 import {WhatIfEpisode,WhatIfThumbnail} from './what-if-episode.jsx';
+import {CinematicHook} from './cinematic/hook.jsx';
+import {HOOK_SHOTS} from './cinematic/shot-plan.mjs';
 import {WhatIfCinematicBenchmark} from './cinematic-benchmark.jsx';
 import {WhatIfEditorialBenchmark} from './editorial-benchmark.jsx';
 
@@ -24,6 +26,16 @@ const thumbnailProps={episodeId:'preview',title:'What If Humans Never Needed Sle
 export const RemotionRoot=()=> <>
   <Composition id="WhatIfEpisode" component={WhatIfEpisode} width={1920} height={1080} fps={30} durationInFrames={360} defaultProps={defaultProps} calculateMetadata={({props})=>({durationInFrames:Math.max(1,Math.ceil(Number(props.durationSeconds||12)*30))})}/>
   <Composition id="WhatIfThumbnail" component={WhatIfThumbnail} width={1280} height={720} fps={30} durationInFrames={1} defaultProps={thumbnailProps}/>
+  <Composition
+    id="CinematicHook"
+    component={CinematicHook}
+    width={1920}
+    height={1080}
+    fps={30}
+    durationInFrames={841}
+    defaultProps={{durationSeconds:28.04,captions:[],shots:HOOK_SHOTS}}
+    calculateMetadata={({props})=>({durationInFrames:Math.max(1,Math.round(Number(props.durationSeconds||28.04)*30))})}
+  />
   <Composition id="WhatIfCinematicBenchmark" component={WhatIfCinematicBenchmark} width={1920} height={1080} fps={30} durationInFrames={720}/>
   <Composition id="WhatIfEditorialBenchmark" component={WhatIfEditorialBenchmark} width={1920} height={1080} fps={30} durationInFrames={600}/>
 </>;

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs",
+    "test": "node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs video/src/cinematic/shot-plan.test.mjs",
     "render:episode": "remotion render video/src/index.jsx WhatIfEpisode dist/episode.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p"
   },
   "dependencies": {

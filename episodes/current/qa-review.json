@@ -1,16 +1,17 @@
 {
-  "qaReviewVersion": "1.0",
+  "qaReviewVersion": "1.1",
   "episodeId": "20260807-episode",
-  "reviewedStateRevision": 55,
-  "reviewedRenderAsset": "github-actions://run/31252577314/artifact/episode-render/episode.mp4",
-  "reviewedAt": "2026-08-08T11:03:18Z",
+  "reviewedStateRevision": 64,
+  "reviewedRenderAsset": "github-actions://run/31285143280/artifact/episode-render-normalized/episode.mp4",
+  "reviewedAt": "2026-08-09T00:04:18Z",
   "authority": "critic-qa-independent",
-  "status": "REWORK_REQUIRED",
-  "publishDecision": "BLOCK",
+  "status": "QA_PASSED",
+  "publishDecision": "PASS",
   "changedArtifactsReviewed": [
-    "episodes/current/script.md",
     "episodes/current/production-input.json",
     "episodes/current/render-manifest.json",
+    "episodes/current/qa-evidence.json",
+    "docs/licenses/kokoro-82m.md",
     "public/narration.mp3",
     "public/narration.srt",
     "dist/episode.mp4",
@@ -22,51 +23,33 @@
     "factual": 9.6,
     "package": 9.3,
     "retention": 9.1,
-    "narration": 8.8,
+    "narration": 9.2,
     "visual": 9.1,
     "technical": 9.8,
-    "policy": 8.0,
-    "copyright": 8.0
+    "policy": 9.6,
+    "copyright": 9.5
   },
   "additionalScores": {
-    "endingPayoff": 8.8,
+    "endingPayoff": 9.2,
     "advertiserSuitability": 9.8,
     "misleadingRisk": 9.5,
-    "captionSafety": 9.5
+    "captionSafety": 9.7
   },
   "verifiedPasses": [
-    "The corrected payoff now says roughly a third of each day back as waking time in canonical script, narration captions, and the final rendered payoff.",
-    "Chosen package A title and 8 HOURS BACK thumbnail accurately match the recovered-time promise.",
-    "First 30 seconds progress sentence-by-sentence through last bedtime, impossible-premise caveat, recovered hours, and the ownership-of-time hook with no dead frame found in the QA contact sheet.",
-    "Full-video contact-sheet review shows distinct bespoke scene storytelling across biology, circadian rhythm, economy, boundaries, relationships, psychology, and payoff.",
-    "Technical output is H.264 1920x1080 at 30 fps, about 385.1 seconds, with measured per-scene sync, 99 visual beats, 8 beats in the first 30 seconds, and no beat over 6 seconds.",
-    "No third-party footage, music, photographs, logos, or copied visual assets were identified; current visuals are deterministic checked-in SVG/React artwork created for this episode."
+    "The corrected payoff wording is present in the canonical production input and rendered narration: roughly a third of each day is gained back as waking time, avoiding the earlier arithmetic error.",
+    "Chosen package A title and 8 HOURS BACK thumbnail accurately match the episode promise and remain readable at thumbnail scale without clipped artwork.",
+    "The first 30 seconds progress through premise, caveat, recovered time, and consequence with nine visual beats and no detected black segment of at least 0.5 seconds.",
+    "Full contact-sheet review shows distinct bespoke visual storytelling across biology, circadian rhythm, economy, protected time, relationships, psychology, and payoff; the normalized artifact preserves the source video stream bit-for-bit.",
+    "Kokoro narration pacing is materially improved: median 114.9 WPM, p90 146.8 WPM, payoff median 106.6 WPM, with the ending given substantially more breathing room than the rejected Edge-TTS render.",
+    "Independent audio measurement on the exact normalized artifact is -16.85 LUFS integrated and -1.52 dBTP, with stereo AAC at 48 kHz and no unintended silence of at least 1.5 seconds below -50 dB.",
+    "Technical output is H.264 1920x1080 at 30 fps, about 519.68 seconds, measured per-scene synchronization, 122 visual beats, and no beat over 5.95 seconds.",
+    "Narration rights evidence identifies hexgrad/Kokoro-82M as Apache-2.0, documents am_michael as an upstream voice, and records explicit production/commercial-use evidence; the prior Edge-TTS rights blocker no longer applies.",
+    "No third-party footage, music, photographs, logos, or copied visual assets were identified; current visuals are deterministic checked-in SVG/React artwork created for this episode, and the narration route has durable licensing evidence."
   ],
-  "failures": [
-    {
-      "gate": "narration",
-      "severity": "publish-blocking",
-      "finding": "The ending does not yet meet a 9/10 narration bar on objective pacing evidence: median caption speech pace is about 152 WPM, but key payoff lines spike to about 220-241 WPM, including the sentence about the last part of the day the world cannot ask us to give back. The climax needs more breathing room before independent creative listening can support a publish-grade pass.",
-      "requiredFix": "Regenerate the payoff narration with slower phrasing and/or stronger sentence breaks while preserving the corrected meaning, then re-review the changed payoff audio, captions, and ending render."
-    },
-    {
-      "gate": "policy/copyright",
-      "severity": "owner-only-blocker",
-      "finding": "Narration is generated through the third-party edge-tts client against Microsoft Edge Read Aloud voices. As of 2026-08-08, Microsoft has no public documentation explicitly granting commercial or monetized-use rights for Edge Read Aloud voices or edge-tts; Microsoft Q&A recommends direct clarification for certainty. The project therefore lacks mandatory commercial-rights evidence for monetized publishing.",
-      "requiredFix": "Before monetized/public publishing, obtain durable rights evidence for this narration route from Microsoft or replace narration with a voice/provider whose commercial-use terms are explicit and compatible. Do not purchase credentials or paid resources automatically."
-    }
-  ],
-  "externalBlocker": {
-    "id": "edge_tts_commercial_rights_unverified",
-    "idempotent": true,
-    "ownerActionRequired": true,
-    "evidence": [
-      "https://learn.microsoft.com/en-us/answers/questions/5925556/commercial-use-of-edge-read-aloud-voices-via-edge",
-      "https://github.com/rany2/edge-tts/blob/master/README.md"
-    ]
-  },
+  "failures": [],
+  "externalBlocker": null,
   "postPublishAnalytics": {
     "due": false,
-    "reason": "No verified published-video record exists for this episode."
+    "reason": "No verified published-video record exists for this exact normalized render yet."
   }
 }

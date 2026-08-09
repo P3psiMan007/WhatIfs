@@ -53,5 +53,6 @@
   "postPublishAnalytics": {
     "due": false,
     "reason": "No verified published-video record exists yet; private YouTube staging is the next step."
-  }
+  },
+  "privateUploadTrigger": "2026-08-09T00:08:00Z"
 }

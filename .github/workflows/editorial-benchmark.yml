@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p public dist/editorial-frames
           cat >/tmp/editorial.txt <<'EOF'
-          Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day.
+          Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day. That means more time for work, family, learning, or doing absolutely nothing. But the real question is simple: who gets those extra hours?
           EOF
           python - <<'PY'
           import re, subprocess, tempfile
@@ -73,18 +73,18 @@ jobs:
         run: npx remotion render video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-benchmark.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p
       - name: Inspection frames
         run: |
-          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/01.png --frame=45
-          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/02.png --frame=165
-          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/03.png --frame=285
-          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/04.png --frame=405
-          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/05.png --frame=525
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/01.png --frame=60
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/02.png --frame=210
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/03.png --frame=390
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/04.png --frame=570
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/05.png --frame=780
       - name: Technical QA
         run: |
           test -s dist/editorial-benchmark.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1 dist/editorial-benchmark.mp4 | grep -q 'width=1920'
           ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1 dist/editorial-benchmark.mp4 | grep -q 'height=1080'
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of default=nw=1:nk=1 dist/editorial-benchmark.mp4 | grep -q audio
-          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 dist/editorial-benchmark.mp4 | awk '{if($1<19.8||$1>20.2)exit 1}'
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 dist/editorial-benchmark.mp4 | awk '{if($1<29.8||$1>30.2)exit 1}'
           ffmpeg -v error -i dist/editorial-benchmark.mp4 -vf "blackdetect=d=0.08:pix_th=0.02" -an -f null - 2>/tmp/black.txt || true
           test ! -s /tmp/black.txt
       - uses: actions/upload-artifact@v4

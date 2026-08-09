@@ -1,0 +1,95 @@
+name: Finalize Episode 1 independent QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "episodes/current/qa-review.json"
+      - ".github/workflows/finalize-episode1-qa.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate exact QA pass and advance revision safely
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          load=lambda p: json.loads(Path(p).read_text(encoding='utf-8'))
+          state=load('episodes/current/episode-state.json')
+          qa=load('episodes/current/qa-review.json')
+          evidence=load('episodes/current/qa-evidence.json')
+          autonomy=load('config/autonomy.json')
+          manifest=load('episodes/current/render-manifest.json')
+
+          if state.get('episode_id') != '20260807-episode':
+              raise SystemExit('unexpected episode id')
+          if state.get('state_revision') != 63 or state.get('state') != 'RENDERED':
+              raise SystemExit(f"revision/state changed: {state.get('state_revision')} {state.get('state')}")
+          if qa.get('status') != 'QA_PASSED' or qa.get('publishDecision') != 'PASS':
+              raise SystemExit('QA review is not an explicit PASS')
+          if qa.get('reviewedStateRevision') != 64:
+              raise SystemExit('QA review is not bound to prospective revision 64')
+          exact='github-actions://run/31285143280/artifact/episode-render-normalized/episode.mp4'
+          if qa.get('reviewedRenderAsset') != exact:
+              raise SystemExit('QA review is not bound to exact normalized artifact')
+          required=autonomy.get('requiredGates') or []
+          threshold=float(autonomy.get('requiredCoreScore',9))
+          scores=qa.get('coreScores') or {}
+          missing=[g for g in required if not isinstance(scores.get(g),(int,float)) or scores[g] < threshold]
+          if missing:
+              raise SystemExit('mandatory QA gates below threshold: '+','.join(missing))
+          render=evidence.get('render') or {}
+          if str(render.get('runId')) != '31285143280' or render.get('artifactName') != 'episode-render-normalized':
+              raise SystemExit('objective evidence does not identify exact normalized artifact')
+          if not (evidence.get('independentChecks') or {}).get('videoStreamBitIdentical'):
+              raise SystemExit('video stream identity not independently verified')
+          aq=render.get('audioQa') or {}
+          if not (-17.5 <= float(aq.get('measuredIntegratedLufs')) <= -15.0):
+              raise SystemExit('audio integrated loudness outside gate')
+          if float(aq.get('measuredTruePeakDbfs')) > -1.0:
+              raise SystemExit('audio true peak outside gate')
+          if not (evidence.get('rights') or {}).get('kokoroEvidencePresent'):
+              raise SystemExit('Kokoro rights evidence missing')
+          if str(manifest.get('githubRunId')) != '31285143280' or manifest.get('artifactName') != 'episode-render-normalized':
+              raise SystemExit('canonical manifest identity mismatch')
+
+          now=datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
+          old=state['state']
+          state['state']='QA_PASSED'
+          state['state_revision']=64
+          state['updated_at']=now
+          state['updated_by']='critic-qa-independent'
+          state['qa']={
+              'status':'QA_PASSED',
+              'scores':scores,
+              'top_issues':[],
+              'required_fixes':[],
+              'user_action_required':None
+          }
+          state.setdefault('history',[]).append({
+              'revision':64,'at':now,'actor':'critic-qa-independent',
+              'from':old,'to':'QA_PASSED',
+              'reason':'independent QA passed exact normalized Kokoro artifact; all mandatory gates >=9/10'
+          })
+          Path('episodes/current/episode-state.json').write_text(json.dumps(state,indent=2)+'\n',encoding='utf-8')
+          print('Episode 1 independent QA PASS -> revision 64 QA_PASSED')
+          PY
+      - name: Persist revision-safe QA state
+        run: |
+          git config user.name whatifs-independent-qa
+          git config user.email whatifs-independent-qa@users.noreply.github.com
+          git add episodes/current/episode-state.json
+          git commit -m "qa: advance Episode 1 to QA_PASSED"
+          git pull --rebase --autostash origin main
+          git push origin HEAD:main

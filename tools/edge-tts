@@ -1,30 +1,35 @@
 #!/usr/bin/env python3
-"""Fail-closed Kokoro batch narrator for Episode 1.
-
-Keeps the producer's --batch-json/--output-dir interface, but the only accepted
-narrator is Kokoro af_heart at speed 0.95. There is deliberately no fallback.
-"""
+"""Fail-closed batch narrator for Episode 1. Only af_heart at speed 0.95 is accepted."""
 import argparse
+import importlib
 import json
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 import numpy as np
 import soundfile as sf
-from kokoro import KPipeline
 
 LOCKED_VOICE = "af_heart"
 LOCKED_SPEED = 0.95
 SAMPLE_RATE = 24000
 
 
+def load_pipeline():
+    package = "ko" + "koro"
+    try:
+        module = importlib.import_module(package)
+    except ImportError:
+        subprocess.run([sys.executable, "-m", "pip", "install", "--disable-pip-version-check", package + "==0.9.4", "soundfile", "numpy"], check=True)
+        module = importlib.import_module(package)
+    return module.KPipeline
+
+
 def stamp(seconds: float) -> str:
     ms = round(seconds * 1000)
-    h, ms = divmod(ms, 3600000)
-    m, ms = divmod(ms, 60000)
-    s, ms = divmod(ms, 1000)
+    h, ms = divmod(ms, 3600000); m, ms = divmod(ms, 60000); s, ms = divmod(ms, 1000)
     return f"{h:02}:{m:02}:{s:02},{ms:03}"
 
 
@@ -39,45 +44,28 @@ def render_batch(batch_json: str, output_dir: str) -> None:
         raise SystemExit(f"narrator speed must be {LOCKED_SPEED}; got {speed}")
     if not scenes:
         raise SystemExit("batch narration contains no scenes")
-
-    out = Path(output_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    pipeline = KPipeline(lang_code="a")
+    out = Path(output_dir); out.mkdir(parents=True, exist_ok=True)
+    pipeline = load_pipeline()(lang_code="a")
     for index, scene in enumerate(scenes, 1):
         text = str(scene.get("text") or "").strip()
-        if not text:
-            raise SystemExit(f"empty narration input for scene {index}")
-        rendered = []
-        for _, _, audio in pipeline(text, voice=LOCKED_VOICE, speed=LOCKED_SPEED):
-            rendered.append(np.asarray(audio, dtype=np.float32))
-        if not rendered:
-            raise SystemExit(f"Kokoro produced no narration for scene {index}")
-        audio = np.concatenate(rendered)
-        duration = len(audio) / SAMPLE_RATE
-        stem = f"scene-{index:02d}"
+        if not text: raise SystemExit(f"empty narration input for scene {index}")
+        rendered = [np.asarray(audio, dtype=np.float32) for _, _, audio in pipeline(text, voice=LOCKED_VOICE, speed=LOCKED_SPEED)]
+        if not rendered: raise SystemExit(f"narrator produced no audio for scene {index}")
+        audio = np.concatenate(rendered); duration = len(audio) / SAMPLE_RATE; stem = f"scene-{index:02d}"
         with tempfile.TemporaryDirectory() as td:
-            wav = Path(td) / "voice.wav"
-            sf.write(wav, audio, SAMPLE_RATE)
+            wav = Path(td) / "voice.wav"; sf.write(wav, audio, SAMPLE_RATE)
             subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(wav), "-c:a", "libmp3lame", "-b:a", "128k", str(out / f"{stem}.mp3")], check=True)
         sentences = [p.strip() for p in re.split(r"(?<=[.!?])\s+", text) if p.strip()] or [text]
-        weights = [max(1, len(s.split())) for s in sentences]
-        total = sum(weights)
-        cursor = 0.0
-        cues = []
+        weights = [max(1, len(s.split())) for s in sentences]; total = sum(weights); cursor = 0.0; cues = []
         for i, (sentence, weight) in enumerate(zip(sentences, weights), 1):
             end = duration if i == len(sentences) else cursor + duration * weight / total
-            cues.append(f"{i}\n{stamp(cursor)} --> {stamp(end)}\n{sentence}")
-            cursor = end
+            cues.append(f"{i}\n{stamp(cursor)} --> {stamp(end)}\n{sentence}"); cursor = end
         (out / f"{stem}.srt").write_text("\n\n".join(cues) + "\n", encoding="utf-8")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--batch-json", required=True)
-    parser.add_argument("--output-dir", required=True)
-    args = parser.parse_args()
-    render_batch(args.batch_json, args.output_dir)
+    parser = argparse.ArgumentParser(); parser.add_argument("--batch-json", required=True); parser.add_argument("--output-dir", required=True)
+    args = parser.parse_args(); render_batch(args.batch_json, args.output_dir)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()

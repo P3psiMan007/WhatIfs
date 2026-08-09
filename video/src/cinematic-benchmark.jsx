@@ -45,6 +45,6 @@ export const WhatIfCinematicBenchmark = () => {
     {cue ? <div style={{position:'absolute',left:120,right:120,bottom:58,display:'flex',justifyContent:'center'}}>
       <div style={{maxWidth:1320,padding:'12px 20px',borderRadius:12,background:'rgba(5,8,14,.70)',fontSize:36,lineHeight:1.22,fontWeight:650,color:palette.fg,textAlign:'center',boxShadow:'0 10px 35px rgba(0,0,0,.25)'}}>{cue[2]}</div>
     </div> : null}
-    <Audio src={staticFile('benchmark-narration.mp3')}/>
+    <Audio src={staticFile('editorial-narration.mp3')}/>
   </AbsoluteFill>;
 };

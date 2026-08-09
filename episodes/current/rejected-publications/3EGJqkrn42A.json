@@ -1,4 +1,8 @@
 {
+  "rejection": {
+    "status": "REJECTED_BY_USER",
+    "reason": "Superseded by the approved cinematic rebuild; keep this YouTube video private and never reuse it as final Episode 1."
+  },
   "episodeId": "20260807-episode",
   "package": {
     "experimentAssignment": "baseline-dark-amber-v2",
@@ -19,9 +23,7 @@
   "youtube": {
     "lastError": "YouTube OAuth token cannot promote the verified private video to public; re-authorize once with scripts/authorize.py and replace the GitHub refresh token.",
     "metadataVerified": true,
-    "privacyTransitions": [
-      "private"
-    ],
+    "privacyTransitions": ["private"],
     "privateVerifiedAt": "2026-08-09T00:08:15.936234Z",
     "processingVerified": true,
     "publicVerifiedAt": null,

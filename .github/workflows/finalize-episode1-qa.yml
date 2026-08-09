@@ -1,134 +1,16 @@
-name: Finalize Episode 1 QA
+name: Retired stale Episode 1 QA finalizer
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/finalize-episode1-qa.yml"
 
 permissions:
-  contents: write
-
-concurrency:
-  group: finalize-episode1-qa
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  finalize:
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Verify exact normalized artifact evidence is canonical
+      - name: Refuse synthetic QA pass
         run: |
-          git pull --rebase origin main
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          state = json.loads(Path('episodes/current/episode-state.json').read_text())
-          manifest = json.loads(Path('episodes/current/render-manifest.json').read_text())
-          evidence = json.loads(Path('episodes/current/qa-evidence.json').read_text())
-          if state.get('episode_id') != '20260807-episode' or state.get('state') != 'RENDERED':
-              raise SystemExit(f"Unexpected episode state: {state.get('episode_id')} {state.get('state')}")
-          if str(manifest.get('githubRunId')) != '31285143280':
-              raise SystemExit(f"Unexpected canonical render run: {manifest.get('githubRunId')}")
-          if manifest.get('artifactName') != 'episode-render-normalized':
-              raise SystemExit(f"Unexpected artifact name: {manifest.get('artifactName')}")
-          if str((evidence.get('render') or {}).get('runId')) != '31285143280':
-              raise SystemExit('QA evidence does not point to normalized run')
-          audio = (evidence.get('render') or {}).get('audioQa') or {}
-          if not (-17.0 <= float(audio.get('measuredIntegratedLufs')) <= -16.0):
-              raise SystemExit(f"Measured integrated loudness out of approved range: {audio}")
-          if float(audio.get('measuredTruePeakDbfs')) > -1.0:
-              raise SystemExit(f"Measured true peak out of approved range: {audio}")
-          if (evidence.get('independentChecks') or {}).get('videoStreamBitIdentical') is not True:
-              raise SystemExit('Normalized video stream is not verified identical to reviewed source')
-          PY
-
-      - name: Advance state and write independent QA review
-        shell: bash
-        run: |
-          rev=$(python -c "import json; print(json.load(open('episodes/current/episode-state.json'))['state_revision'])")
-          node tools/episode-state.mjs transition "$rev" 20260807-episode QA_PASSED critic-qa-independent "Exact normalized Kokoro artifact passed full independent pre-publish QA"
-          rev=$(python -c "import json; print(json.load(open('episodes/current/episode-state.json'))['state_revision'])")
-          node tools/episode-state.mjs patch "$rev" 20260807-episode critic-qa-independent '{"qa":{"status":"QA_PASSED","scores":{"factual":9.6,"package":9.4,"retention":9.2,"narration":9.1,"visual":9.2,"technical":9.8,"policy":9.6,"copyright":9.5},"top_issues":[],"required_fixes":[],"user_action_required":null}}'
-          python - <<'PY'
-          import json
-          from datetime import datetime, timezone
-          from pathlib import Path
-          state = json.loads(Path('episodes/current/episode-state.json').read_text())
-          review = {
-            'qaReviewVersion': '1.1',
-            'episodeId': '20260807-episode',
-            'reviewedStateRevision': state['state_revision'],
-            'reviewedRenderAsset': 'github-actions://run/31285143280/artifact/episode-render-normalized/episode.mp4',
-            'reviewedAt': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
-            'authority': 'critic-qa-independent',
-            'status': 'QA_PASSED',
-            'publishDecision': 'PASS',
-            'changedArtifactsReviewed': [
-              'episodes/current/script.md',
-              'episodes/current/production-input.json',
-              'episodes/current/render-manifest.json',
-              'episodes/current/qa-evidence.json',
-              'episodes/current/thumbnail-source.json',
-              'docs/licenses/kokoro-82m.md',
-              'public/narration.mp3',
-              'public/narration.srt',
-              'dist/episode.mp4',
-              'dist/first-30s-contact-sheet.jpg',
-              'dist/contact-sheet.jpg'
-            ],
-            'coreScores': {
-              'factual': 9.6,
-              'package': 9.4,
-              'retention': 9.2,
-              'narration': 9.1,
-              'visual': 9.2,
-              'technical': 9.8,
-              'policy': 9.6,
-              'copyright': 9.5
-            },
-            'additionalScores': {
-              'endingPayoff': 9.2,
-              'advertiserSuitability': 9.8,
-              'misleadingRisk': 9.6,
-              'captionSafety': 9.5
-            },
-            'verifiedPasses': [
-              'Corrected payoff wording is present: gain roughly a third of each day back as waking time; the prior arithmetic error is absent.',
-              'Kokoro-82M narration uses the published am_michael voice with durable Apache-2.0/commercial-use evidence.',
-              'Narration pace is materially improved: 114.9 WPM median overall, 106.6 WPM median payoff, and no prior 220-241 WPM payoff spikes.',
-              'The exact normalized artifact independently measures -16.85 LUFS integrated and -1.52 dBTP true peak with stereo AAC at 48 kHz.',
-              'The normalized artifact preserves the reviewed H.264 video stream bit-for-bit; source and normalized video-stream SHA-256 hashes match.',
-              'No black segment of at least 0.5 seconds and no unintended silence of at least 1.5 seconds below -50 dB were detected.',
-              'Visual pacing remains publish-grade: 122 visual beats, 9 in the first 30 seconds, maximum beat duration 5.95 seconds.',
-              'Full-video contact-sheet and first-30-second sampled-frame review show coherent bespoke storytelling and no dead visual frame.',
-              'Package A title and the approved verified ChatGPT Images 8 HOURS BACK thumbnail accurately match the recovered-time promise.',
-              'No third-party footage, music, logos, photographs, or copied creator assets were identified in the final video.'
-            ],
-            'failures': [],
-            'externalBlocker': None,
-            'postPublishAnalytics': {
-              'due': False,
-              'reason': 'No verified published-video record exists yet; private YouTube staging is the next step.'
-            }
-          }
-          Path('episodes/current/qa-review.json').write_text(json.dumps(review, indent=2) + '\n')
-          PY
-
-      - name: Persist QA pass atomically
-        run: |
-          git config user.name "whatifs-independent-qa"
-          git config user.email "whatifs-independent-qa@users.noreply.github.com"
-          git add episodes/current/episode-state.json episodes/current/qa-review.json
-          git commit -m "qa: pass exact normalized Episode 1 render"
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
+          echo "This workflow is retired. QA may only be written after independent review of the exact new render artifact."
+          exit 1

@@ -25,6 +25,19 @@ API_VERSION = "v3"
 PRIVACY_STATUS = "private"
 
 
+def _close_media_stream(media) -> None:
+    """Close the file descriptor opened by MediaFileUpload after an API request."""
+    try:
+        if media.has_stream():
+            stream = media.stream()
+            close = getattr(stream, "close", None)
+            if callable(close):
+                close()
+    except OSError:
+        # The request outcome is authoritative; cleanup must not mask it.
+        pass
+
+
 def build_youtube_service(*, scopes=None, prove_publication_scope: bool = False):
     credentials = credentials_from_env(scopes=scopes or PRIVATE_VERIFY_SCOPES)
     if prove_publication_scope:
@@ -71,28 +84,31 @@ def upload_private(
     media = MediaFileUpload(
         str(video_file), chunksize=-1, resumable=True, mimetype="video/*"
     )
-    request = youtube.videos().insert(
-        part="snippet,status",
-        body=body,
-        media_body=media,
-    )
-
-    response = None
-    while response is None:
-        status, response = request.next_chunk()
-        if status:
-            print(f"Uploaded {int(status.progress() * 100)}%")
-
-    video_id = response.get("id")
-    if not video_id:
-        raise RuntimeError("YouTube upload completed without a video ID")
-    returned_privacy = (response.get("status") or {}).get("privacyStatus")
-    if returned_privacy and returned_privacy != PRIVACY_STATUS:
-        raise RuntimeError(
-            f"YouTube upload did not remain private: privacyStatus={returned_privacy!r}"
+    try:
+        request = youtube.videos().insert(
+            part="snippet,status",
+            body=body,
+            media_body=media,
         )
-    print(f"Private upload complete. Video ID: {video_id}")
-    return video_id
+
+        response = None
+        while response is None:
+            status, response = request.next_chunk()
+            if status:
+                print(f"Uploaded {int(status.progress() * 100)}%")
+
+        video_id = response.get("id")
+        if not video_id:
+            raise RuntimeError("YouTube upload completed without a video ID")
+        returned_privacy = (response.get("status") or {}).get("privacyStatus")
+        if returned_privacy and returned_privacy != PRIVACY_STATUS:
+            raise RuntimeError(
+                f"YouTube upload did not remain private: privacyStatus={returned_privacy!r}"
+            )
+        print(f"Private upload complete. Video ID: {video_id}")
+        return video_id
+    finally:
+        _close_media_stream(media)
 
 
 def set_thumbnail(video_id: str, thumbnail_path: str, *, youtube=None) -> None:
@@ -101,10 +117,14 @@ def set_thumbnail(video_id: str, thumbnail_path: str, *, youtube=None) -> None:
     if not thumb_file.is_file():
         raise FileNotFoundError(f"Thumbnail file not found: {thumbnail_path}")
     youtube = youtube or build_youtube_service()
-    youtube.thumbnails().set(
-        videoId=video_id,
-        media_body=MediaFileUpload(str(thumb_file)),
-    ).execute()
+    media = MediaFileUpload(str(thumb_file))
+    try:
+        youtube.thumbnails().set(
+            videoId=video_id,
+            media_body=media,
+        ).execute()
+    finally:
+        _close_media_stream(media)
     print("Thumbnail set.")
 
 

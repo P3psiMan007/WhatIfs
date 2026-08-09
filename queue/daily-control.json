@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "External publication retrigger after exact normalized Episode 1 artifact passed independent QA at revision 65. Run canonical private-first YouTube verification/promotion on the same approved video identity; fail closed on any mismatch."
+  "notes": "Episode 1 is in a first-party image-first rebuild. The prior render and its QA are superseded; publishing remains blocked until a fresh exact-artifact independent review passes every gate."
 }

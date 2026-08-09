@@ -16,6 +16,7 @@ const REQUIRED_VERIFICATION_FLAGS = [
   'requireProcessingVerification',
   'requireMetadataVerification',
   'requireThumbnailVerification',
+  'requirePlaybackVerification',
   'promoteSameVideoIdOnly',
 ];
 

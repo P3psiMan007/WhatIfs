@@ -4,6 +4,7 @@ from unittest.mock import Mock
 from youtube_uploader.verifier import (
     fetch_video,
     promote_public,
+    verify_playback,
     verify_metadata,
     verify_thumbnail_state,
     wait_until_processed,
@@ -88,6 +89,21 @@ class VerifierTests(TestCase):
         self.assertFalse(
             verify_thumbnail_state({"snippet": {"thumbnails": {}}}, thumbnail_set_succeeded=True)
         )
+
+    def test_verify_playback_requires_processed_embeddable_video(self):
+        playable = {
+            "status": {"uploadStatus": "processed", "embeddable": True},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }
+        self.assertTrue(verify_playback(playable))
+        self.assertFalse(verify_playback({
+            "status": {"uploadStatus": "processed", "embeddable": False},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }))
+        self.assertFalse(verify_playback({
+            "status": {"uploadStatus": "uploaded", "embeddable": True},
+            "processingDetails": {"processingStatus": "succeeded"},
+        }))
 
     def test_promote_public_updates_same_video_id_and_omits_read_only_status(self):
         youtube = Mock()

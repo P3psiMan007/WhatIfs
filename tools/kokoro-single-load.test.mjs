@@ -6,7 +6,7 @@ import {
 } from './episode-producer.mjs';
 
 const input = {
-  narrator: {provider:'kokoro-82m', voice:'am_michael', rate:'+4%'},
+  narrator: {provider:'kokoro', voice:'af_heart', speed:0.95, flowVersion:'continuous-v2'},
   scenes: [
     {id:'scene-01', narration:'First scene.'},
     {id:'scene-02', narration:'Second scene.'},
@@ -16,8 +16,10 @@ const input = {
 
 test('Kokoro narration is planned as one batch containing every scene', () => {
   const payload = buildNarrationBatchPayload(input);
-  assert.equal(payload.voice, 'am_michael');
-  assert.equal(payload.rate, '+4%');
+  assert.equal(payload.provider, 'kokoro');
+  assert.equal(payload.voice, 'af_heart');
+  assert.equal(payload.speed, 0.95);
+  assert.equal(payload.flowVersion, 'continuous-v2');
   assert.deepEqual(payload.scenes, [
     {id:'scene-01', text:'First scene.'},
     {id:'scene-02', text:'Second scene.'},

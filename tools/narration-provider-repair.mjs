@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
 
-// Legacy rejected narrator marker retained only so old CI can detect migration: en-US-BrianNeural
+// This repair deliberately contains no alternate narrator identifier.
 const statePath = process.env.EPISODE_STATE_PATH || 'episodes/current/episode-state.json';
 const inputPath = process.env.PRODUCTION_INPUT_PATH || 'episodes/current/production-input.json';
 const read = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));

@@ -55,6 +55,8 @@ class QaEvidenceTests(TestCase):
                 "format": {"duration": "14.6"},
             },
             "visualQa": {"totalBeats": 20, "first30BeatCount": 8, "maxBeatDuration": 5.5},
+            "narrator": {"audioSha256": "a" * 64},
+            "imageAssets": {"sha256": "b" * 64, "assetRevision": "image-first-cinematic-v2"},
         }
         with tempfile.TemporaryDirectory() as tmp:
             rights = Path(tmp) / "rights.md"
@@ -63,6 +65,8 @@ class QaEvidenceTests(TestCase):
 
         self.assertEqual(evidence["render"]["runId"], "999")
         self.assertTrue(evidence["render"]["technicalShapeOk"])
+        self.assertEqual(evidence["render"]["narratorAudioSha256"], "a" * 64)
+        self.assertEqual(evidence["render"]["imageAssetManifestSha256"], "b" * 64)
         self.assertEqual(evidence["narration"]["provider"], "kokoro")
         self.assertEqual(evidence["narration"]["voice"], "af_heart")
         self.assertEqual(evidence["payoff"]["cueCount"], 2)
@@ -75,7 +79,7 @@ class QaEvidenceTests(TestCase):
         manifest = {"episodeId": "ep", "githubRunId": "1", "technical": {"streams": [{}], "format": {}}, "visualQa": {}}
         with tempfile.TemporaryDirectory() as tmp:
             rights = Path(tmp) / "rights.md"
-            rights.write_text("Kokoro-82M Apache-2.0 am_michael commercial production", encoding="utf-8")
+            rights.write_text("Kokoro-82M Apache-2.0 an-unapproved-voice commercial production", encoding="utf-8")
             evidence = build_evidence([], production, manifest, rights)
         self.assertFalse(evidence["rights"]["kokoroEvidencePresent"])
         self.assertFalse(evidence["rights"]["voiceMentioned"])

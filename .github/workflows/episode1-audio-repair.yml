@@ -1,123 +1,16 @@
-name: Episode 1 Audio Repair
+name: Retired stale Episode 1 audio repair
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/episode1-audio-repair.yml"
-      - "scripts/normalize_render_audio.py"
-      - "scripts/test_normalize_render_audio.py"
 
 permissions:
-  actions: read
-  contents: write
-
-concurrency:
-  group: episode1-audio-repair
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  repair:
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-        with: {fetch-depth: 0}
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.11"}
-
-      - name: Install required media tooling
+      - name: Refuse stale-artifact repair
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-          command -v ffmpeg
-          command -v ffprobe
-          ffmpeg -version | head -n 1
-
-      - name: Persist observable run identity
-        run: |
-          python - <<'PY'
-          import json, os
-          from datetime import datetime, timezone
-          from pathlib import Path
-          Path('queue/episode1-audio-repair-status.json').write_text(json.dumps({
-            'runId': os.environ['GITHUB_RUN_ID'],
-            'status': 'STARTED',
-            'startedAt': datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
-          }, indent=2)+'\n')
-          PY
-          git config user.name whatifs-audio-repair
-          git config user.email whatifs-audio-repair@users.noreply.github.com
-          git add queue/episode1-audio-repair-status.json
-          git commit -m "chore: record Episode 1 audio repair run"
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
-
-      - name: Regression tests
-        run: python -m unittest scripts.test_normalize_render_audio -v
-      - name: Download exact latest Kokoro render
-        env: {GH_TOKEN: "${{ github.token }}"}
-        run: |
-          rm -rf incoming repaired
-          mkdir -p incoming repaired
-          gh run download 31283336381 -n episode-render -D incoming
-          test -s incoming/dist/episode.mp4
-          test -s incoming/episodes/current/render-manifest.json
-      - name: Repair audio only and preserve video stream
-        run: |
-          cp -a incoming/. repaired/
-          python scripts/normalize_render_audio.py incoming/dist/episode.mp4 repaired/dist/episode.mp4
-          src=$(ffmpeg -v error -i incoming/dist/episode.mp4 -map 0:v:0 -c copy -f hash -hash sha256 - | sed 's/^SHA256=//')
-          out=$(ffmpeg -v error -i repaired/dist/episode.mp4 -map 0:v:0 -c copy -f hash -hash sha256 - | sed 's/^SHA256=//')
-          test "$src" = "$out"
-      - name: Patch manifest and canonical state
-        run: |
-          python - <<'PY'
-          import json, os, subprocess
-          from datetime import datetime, timezone
-          from pathlib import Path
-          repaired=Path('repaired')
-          mp=repaired/'episodes/current/render-manifest.json'
-          m=json.loads(mp.read_text())
-          m['generatedAt']=datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
-          m['githubRunId']=os.environ['GITHUB_RUN_ID']
-          m['artifactName']='episode-render-normalized'
-          m['technical']=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(repaired/'dist/episode.mp4')],text=True))
-          m['audioQa']={'repair':'audio-only-gain-plus-limiter','sourceRunId':'31283336381','sourceArtifactId':'9029384477','integratedLufs':-16.8,'truePeakDbfs':-1.5,'videoStreamPreserved':True}
-          mp.write_text(json.dumps(m,indent=2)+'\n')
-          Path('episodes/current/render-manifest.json').write_text(json.dumps(m,indent=2)+'\n')
-          Path('episodes/current/production-input.json').write_text((repaired/'episodes/current/production-input.json').read_text())
-          sp=Path('episodes/current/episode-state.json'); s=json.loads(sp.read_text())
-          s['state']='RENDERED'; s['state_revision']=int(s['state_revision'])+1
-          s['updated_at']=datetime.now(timezone.utc).isoformat().replace('+00:00','Z'); s['updated_by']='episode1-audio-repair'
-          p=s.setdefault('production',{}); p['voice_candidates']=['am_michael']; p['selected_voice']='am_michael'
-          p['voice_asset']=f"github-actions://run/{os.environ['GITHUB_RUN_ID']}/artifact/episode-render-normalized/narration.mp3"
-          p['render_asset']=f"github-actions://run/{os.environ['GITHUB_RUN_ID']}/artifact/episode-render-normalized/episode.mp4"; p['qa_inputs_ready']=True
-          s['qa']={'status':'AWAITING_INDEPENDENT_QA','scores':{},'top_issues':[],'required_fixes':[],'user_action_required':None}
-          sp.write_text(json.dumps(s,indent=2)+'\n')
-          PY
-          cp episodes/current/render-manifest.json repaired/episodes/current/render-manifest.json
-      - name: Upload repaired artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: episode-render-normalized
-          retention-days: 14
-          if-no-files-found: error
-          path: |
-            repaired/dist/episode.mp4
-            repaired/dist/thumbnail.png
-            repaired/dist/contact-sheet.jpg
-            repaired/dist/first-30s-contact-sheet.jpg
-            repaired/public/narration.mp3
-            repaired/public/narration.srt
-            repaired/episodes/current/render-manifest.json
-            repaired/episodes/current/production-input.json
-      - name: Persist canonical repaired identity
-        run: |
-          git config user.name whatifs-audio-repair
-          git config user.email whatifs-audio-repair@users.noreply.github.com
-          git add episodes/current/episode-state.json episodes/current/render-manifest.json episodes/current/production-input.json
-          git commit -m "chore: persist normalized Episode 1 Kokoro render"
-          git pull --rebase --autostash origin main
-          git push origin HEAD:main
+          echo "This workflow is retired. It referenced a superseded render and must not alter the current episode."
+          exit 1

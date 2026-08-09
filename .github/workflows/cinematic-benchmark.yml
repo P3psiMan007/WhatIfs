@@ -1,72 +1,16 @@
-name: Cinematic Benchmark
+name: Retired voice-unsafe cinematic benchmark
 
 on:
-  pull_request:
-    paths:
-      - "video/src/cinematic-benchmark*"
-      - "video/src/root.jsx"
-      - ".github/workflows/cinematic-benchmark.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  benchmark:
+  retired:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install dependencies
+      - name: Refuse superseded benchmark workflow
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-          npm install --no-audit --no-fund
-          python -m pip install --disable-pip-version-check edge-tts==7.2.8
-      - name: Cinematic benchmark contract
-        run: node --test video/src/cinematic-benchmark.test.mjs
-      - name: Generate exact approved narration
-        shell: bash
-        run: |
-          mkdir -p public dist/benchmark-frames
-          cat > /tmp/benchmark.txt <<'EOF'
-          Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, every human wakes up and discovers that sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day. That sounds like a superpower. But within a few years, those eight hours might stop belonging to you.
-          EOF
-          edge-tts --file /tmp/benchmark.txt --voice en-US-BrianNeural --rate=+4% --write-media public/benchmark-narration.mp3 --write-subtitles public/benchmark-narration.srt
-          test -s public/benchmark-narration.mp3
-          grep -q "Tonight, you go to bed" public/benchmark-narration.srt
-          grep -q "stop belonging to you" public/benchmark-narration.srt
-      - name: Render 24-second benchmark
-        run: npx remotion render video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-opening.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p
-      - name: Render inspection frames
-        run: |
-          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/01-2s.png --frame=60
-          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/02-8s.png --frame=240
-          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/03-14s.png --frame=420
-          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/04-21s.png --frame=630
-      - name: Technical QA
-        shell: bash
-        run: |
-          test -s dist/benchmark-opening.mp4
-          test -s dist/benchmark-frames/01-2s.png
-          ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of default=nw=1 dist/benchmark-opening.mp4 | tee /tmp/video.txt
-          grep -q "width=1920" /tmp/video.txt
-          grep -q "height=1080" /tmp/video.txt
-          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 dist/benchmark-opening.mp4 | awk '{if ($1 < 23.5 || $1 > 24.5) exit 1}'
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cinematic-benchmark
-          path: |
-            dist/benchmark-opening.mp4
-            dist/benchmark-frames/*.png
-            public/benchmark-narration.mp3
-            public/benchmark-narration.srt
-          if-no-files-found: error
-          retention-days: 7
+          echo "This workflow is retired. It used an unapproved narration path and cannot produce release evidence."
+          exit 1

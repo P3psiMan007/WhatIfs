@@ -122,6 +122,8 @@ def _render_summary(manifest: dict, production: dict) -> dict:
     width = int(stream.get("width") or 0)
     height = int(stream.get("height") or 0)
     frame_rate = str(stream.get("r_frame_rate") or "")
+    narrator = manifest.get("narrator") or {}
+    image_assets = manifest.get("imageAssets") or {}
     return {
         "episodeId": manifest.get("episodeId"),
         "episodeMatchesProduction": manifest.get("episodeId") == production.get("episodeId"),
@@ -142,6 +144,9 @@ def _render_summary(manifest: dict, production: dict) -> dict:
         "visualGrade": manifest.get("visualGrade"),
         "qaInputsReady": manifest.get("qaInputsReady"),
         "publishBlocker": manifest.get("publishBlocker"),
+        "narratorAudioSha256": narrator.get("audioSha256"),
+        "imageAssetManifestSha256": image_assets.get("sha256"),
+        "imageAssetRevision": image_assets.get("assetRevision"),
     }
 
 

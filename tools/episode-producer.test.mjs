@@ -10,12 +10,15 @@ import {
   buildVisualBeats,
   formatSrt,
   extractBeatCallout,
+  buildNarrationBatchPayload,
+  describeImageAssetManifest,
 } from './episode-producer.mjs';
 import {isPublishGradeVisualInput} from './publish-grade-visual-guard.mjs';
+import {EPISODE1_IMAGE_ASSET_REVISION,EPISODE1_IMAGE_SCENE_IDS,imageAssetsForScene} from '../video/src/episode1-image-assets.mjs';
 
 const validInput = {
   episodeId: 'ep1',
-  narrator: { provider:'kokoro', voice:'af_heart', speed:0.95, locked:true },
+  narrator: { provider:'kokoro', voice:'af_heart', speed:0.95, locked:true, flowVersion:'continuous-v2' },
   title: 'What If Humans Never Needed Sleep?',
   description: 'A factual hypothetical explainer.',
   packages: [{ id: 'A', title: 'What If Humans Never Needed Sleep?', thumbnailText: '8 HOURS BACK' }],
@@ -57,10 +60,21 @@ test('RENDERED is left for independent QA', () => {
   assert.deepEqual(planProducerStage({state:{state:'RENDERED'}, inputReady:true, audioReady:true, renderReady:true}), {kind:'NOOP', reason:'awaiting_qa'});
 });
 
-test('publish-grade visual readiness requires explicit grade and per-scene assets', () => {
-  assert.equal(isPublishGradeVisualInput(validInput), true);
-  assert.equal(isPublishGradeVisualInput({...validInput, visualGrade:'heuristic-placeholder'}), false);
-  assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}), false);
+test('publish-grade visual readiness requires the canonical full-section image manifest', () => {
+  const canonical = {...validInput, imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION, imageAssetManifest:'episodes/current/image-assets-v1.json', scenes:EPISODE1_IMAGE_SCENE_IDS.map((id)=>({id,headline:id,narration:'Narration.',imageAssets:[...imageAssetsForScene(id)]}))};
+  assert.equal(isPublishGradeVisualInput(canonical), true);
+  assert.equal(isPublishGradeVisualInput({...canonical, visualGrade:'heuristic-placeholder'}), false);
+  assert.equal(isPublishGradeVisualInput({...canonical, scenes:canonical.scenes.slice(0,8)}), false);
+});
+
+test('render provenance pins the exact checked-in image manifest bytes', () => {
+  const input = JSON.parse(fs.readFileSync('episodes/current/production-input.json','utf8'));
+  const provenance = describeImageAssetManifest(input);
+  assert.deepEqual(Object.keys(provenance).sort(), ['assetRevision','path','sha256']);
+  assert.equal(provenance.path, 'episodes/current/image-assets-v1.json');
+  assert.equal(provenance.assetRevision, EPISODE1_IMAGE_ASSET_REVISION);
+  assert.match(provenance.sha256, /^[0-9a-f]{64}$/);
+  assert.throws(() => describeImageAssetManifest({...input,imageAssetManifest:'../outside.json'}), /invalid image asset manifest path/);
 });
 
 test('batch narrator is fail-closed to af_heart 0.95 and preserves whole-scene flow', () => {
@@ -72,6 +86,9 @@ test('batch narrator is fail-closed to af_heart 0.95 and preserves whole-scene f
   assert.match(shim, /trim_edge_silence/);
   assert.doesNotMatch(shim, /am_michael/);
   assert.doesNotMatch(shim, /parts\.append\(silence\)|sentence_pauses/);
+  assert.deepEqual(buildNarrationBatchPayload(validInput), {provider:'kokoro',voice:'af_heart',speed:0.95,flowVersion:'continuous-v2',scenes:[{id:'hook',text:'Imagine never needing to sleep again.'},{id:'payoff',text:'You gain waking time, not extra years.'}]});
+  assert.throws(()=>buildNarrationBatchPayload({...validInput,narrator:{...validInput.narrator,voice:'other'}}),/fail-closed/);
+  assert.throws(()=>buildNarrationBatchPayload({...validInput,narrator:{...validInput.narrator,flowVersion:'chunked'}}),/fail-closed/);
 });
 
 test('parses SRT captions into second-based cues', () => {

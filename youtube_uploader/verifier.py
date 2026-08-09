@@ -70,6 +70,17 @@ def verify_thumbnail_state(video: dict, *, thumbnail_set_succeeded: bool) -> boo
     return thumbnail_set_succeeded is True and bool(thumbnails)
 
 
+def verify_playback(video: dict) -> bool:
+    """Confirm the API reports that the private upload can be played when authorized."""
+    status = video.get("status") or {}
+    processing = video.get("processingDetails") or {}
+    return (
+        status.get("uploadStatus") == "processed"
+        and status.get("embeddable") is True
+        and processing.get("processingStatus") == "succeeded"
+    )
+
+
 def verify_privacy(video: dict, expected: str) -> bool:
     return (video.get("status") or {}).get("privacyStatus") == expected
 

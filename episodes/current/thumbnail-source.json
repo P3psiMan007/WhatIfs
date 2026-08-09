@@ -1,13 +1,22 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "episodeId": "20260807-episode",
   "packageId": "A",
   "source": "chatgpt-images",
-  "url": "https://at.adobe.com/IZCvtuXxfrMshC4J",
+  "localPath": "../../public/approved/episode1-chatgpt-thumbnail.jpg",
+  "immutableLocalCopy": true,
   "sha256": "ab400b2405f39d6af16947187988143c2d08751ccb822e2ba68a7a678827a1a6",
   "width": 1280,
   "height": 720,
   "mimeType": "image/jpeg",
   "thumbnailText": "8 HOURS BACK",
-  "approvedForCurrentEpisode": true
+  "approvedForCurrentEpisode": true,
+  "provenance": {
+    "origin": "approved ChatGPT Images thumbnail",
+    "recoveredVia": "Adobe Creative Cloud",
+    "assetId": "urn:aaid:sc:AP:b5785a7e-8faf-4c22-b68d-8bc48381d277",
+    "assetUrl": "https://at.adobe.com/k1KQBCYxhjGdcfvw",
+    "recoveredOn": "2026-08-10",
+    "byteIdentity": "sha256:ab400b2405f39d6af16947187988143c2d08751ccb822e2ba68a7a678827a1a6"
+  }
 }

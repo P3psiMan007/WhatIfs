@@ -1,0 +1,97 @@
+name: Editorial Benchmark
+on:
+  pull_request:
+    branches: [main]
+    paths: ['video/src/editorial-benchmark.jsx','video/src/root.jsx','.github/workflows/editorial-benchmark.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg espeak-ng
+          npm install --no-audit --no-fund
+          python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
+      - name: Generate locked female Kokoro narration
+        run: |
+          mkdir -p public dist/editorial-frames
+          cat >/tmp/editorial.txt <<'EOF'
+          Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day.
+          EOF
+          python - <<'PY'
+          import re, subprocess, tempfile
+          from pathlib import Path
+          import numpy as np
+          import soundfile as sf
+          from kokoro import KPipeline
+
+          text=Path('/tmp/editorial.txt').read_text(encoding='utf-8').strip()
+          voice='af_heart'
+          speed=0.95
+          pipeline=KPipeline(lang_code='a')
+          parts=[]
+          cursor=0.0
+          cues=[]
+          for sentence in [p.strip() for p in re.split(r'(?<=[.!?])\s+', text) if p.strip()]:
+              rendered=[]
+              for _,_,audio in pipeline(sentence, voice=voice, speed=speed):
+                  rendered.append(np.asarray(audio,dtype=np.float32))
+              if not rendered:
+                  raise SystemExit('Kokoro produced no narration')
+              audio=np.concatenate(rendered)
+              dur=len(audio)/24000.0
+              parts.append(audio)
+              cues.append((cursor,cursor+dur,sentence))
+              silence=np.zeros(round(0.14*24000),dtype=np.float32)
+              parts.append(silence)
+              cursor += dur+0.14
+          combined=np.concatenate(parts)
+          with tempfile.TemporaryDirectory() as td:
+              wav=Path(td)/'voice.wav'
+              sf.write(wav,combined,24000)
+              subprocess.run(['ffmpeg','-y','-v','error','-i',str(wav),'-c:a','libmp3lame','-b:a','128k','public/editorial-narration.mp3'],check=True)
+          def stamp(v):
+              ms=round(v*1000); h=ms//3600000; ms%=3600000; m=ms//60000; ms%=60000; s=ms//1000; ms%=1000
+              return f'{h:02}:{m:02}:{s:02},{ms:03}'
+          Path('public/editorial-narration.srt').write_text('\n\n'.join(f'{i}\n{stamp(a)} --> {stamp(b)}\n{txt}' for i,(a,b,txt) in enumerate(cues,1))+'\n',encoding='utf-8')
+          Path('public/editorial-voice.txt').write_text('af_heart\n',encoding='utf-8')
+          PY
+          test "$(cat public/editorial-voice.txt)" = "af_heart"
+          test -s public/editorial-narration.mp3
+      - name: Render editorial benchmark
+        run: npx remotion render video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-benchmark.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p
+      - name: Inspection frames
+        run: |
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/01.png --frame=45
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/02.png --frame=165
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/03.png --frame=285
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/04.png --frame=405
+          npx remotion still video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-frames/05.png --frame=525
+      - name: Technical QA
+        run: |
+          test -s dist/editorial-benchmark.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of default=nw=1 dist/editorial-benchmark.mp4 | grep -q 'width=1920'
+          ffprobe -v error -select_streams v:0 -show_entries stream=height -of default=nw=1 dist/editorial-benchmark.mp4 | grep -q 'height=1080'
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of default=nw=1:nk=1 dist/editorial-benchmark.mp4 | grep -q audio
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 dist/editorial-benchmark.mp4 | awk '{if($1<19.8||$1>20.2)exit 1}'
+          ffmpeg -v error -i dist/editorial-benchmark.mp4 -vf "blackdetect=d=0.08:pix_th=0.02" -an -f null - 2>/tmp/black.txt || true
+          test ! -s /tmp/black.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: editorial-benchmark
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            dist/editorial-benchmark.mp4
+            dist/editorial-frames/*.png
+            public/editorial-narration.mp3
+            public/editorial-narration.srt
+            public/editorial-voice.txt

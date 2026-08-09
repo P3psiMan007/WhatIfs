@@ -1,0 +1,34 @@
+{
+  "rejection": {
+    "status": "REJECTED_BY_USER",
+    "reason": "Superseded by the approved cinematic rebuild; keep this YouTube video private and never reuse it as final Episode 1."
+  },
+  "episodeId": "20260807-episode",
+  "package": {
+    "experimentAssignment": "baseline-dark-amber-v2",
+    "id": "A",
+    "title": "What If Humans Never Needed Sleep?"
+  },
+  "publicationVersion": "1.0",
+  "sourceRender": {
+    "artifactName": "episode-render-normalized",
+    "filename": "episode.mp4",
+    "manifestSha256": "b0e23a3e6189574a3b5ecf8d009be9429a8cd3e3c808be1035d6be6e99660e69",
+    "runId": "31285143280",
+    "thumbnailPath": "incoming-render/dist/thumbnail.png",
+    "thumbnailSha256": "7887340b904cc3f1db153ebdcbc4c5959101543fc9f21af3528fb128dceab00f",
+    "videoPath": "incoming-render/dist/episode.mp4",
+    "videoSha256": "a99410a8f291e872f539db0ee6fa0af6643aa3ea30f430f6a6bccb87267373a5"
+  },
+  "youtube": {
+    "lastError": "YouTube OAuth token cannot promote the verified private video to public; re-authorize once with scripts/authorize.py and replace the GitHub refresh token.",
+    "metadataVerified": true,
+    "privacyTransitions": ["private"],
+    "privateVerifiedAt": "2026-08-09T00:08:15.936234Z",
+    "processingVerified": true,
+    "publicVerifiedAt": null,
+    "thumbnailSetSucceeded": true,
+    "url": "https://www.youtube.com/watch?v=3EGJqkrn42A",
+    "videoId": "3EGJqkrn42A"
+  }
+}

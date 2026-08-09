@@ -36,19 +36,20 @@ jobs:
         run: |
           mkdir -p public dist/benchmark-frames
           cat > /tmp/benchmark.txt <<'EOF'
-          Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, every human wakes up and discovers that sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day.
+          Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, every human wakes up and discovers that sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day. That sounds like a superpower. But within a few years, those eight hours might stop belonging to you.
           EOF
           edge-tts --file /tmp/benchmark.txt --voice en-US-BrianNeural --rate=+4% --write-media public/benchmark-narration.mp3 --write-subtitles public/benchmark-narration.srt
           test -s public/benchmark-narration.mp3
           grep -q "Tonight, you go to bed" public/benchmark-narration.srt
-      - name: Render 26-second benchmark
+          grep -q "stop belonging to you" public/benchmark-narration.srt
+      - name: Render 24-second benchmark
         run: npx remotion render video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-opening.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p
       - name: Render inspection frames
         run: |
           npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/01-2s.png --frame=60
           npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/02-8s.png --frame=240
-          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/03-15s.png --frame=450
-          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/04-22s.png --frame=660
+          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/03-14s.png --frame=420
+          npx remotion still video/src/index.jsx WhatIfCinematicBenchmark dist/benchmark-frames/04-21s.png --frame=630
       - name: Technical QA
         shell: bash
         run: |
@@ -57,7 +58,7 @@ jobs:
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height,r_frame_rate -of default=nw=1 dist/benchmark-opening.mp4 | tee /tmp/video.txt
           grep -q "width=1920" /tmp/video.txt
           grep -q "height=1080" /tmp/video.txt
-          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 dist/benchmark-opening.mp4 | awk '{if ($1 < 25.5 || $1 > 26.5) exit 1}'
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 dist/benchmark-opening.mp4 | awk '{if ($1 < 23.5 || $1 > 24.5) exit 1}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

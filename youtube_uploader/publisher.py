@@ -130,13 +130,13 @@ def publish_episode(
     publication_record_path: str,
     youtube=None,
     promotion_youtube=None,
+    stop_after_private: bool = False,
 ) -> dict:
-    """Publish one exact approved render via private → verify → public.
+    """Publish one exact approved render, verifying private state before any promotion.
 
-    A legacy token may complete the private upload/verification stage even if
-    it cannot yet perform ``videos.update``. The exact private video ID is
-    persisted so a later run can resume public promotion after one-time OAuth
-    re-authorization without duplicate-uploading the render.
+    When ``stop_after_private`` is true the function deliberately ends after the
+    exact render has uploaded, processed, matched metadata/thumbnail checks, and
+    been verified private. No public-promotion service is created or called.
     """
     record_path = Path(publication_record_path)
     existing = load_publication_record(record_path)
@@ -155,6 +155,12 @@ def publish_episode(
     if existing is not None:
         yt_existing = _ensure_youtube_defaults(existing)
         existing_id = yt_existing.get("videoId")
+        if existing_id and stop_after_private and yt_existing.get("privateVerifiedAt"):
+            current = fetch_video(youtube, existing_id)
+            _verify_expected_video(current, existing_id, title, description)
+            if not verify_privacy(current, "private"):
+                raise RuntimeError("previously verified staging video is no longer private")
+            return existing
         if existing_id and yt_existing.get("publicVerifiedAt"):
             current = fetch_video(youtube, existing_id)
             _verify_expected_video(current, existing_id, title, description)
@@ -216,6 +222,9 @@ def publish_episode(
         yt["lastError"] = None
         atomic_write_publication_record(record_path, record)
 
+        if stop_after_private:
+            return record
+
         if promotion_youtube is None:
             if injected_youtube:
                 promotion_youtube = youtube
@@ -232,6 +241,8 @@ def publish_episode(
         yt["lastError"] = f"unexpected privacy status before promotion: {current_privacy!r}"
         atomic_write_publication_record(record_path, record)
         raise RuntimeError(yt["lastError"])
+    elif stop_after_private:
+        raise RuntimeError("private-only mode refused a video that is already public")
 
     final_video = fetch_video(youtube, video_id)
     _verify_expected_video(final_video, video_id, title, description)
@@ -270,6 +281,7 @@ def _main() -> None:
     parser.add_argument("--autonomy", required=True)
     parser.add_argument("--daily-control", required=True)
     parser.add_argument("--publication-record", required=True)
+    parser.add_argument("--stop-after-private", action="store_true")
     args = parser.parse_args()
 
     daily = _load_json(args.daily_control)
@@ -283,6 +295,7 @@ def _main() -> None:
         autonomy=_load_json(args.autonomy),
         daily_control=daily,
         publication_record_path=args.publication_record,
+        stop_after_private=args.stop_after_private,
     )
     _atomic_write_json(args.daily_control, daily)
     print(json.dumps(record))

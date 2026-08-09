@@ -41,9 +41,6 @@ jobs:
         with:
           node-version: "22"
 
-      # Must run before the gate step: youtube_uploader/__init__.py eagerly
-      # imports .uploader, which needs googleapiclient, so even the pure-stdlib
-      # publish_gate module cannot be imported until requirements are present.
       - name: Install dependencies
         run: python -m pip install --disable-pip-version-check -r requirements.txt
 
@@ -141,7 +138,7 @@ jobs:
             echo "path=incoming-render/dist/thumbnail.png" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish private, verify, then promote same video public
+      - name: Upload exact approved render private and verify staging state
         if: steps.gate.outputs.eligible == 'true'
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -157,12 +154,9 @@ jobs:
             --render-manifest episodes/current/render-manifest.json \
             --autonomy config/autonomy.json \
             --daily-control queue/daily-control.json \
-            --publication-record episodes/current/publication.json
+            --publication-record episodes/current/publication.json \
+            --stop-after-private
 
-      # This runs even if the publisher stopped after an irreversible private
-      # upload (for example because the old refresh token lacks videos.update
-      # scope). Persisting the video ID makes the next run resume the SAME
-      # private video rather than uploading a duplicate.
       - name: Persist publication progress
         if: always() && steps.gate.outputs.eligible == 'true'
         shell: bash
@@ -178,13 +172,10 @@ jobs:
             exit 0
           fi
           git commit -m "chore: record YouTube publication progress"
-          # Same hazard as the Episode Factory persist step: an unstaged file
-          # left behind by the publisher would abort the rebase and strand this
-          # commit, losing the video ID needed to resume the private upload.
           git pull --rebase --autostash origin main
           git push
 
-      - name: Require verified public proof
+      - name: Require verified private proof
         if: steps.gate.outputs.eligible == 'true'
         run: |
           python - <<'PY'
@@ -195,9 +186,14 @@ jobs:
           yt = record.get("youtube") or {}
           if not yt.get("videoId"):
               raise SystemExit("publication record missing YouTube video ID")
-          if not yt.get("publicVerifiedAt"):
-              raise SystemExit("publication record missing verified public timestamp")
-          if "public" not in (yt.get("privacyTransitions") or []):
-              raise SystemExit("publication record does not prove public privacy transition")
-          print(f"Verified public YouTube video: https://www.youtube.com/watch?v={yt['videoId']}")
+          if not yt.get("privateVerifiedAt"):
+              raise SystemExit("publication record missing verified private timestamp")
+          transitions = yt.get("privacyTransitions") or []
+          if "private" not in transitions:
+              raise SystemExit("publication record does not prove private privacy state")
+          if yt.get("publicVerifiedAt") or "public" in transitions:
+              raise SystemExit("private-only staging unexpectedly became public")
+          if not yt.get("processingVerified") or not yt.get("metadataVerified") or not yt.get("thumbnailSetSucceeded"):
+              raise SystemExit("private staging verification is incomplete")
+          print(f"Verified private YouTube video: https://www.youtube.com/watch?v={yt['videoId']}")
           PY

@@ -18,7 +18,9 @@ const input = read(inputPath);
 const approvedVoice = 'en-US-BrianNeural';
 const currentVoice = String(input?.narrator?.voice || '');
 const selectedVoice = String(state?.production?.selected_voice || '');
-const needsRestore = currentVoice !== approvedVoice || selectedVoice !== approvedVoice || state?.qa?.status === 'QA_PASSED';
+// Repair only when the narrator identity itself is wrong. A later QA_PASSED
+// state with the approved narrator must never be invalidated again.
+const needsRestore = currentVoice !== approvedVoice || selectedVoice !== approvedVoice;
 if (!needsRestore) process.exit(0);
 
 input.narrator = {

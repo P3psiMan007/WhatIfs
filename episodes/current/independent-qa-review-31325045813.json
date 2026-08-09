@@ -1,0 +1,50 @@
+{
+  "reviewVersion": "1.0",
+  "episodeId": "20260807-episode",
+  "runId": "31325045813",
+  "artifactName": "episode-render",
+  "artifactDigest": "sha256:e714f6f0851006182b88e600817c4a13aa6ec1dcf5f4fc425f1c8cb368c6cb0c",
+  "decision": "REWORK_REQUIRED",
+  "reviewedExactArtifact": true,
+  "technical": {
+    "score": 9.6,
+    "durationSeconds": 380.864,
+    "dimensions": "1920x1080",
+    "captionLastEndSeconds": 380.864,
+    "integratedLoudnessLufs": -16.03,
+    "truePeakDbtp": -2.24,
+    "blackFlashBlockerObserved": false
+  },
+  "narration": {
+    "score": 9.1,
+    "voice": "af_heart",
+    "speed": 0.95,
+    "flowVersion": "continuous-v2",
+    "notes": "Correct locked female voice and substantially improved continuous flow. No narrator fallback evidence observed."
+  },
+  "visualStorytelling": {
+    "score": 7.4,
+    "majorBlocker": true,
+    "notes": "Representative-frame and contact-sheet inspection shows a clean coherent grade, but too much of the six-minute episode resolves to repeated city plates, repeated phone UI, repeated seated-man/two-clock compositions, sparse constellation/diagram cards, and large text-led frames. This does not yet meet the approved pre-editorial cinematic benchmark as a >=9/10 full-episode visual experience."
+  },
+  "compositionReadability": {
+    "score": 8.6,
+    "majorBlocker": false,
+    "notes": "Hierarchy and caption readability are generally strong, but several sections feel like premium presentation cards rather than cinematic explanatory scenes."
+  },
+  "visualVarietyRepetition": {
+    "score": 7.0,
+    "majorBlocker": true,
+    "notes": "Repeated motifs are visible across the full contact sheet and sampled frames at 15, 55, 95, 135, 175, 215, 255, 295, 335 and 375 seconds."
+  },
+  "overallScore": 8.1,
+  "qaPassed": false,
+  "uploadAllowed": false,
+  "requiredFixes": [
+    "Increase scene-specific cinematic imagery and composition variety across all nine sections, especially the middle and final thirds.",
+    "Reduce repeated city, phone, seated-character and abstract-card motifs; each section needs distinct visual storytelling tied to the spoken idea.",
+    "Replace text-led presentation-card beats with image-first cinematic scenes where the narration can be understood visually without relying on headline copy.",
+    "Preserve the current af_heart continuous-v2 narration, loudness, caption clamp and technical integrity while rebuilding visuals.",
+    "Rerender and independently inspect the exact new artifact before any QA_PASSED state or private YouTube upload."
+  ]
+}

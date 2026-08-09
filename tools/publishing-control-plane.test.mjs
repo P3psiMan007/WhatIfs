@@ -27,6 +27,7 @@ const validAutonomy = {
   },
   publication: {
     failClosedOnUncertainty: true,
+    youtubeApiProjectStatus: 'unknown',
   },
   recording: {
     requireVideoId: true,
@@ -55,6 +56,35 @@ test('accepts private-first per-video verification config', () => {
   assert.equal(validatePublishingControls(validAutonomy, validDaily), true);
 });
 
+test('accepts all known YouTube API project status values', () => {
+  for (const youtubeApiProjectStatus of ['unknown', 'audited', 'legacy-pre-2020']) {
+    assert.equal(
+      validatePublishingControls(
+        {
+          ...validAutonomy,
+          publication: {...validAutonomy.publication, youtubeApiProjectStatus},
+        },
+        validDaily,
+      ),
+      true,
+    );
+  }
+});
+
+test('rejects missing YouTube API project status', () => {
+  assert.throws(
+    () =>
+      validatePublishingControls(
+        {
+          ...validAutonomy,
+          publication: {failClosedOnUncertainty: true},
+        },
+        validDaily,
+      ),
+    /youtubeApiProjectStatus/,
+  );
+});
+
 test('rejects public publishing without private-first verification', () => {
   assert.throws(
     () =>
@@ -80,7 +110,7 @@ test('rejects fail-open publication config', () => {
   assert.throws(
     () =>
       validatePublishingControls(
-        {...validAutonomy, publication: {failClosedOnUncertainty: false}},
+        {...validAutonomy, publication: {...validAutonomy.publication, failClosedOnUncertainty: false}},
         validDaily,
       ),
     /failClosedOnUncertainty/,

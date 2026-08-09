@@ -1,5 +1,8 @@
 name: Editorial Benchmark
 on:
+  push:
+    branches: [main]
+    paths: ['video/src/editorial-benchmark.jsx','video/src/root.jsx','.github/workflows/editorial-benchmark.yml']
   pull_request:
     branches: [main]
     paths: ['video/src/editorial-benchmark.jsx','video/src/root.jsx','.github/workflows/editorial-benchmark.yml']

@@ -1,9 +1,9 @@
 import React from 'react';
 import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
-import {SleepScene,SleepThumbnailArt} from './sleep-scenes.jsx';
+import {SleepThumbnailArt} from './sleep-scenes.jsx';
+import {SleepAssetScene} from './sleep-asset-scene.jsx';
 import {getSleepThumbnailArtPlacement} from './thumbnail-layout.mjs';
-import {getSleepBeatPhase} from './sleep-beat-phase.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
@@ -28,10 +28,6 @@ function withLocalBeatOrdinals(beats){
   });
 }
 
-const HookHoursContrastOverlay=({palette})=><svg viewBox="0 0 1920 1080" width="1920" height="1080" style={{position:'absolute',inset:0,pointerEvents:'none'}}>
-  <text x="960" y="575" textAnchor="middle" style={{fill:palette.foreground,stroke:palette.background,strokeWidth:5,paintOrder:'stroke',fontFamily:font,fontSize:44,fontWeight:800,letterSpacing:1.54}}>8 HOURS</text>
-</svg>;
-
 export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
@@ -40,10 +36,8 @@ export const WhatIfEpisode=(props)=>{
     {beats.map((beat)=>{
       const from=Math.max(0,Math.floor(Number(beat.start||0)*fps));
       const durationInFrames=Math.max(1,Math.ceil(Number(beat.duration||1)*fps));
-      const visualBeatOrdinal=getSleepBeatPhase(beat.sceneId,beat.localBeatOrdinal)+1;
       return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.5*fps))}>
-        <SleepScene beat={beat} beatOrdinal={visualBeatOrdinal} palette={palette}/>
-        {beat.sceneId==='scene-01'&&beat.localBeatOrdinal===3?<HookHoursContrastOverlay palette={palette}/>:null}
+        <SleepAssetScene beat={beat} beatOrdinal={beat.localBeatOrdinal} palette={palette}/>
       </Sequence>;
     })}
     {props.audio?<Audio src={staticFile(props.audio)}/>:null}

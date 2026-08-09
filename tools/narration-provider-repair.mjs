@@ -18,7 +18,7 @@ const input = read(inputPath);
 const approvedVoice = 'en-US-BrianNeural';
 const currentVoice = String(input?.narrator?.voice || '');
 const selectedVoice = String(state?.production?.selected_voice || '');
-const needsRestore = currentVoice !== approvedVoice || selectedVoice === 'am_michael' || state?.qa?.status === 'QA_PASSED';
+const needsRestore = currentVoice !== approvedVoice || selectedVoice !== approvedVoice || state?.qa?.status === 'QA_PASSED';
 if (!needsRestore) process.exit(0);
 
 input.narrator = {
@@ -41,7 +41,7 @@ runState(['patch', String(state.state_revision), state.episode_id, 'narrator-voi
     status: 'REWORK_REQUIRED',
     scores: {},
     top_issues: [
-      'Previous render silently substituted am_michael for the approved narrator.',
+      'Previous render silently substituted an unapproved narrator for the locked narrator.',
       'Previous render composited procedural doodles over already-composed authored scene artwork.'
     ],
     required_fixes: [

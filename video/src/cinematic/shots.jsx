@@ -455,11 +455,11 @@ export const ClockDissolve = ({durationInFrames}) => {
   const zoom = (1.06 + progress * 0.06) * breath;
   // The erase front sweeps down the frame. Everything below it is still solid;
   // everything above it has already come apart.
-  const p = ease(t, 0.55, 2.3);
+  const p = easeInOut(t, 0.6, 2.62);
   const frontY = 250 + 560 * p;
   const maskLow = (1080 - frontY) / 10.8;
 
-  const particles = scatter(404, 190, (random) => ({
+  const particles = scatter(404, 260, (random) => ({
     x: random(),
     y: random(),
     r: random(),
@@ -467,7 +467,7 @@ export const ClockDissolve = ({durationInFrames}) => {
   })).map((particle, index) => {
     // A particle is released as the front passes the height it sat at.
     const home = 286 + particle.y * 486;
-    const released = (frontY - home) / 210;
+    const released = (frontY - home) / 260;
     if (released <= 0 || released > 1) return null;
     const x = 400 + particle.x * 1136;
     return (
@@ -484,7 +484,7 @@ export const ClockDissolve = ({durationInFrames}) => {
 
   return (
     <FilmFrame exposure={exposure} vignette={0.86} grain={0.08} lift="rgba(62,48,32,0.10)" warm="rgba(255,170,80,0.08)">
-      <AbsoluteFill style={{background: 'radial-gradient(70% 58% at 62% 44%, #1a1310 0%, #0a0807 62%, #050404 100%)'}} />
+      <AbsoluteFill style={{background: 'radial-gradient(72% 60% at 62% 44%, #2a1f18 0%, #120d0a 60%, #070505 100%)'}} />
       <div
         style={{
           position: 'absolute',
@@ -492,7 +492,7 @@ export const ClockDissolve = ({durationInFrames}) => {
           top: -160,
           width: 900,
           height: 1400,
-          background: 'linear-gradient(108deg, rgba(255,206,146,0.20), transparent 58%)',
+          background: 'linear-gradient(108deg, rgba(255,206,146,0.30), transparent 60%)',
           filter: 'blur(34px)',
           mixBlendMode: 'screen',
           transform: 'rotate(-9deg)',
@@ -737,7 +737,7 @@ export const HoursGraphic = ({durationInFrames}) => {
 
   return (
     <FilmFrame exposure={exposure} vignette={0.92} grain={0.08} lift="rgba(24,40,76,0.09)">
-      <AbsoluteFill style={{background: `radial-gradient(58% 52% at 50% 36%, #0b1018 0%, ${FILM.black} 70%)`}} />
+      <AbsoluteFill style={{background: `radial-gradient(62% 56% at 50% 38%, #141b26 0%, #080b12 74%)`}} />
       {/* The city is still there, held right down, so this is the same film and
           not a slide dropped in from a different one. */}
       <div style={{position: 'absolute', inset: 0, opacity: 0.13, filter: 'blur(10px)'}}>
@@ -745,7 +745,7 @@ export const HoursGraphic = ({durationInFrames}) => {
           <SkylineBand buildings={MID} fill="#050810" windowColor="255,190,124" windowOpacity={0.3} litRatio={0.4} flicker={false} />
         </Plane>
       </div>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 620, bottom: 0, background: `linear-gradient(180deg, rgba(4,6,11,0.55), ${FILM.black} 40%)`}} />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 620, bottom: 0, background: 'linear-gradient(180deg, rgba(6,9,15,0.5), #070a10 44%)'}} />
 
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0}}>
         <g opacity={ringFade}>
@@ -831,6 +831,11 @@ export const HoursGraphic = ({durationInFrames}) => {
   );
 };
 
+// Head, neck, shoulders, waist, hips, two legs. Proportioned at just under
+// seven heads tall so it reads as a person rather than a chess piece.
+const FIGURE_CONTOUR =
+  'M1372 686q4-32 48-32t48 32L1454 790L1460 830L1464 946L1432 946L1420 846L1408 946L1376 946L1380 830L1386 790Z';
+
 /* 9. CLOSING WINDOW ---------------------------------------------------- */
 export const ClosingWindow = ({durationInFrames}) => {
   const {progress, exposure, breath} = useShot(durationInFrames);
@@ -867,21 +872,21 @@ export const ClosingWindow = ({durationInFrames}) => {
               cannot have broken anatomy if there is no anatomy to break. */}
           <rect x={0} y={946} width={W} height={140} fill="#05070c" />
           <g fill="#04060a">
-            <ellipse cx={1432} cy={636} rx={19} ry={24} />
-            <rect x={1425} y={654} width={14} height={16} />
-            <path d="M1432 668c30 0 48 16 50 44l8 92-6 142H1380l-6-142 8-92c2-28 20-44 50-44Z" />
+            <ellipse cx={1420} cy={612} rx={21} ry={26} />
+            <rect x={1411} y={632} width={18} height={26} />
+            <path d={FIGURE_CONTOUR} />
           </g>
-          <g fill="none" stroke="rgba(190,214,255,0.55)" strokeWidth={2}>
-            <path d="M1482 712l8 92-6 142" opacity={0.6} />
-            <path d="M1441 615a19 24 0 0 1 10 20" opacity={0.65} />
+          <g fill="none" stroke="rgba(190,214,255,0.5)" strokeWidth={2}>
+            <path d="M1468 686L1454 790L1460 830L1464 946" opacity={0.55} />
+            <path d="M1441 592a21 26 0 0 1 0 34" opacity={0.6} />
           </g>
           {/* Reflection in the floor grounds the figure instead of letting it
               hover in front of the glass. */}
-          <g opacity={0.2} transform="translate(0 1892) scale(1 -0.42)">
-            <ellipse cx={1432} cy={636} rx={19} ry={24} fill="#0b1524" />
-            <path d="M1432 668c30 0 48 16 50 44l8 92-6 142H1380l-6-142 8-92c2-28 20-44 50-44Z" fill="#0b1524" />
+          <g opacity={0.18} transform="translate(0 1892) scale(1 -0.42)">
+            <ellipse cx={1420} cy={612} rx={21} ry={26} fill="#0b1524" />
+            <path d={FIGURE_CONTOUR} fill="#0b1524" />
           </g>
-          <ellipse cx={1432} cy={950} rx={78} ry={11} fill="#000" opacity={0.55} />
+          <ellipse cx={1420} cy={950} rx={74} ry={10} fill="#000" opacity={0.55} />
         </svg>
       </Plane>
 

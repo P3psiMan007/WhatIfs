@@ -80,7 +80,7 @@ export function useBreath(amount = 0.0035, period = 5.5) {
 /** Shot-level exposure ramp: every shot opens and closes on a small light
  *  change rather than a cut to nothing. Never returns 0, so a cut can never
  *  read as a black frame. */
-export function useShotExposure(durationInFrames, {inFrames = 5, outFrames = 4, floor = 0.86} = {}) {
+export function useShotExposure(durationInFrames, {inFrames = 5, outFrames = 4, floor = 0.92} = {}) {
   const frame = useCurrentFrame();
   const rise = interpolate(frame, [0, inFrames], [floor, 1], CLAMP);
   const fall = interpolate(frame, [durationInFrames - outFrames, durationInFrames], [1, floor], CLAMP);

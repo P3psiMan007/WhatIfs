@@ -83,9 +83,12 @@ def analyse(video: Path, srt: Path) -> dict:
     luma = frame_luma(str(video))
     black = [index for index, value in enumerate(luma) if value < BLACK_YAVG]
 
+    # A flash is a frame that is dark while BOTH neighbours are bright. Using
+    # max() here would flag every legitimate cut from a bright shot to a dark
+    # one, which is a creative decision, not a defect.
     dips = []
     for index in range(1, len(luma) - 1):
-        neighbours = max(luma[index - 1], luma[index + 1])
+        neighbours = min(luma[index - 1], luma[index + 1])
         if neighbours > 12 and luma[index] < neighbours * DIP_RATIO:
             dips.append({"frame": index, "seconds": round(index / fps, 3),
                          "yavg": round(luma[index], 2), "neighbourYavg": round(neighbours, 2)})

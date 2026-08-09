@@ -107,7 +107,7 @@ jobs:
           ! grep -q "am_michael" tools/narration-provider-repair.mjs
           ! grep -qi "kokoro" tools/edge-tts
       - name: Run state, orchestration, producer, rebuild, packaging, beat alignment, registry, ownership, timeline, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs video/src/cinematic/shot-plan.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test

@@ -23,5 +23,5 @@ const thumbnailProps={episodeId:'preview',title:'What If Humans Never Needed Sle
 export const RemotionRoot=()=> <>
   <Composition id="WhatIfEpisode" component={WhatIfEpisode} width={1920} height={1080} fps={30} durationInFrames={360} defaultProps={defaultProps} calculateMetadata={({props})=>({durationInFrames:Math.max(1,Math.ceil(Number(props.durationSeconds||12)*30))})}/>
   <Composition id="WhatIfThumbnail" component={WhatIfThumbnail} width={1280} height={720} fps={30} durationInFrames={1} defaultProps={thumbnailProps}/>
-  <Composition id="WhatIfCinematicBenchmark" component={WhatIfCinematicBenchmark} width={1920} height={1080} fps={30} durationInFrames={780}/>
+  <Composition id="WhatIfCinematicBenchmark" component={WhatIfCinematicBenchmark} width={1920} height={1080} fps={30} durationInFrames={720}/>
 </>;

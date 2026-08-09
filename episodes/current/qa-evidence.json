@@ -1,11 +1,13 @@
 {
-  "evidenceVersion": "1.0",
+  "evidenceVersion": "1.1",
   "decisionAuthority": "independent QA; this file is evidence only and MUST NOT be treated as a PASS",
   "render": {
     "episodeId": "20260807-episode",
     "episodeMatchesProduction": true,
-    "runId": "31283336381",
-    "artifactName": "episode-render",
+    "runId": "31285143280",
+    "artifactName": "episode-render-normalized",
+    "artifactId": "9029568603",
+    "artifactDigest": "sha256:292656dcc09279f721f94c30159301e514cb92b98fc0958f46031a20a98fa6fb",
     "codec": "h264",
     "width": 1920,
     "height": 1080,
@@ -21,7 +23,18 @@
     },
     "visualGrade": "publish-grade",
     "qaInputsReady": true,
-    "publishBlocker": null
+    "publishBlocker": null,
+    "audioQa": {
+      "repair": "audio-only-gain-plus-limiter",
+      "sourceRunId": "31283336381",
+      "sourceArtifactId": "9029384477",
+      "measuredIntegratedLufs": -16.85,
+      "measuredTruePeakDbfs": -1.52,
+      "sampleRateHz": 48000,
+      "channels": 2,
+      "codec": "aac",
+      "videoStreamPreserved": true
+    }
   },
   "captions": {
     "cueCount": 96,
@@ -52,7 +65,7 @@
         "start": 481.923,
         "end": 490.123,
         "wpm": 168.3,
-        "text": "We would gain roughly a third of each day back as waking time \u2014 and immediately have to decide who gets to claim it."
+        "text": "We would gain roughly a third of each day back as waking time — and immediately have to decide who gets to claim it."
       },
       {
         "start": 0.0,
@@ -90,25 +103,13 @@
         "start": 481.923,
         "end": 490.123,
         "wpm": 168.3,
-        "text": "We would gain roughly a third of each day back as waking time \u2014 and immediately have to decide who gets to claim it."
+        "text": "We would gain roughly a third of each day back as waking time — and immediately have to decide who gets to claim it."
       },
       {
         "start": 509.993,
         "end": 519.918,
         "wpm": 145.1,
         "text": "And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do."
-      },
-      {
-        "start": 466.128,
-        "end": 469.753,
-        "wpm": 132.4,
-        "text": "So would a sleepless humanity be better off?"
-      },
-      {
-        "start": 500.163,
-        "end": 503.838,
-        "wpm": 130.6,
-        "text": "Maybe sleep is not only time we lose."
       }
     ]
   },
@@ -125,8 +126,17 @@
     "declaredLicense": "Apache-2.0",
     "declaredVoice": "am_michael"
   },
+  "independentChecks": {
+    "normalizedVideoStreamSha256": "970428721f2149746773a0f491296f6d4c465a4dc7f27a7ace7ae1dabd89c15f",
+    "sourceVideoStreamSha256": "970428721f2149746773a0f491296f6d4c465a4dc7f27a7ace7ae1dabd89c15f",
+    "videoStreamBitIdentical": true,
+    "blackSegmentsAtLeast0_5s": 0,
+    "unintendedSilencesAtLeast1_5sBelowMinus50dB": 0,
+    "first30SampleFramesReviewed": true,
+    "fullContactSheetReviewed": true
+  },
   "sourceWorkflow": {
-    "name": "Episode Factory",
-    "runId": "31283336381"
+    "name": "Episode 1 Audio Repair",
+    "runId": "31285143280"
   }
 }

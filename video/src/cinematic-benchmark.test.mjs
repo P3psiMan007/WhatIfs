@@ -15,3 +15,8 @@ test('cinematic benchmark exists and rejects the old doodle/SVG visual grammar',
   assert.match(src,/87d19717-40f8-42e7-8feb-aa1baf7242cb/);
   assert.doesNotMatch(src,/SleepAssetScene|sleep-scenes|\.svg|doodle|stick figure/i);
 });
+
+test('human shot transitions use motivated cuts instead of ghosted double-exposure crossfades',()=>{
+  const src=fs.readFileSync(path,'utf8');
+  assert.doesNotMatch(src,/fadeIn|fadeOut|Math\.min\(fadeIn,fadeOut\)/);
+});

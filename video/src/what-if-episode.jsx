@@ -4,6 +4,7 @@ import {Audio} from '@remotion/media';
 import {SleepThumbnailArt} from './sleep-scenes.jsx';
 import {SleepAssetScene} from './sleep-asset-scene.jsx';
 import {getSleepThumbnailArtPlacement} from './thumbnail-layout.mjs';
+import {buildContinuousBeatFrames} from './visual-timeline.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
@@ -31,11 +32,11 @@ function withLocalBeatOrdinals(beats){
 export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
-  const beats=withLocalBeatOrdinals(props.beats||[]);
+  const beats=withLocalBeatOrdinals(buildContinuousBeatFrames(props.beats||[],fps,props.durationSeconds||0));
   return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden'}}>
     {beats.map((beat)=>{
-      const from=Math.max(0,Math.floor(Number(beat.start||0)*fps));
-      const durationInFrames=Math.max(1,Math.ceil(Number(beat.duration||1)*fps));
+      const from=beat.from;
+      const durationInFrames=beat.durationInFrames;
       return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.5*fps))}>
         <SleepAssetScene beat={beat} beatOrdinal={beat.localBeatOrdinal} palette={palette}/>
       </Sequence>;

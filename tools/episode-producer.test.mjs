@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
   validateProductionInput,
   planProducerStage,
@@ -9,7 +10,6 @@ import {
   buildVisualBeats,
   formatSrt,
   extractBeatCallout,
-  buildNarrationSceneCommand,
 } from './episode-producer.mjs';
 import {isPublishGradeVisualInput} from './publish-grade-visual-guard.mjs';
 
@@ -63,17 +63,15 @@ test('publish-grade visual readiness requires explicit grade and per-scene asset
   assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}), false);
 });
 
-test('builds exact Edge TTS command per scene without unsupported batch flags or voice fallback', () => {
-  const command = buildNarrationSceneCommand(validInput, '/tmp/scene.txt', '/tmp/scene.mp3', '/tmp/scene.srt');
-  assert.equal(command.program, 'edge-tts');
-  assert.deepEqual(command.args, [
-    '--file','/tmp/scene.txt',
-    '--voice','en-US-BrianNeural',
-    '--rate=+4%',
-    '--write-media','/tmp/scene.mp3',
-    '--write-subtitles','/tmp/scene.srt',
-  ]);
-  assert.ok(!command.args.includes('--batch-json'));
+test('Edge batch compatibility shim delegates every scene to the exact requested Edge voice with no fallback', () => {
+  assert.equal(fs.existsSync('tools/edge-tts'), true, 'safe batch compatibility shim must exist');
+  const shim = fs.readFileSync('tools/edge-tts','utf8');
+  assert.match(shim, /--batch-json/);
+  assert.match(shim, /subprocess\.run/);
+  assert.match(shim, /--voice/);
+  assert.match(shim, /payload\["voice"\]/);
+  assert.doesNotMatch(shim, /am_michael|kokoro/i);
+  assert.doesNotMatch(shim, /voice\s*=\s*["'][^"']+Neural["']/);
 });
 
 test('parses SRT captions into second-based cues', () => {

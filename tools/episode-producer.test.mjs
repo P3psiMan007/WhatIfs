@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
   validateProductionInput,
   planProducerStage,
@@ -60,6 +61,17 @@ test('publish-grade visual readiness requires explicit grade and per-scene asset
   assert.equal(isPublishGradeVisualInput(validInput), true);
   assert.equal(isPublishGradeVisualInput({...validInput, visualGrade:'heuristic-placeholder'}), false);
   assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}), false);
+});
+
+test('Edge batch compatibility shim delegates every scene to the exact requested Edge voice with no fallback', () => {
+  assert.equal(fs.existsSync('tools/edge-tts'), true, 'safe batch compatibility shim must exist');
+  const shim = fs.readFileSync('tools/edge-tts','utf8');
+  assert.match(shim, /--batch-json/);
+  assert.match(shim, /subprocess\.run/);
+  assert.match(shim, /--voice/);
+  assert.match(shim, /payload\["voice"\]/);
+  assert.doesNotMatch(shim, /am_michael|kokoro/i);
+  assert.doesNotMatch(shim, /voice\s*=\s*["'][^"']+Neural["']/);
 });
 
 test('parses SRT captions into second-based cues', () => {

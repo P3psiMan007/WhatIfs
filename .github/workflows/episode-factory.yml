@@ -11,6 +11,7 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/render-ownership.test.mjs"
       - "tools/episode1-visual-rebuild.mjs"
@@ -46,6 +47,7 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/render-ownership.test.mjs"
       - "tools/episode1-visual-rebuild.mjs"
@@ -100,8 +102,10 @@ jobs:
       - name: Validate narrator repair
         run: |
           node --check tools/narration-provider-repair.mjs
+          python -m py_compile tools/edge-tts
           grep -q "en-US-BrianNeural" tools/narration-provider-repair.mjs
           ! grep -q "am_michael" tools/narration-provider-repair.mjs
+          ! grep -qi "kokoro" tools/edge-tts
       - name: Run state, orchestration, producer, rebuild, packaging, beat alignment, registry, ownership, timeline, and visual guard tests
         run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
@@ -134,11 +138,15 @@ jobs:
           sudo apt-get install -y ffmpeg
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check edge-tts==7.2.8
+          echo "EDGE_TTS_REAL=$(command -v edge-tts)" >> "$GITHUB_ENV"
+          chmod +x tools/edge-tts
+          echo "$GITHUB_WORKSPACE/tools" >> "$GITHUB_PATH"
       - name: Verify required media tooling
         run: |
           command -v ffmpeg
           command -v ffprobe
-          command -v edge-tts
+          test -x "$EDGE_TTS_REAL"
+          test "$(command -v edge-tts)" = "$GITHUB_WORKSPACE/tools/edge-tts"
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
           edge-tts --help >/dev/null

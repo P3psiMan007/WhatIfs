@@ -4,20 +4,20 @@
   "render": {
     "episodeId": "20260807-episode",
     "episodeMatchesProduction": true,
-    "runId": "31323107119",
+    "runId": "31325045813",
     "artifactName": "episode-render",
     "codec": "h264",
     "width": 1920,
     "height": 1080,
     "frameRate": "30/1",
-    "durationSeconds": 391.402667,
+    "durationSeconds": 380.864,
     "technicalShapeOk": true,
     "visualQa": {
       "syncBasis": "measured-per-scene-audio",
       "totalBeats": 97,
       "first30BeatCount": 8,
-      "maxBeatDuration": 5.919,
-      "averageBeatDuration": 4.03
+      "maxBeatDuration": 5.743,
+      "averageBeatDuration": 3.926
     },
     "visualGrade": "publish-grade",
     "qaInputsReady": true,
@@ -30,7 +30,7 @@
     "invalidTimingCount": 0,
     "invalidTimingCueNumbers": [],
     "firstStart": 0.0,
-    "lastEnd": 391.766
+    "lastEnd": 380.864
   },
   "narration": {
     "provider": "kokoro",
@@ -38,77 +38,77 @@
     "license": null,
     "voice": "af_heart",
     "cueCount": 96,
-    "medianWpm": 153.3,
-    "p90Wpm": 184.0,
-    "maxWpm": 184.3,
+    "medianWpm": 157.5,
+    "p90Wpm": 189.3,
+    "maxWpm": 194.7,
     "fastestCues": [
       {
-        "start": 372.223,
-        "end": 372.874,
-        "wpm": 184.3,
-        "text": "Your employer?"
+        "start": 373.467,
+        "end": 380.864,
+        "wpm": 194.7,
+        "text": "And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do."
       },
       {
-        "start": 373.526,
-        "end": 374.177,
-        "wpm": 184.3,
-        "text": "The economy?"
+        "start": 362.693,
+        "end": 363.326,
+        "wpm": 189.6,
+        "text": "Your family?"
       },
       {
-        "start": 374.177,
-        "end": 374.828,
-        "wpm": 184.3,
-        "text": "The internet?"
-      },
-      {
-        "start": 354.96,
-        "end": 357.566,
-        "wpm": 184.2,
+        "start": 345.264,
+        "end": 347.799,
+        "wpm": 189.3,
         "text": "So would a sleepless humanity be better off?"
       },
       {
-        "start": 357.566,
-        "end": 362.777,
-        "wpm": 184.2,
+        "start": 347.799,
+        "end": 352.869,
+        "wpm": 189.3,
         "text": "Biologically, under our impossible premise, probably in many ways: more usable time and no fatigue tax."
+      },
+      {
+        "start": 352.869,
+        "end": 354.454,
+        "wpm": 189.3,
+        "text": "Socially, it is less obvious."
       }
     ]
   },
   "payoff": {
     "cueCount": 12,
-    "medianWpm": 184.2,
-    "p90Wpm": 184.3,
-    "maxWpm": 184.3,
+    "medianWpm": 189.3,
+    "p90Wpm": 189.6,
+    "maxWpm": 194.7,
     "fastestCues": [
       {
-        "start": 372.223,
-        "end": 372.874,
-        "wpm": 184.3,
-        "text": "Your employer?"
+        "start": 373.467,
+        "end": 380.864,
+        "wpm": 194.7,
+        "text": "And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do."
       },
       {
-        "start": 373.526,
-        "end": 374.177,
-        "wpm": 184.3,
-        "text": "The economy?"
+        "start": 362.693,
+        "end": 363.326,
+        "wpm": 189.6,
+        "text": "Your family?"
       },
       {
-        "start": 374.177,
-        "end": 374.828,
-        "wpm": 184.3,
-        "text": "The internet?"
-      },
-      {
-        "start": 354.96,
-        "end": 357.566,
-        "wpm": 184.2,
+        "start": 345.264,
+        "end": 347.799,
+        "wpm": 189.3,
         "text": "So would a sleepless humanity be better off?"
       },
       {
-        "start": 357.566,
-        "end": 362.777,
-        "wpm": 184.2,
+        "start": 347.799,
+        "end": 352.869,
+        "wpm": 189.3,
         "text": "Biologically, under our impossible premise, probably in many ways: more usable time and no fatigue tax."
+      },
+      {
+        "start": 352.869,
+        "end": 354.454,
+        "wpm": 189.3,
+        "text": "Socially, it is less obvious."
       }
     ]
   },
@@ -127,6 +127,6 @@
   },
   "sourceWorkflow": {
     "name": "Episode Factory",
-    "runId": "31323107119"
+    "runId": "31325045813"
   }
 }

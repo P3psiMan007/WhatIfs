@@ -1,0 +1,106 @@
+{
+  "durationSeconds": 28.033333333333335,
+  "captions": [
+    {
+      "text": "Tonight, you go to bed for the last time.",
+      "start": 0.854,
+      "end": 3.512
+    },
+    {
+      "text": "Tomorrow, every human wakes up",
+      "start": 4.315,
+      "end": 6.868
+    },
+    {
+      "text": "and discovers that sleep is simply unnecessary.",
+      "start": 6.888,
+      "end": 10.418
+    },
+    {
+      "text": "No fatigue.",
+      "start": 11.223,
+      "end": 12.268
+    },
+    {
+      "text": "No brain fog.",
+      "start": 12.358,
+      "end": 13.633
+    },
+    {
+      "text": "No hidden health cost.",
+      "start": 13.736,
+      "end": 15.432
+    },
+    {
+      "text": "Whatever your body used to repair during sleep",
+      "start": 16.148,
+      "end": 19.106
+    },
+    {
+      "text": "now happens while you are awake.",
+      "start": 19.126,
+      "end": 21.706
+    },
+    {
+      "text": "You just gained roughly eight extra hours every day.",
+      "start": 22.719,
+      "end": 26.581
+    }
+  ],
+  "shots": [
+    {
+      "id": "clock-macro",
+      "shot": "ClockMacro",
+      "start": 0,
+      "intent": "Last night. A clock nobody will need tomorrow."
+    },
+    {
+      "id": "bedroom-night",
+      "shot": "BedroomNight",
+      "start": 3.6,
+      "intent": "The final bedtime, seen once and never again."
+    },
+    {
+      "id": "window-dawn",
+      "shot": "WindowDawn",
+      "start": 7.3,
+      "intent": "Night hands over to morning."
+    },
+    {
+      "id": "bedroom-morning",
+      "shot": "BedroomMorning",
+      "start": 10.7,
+      "intent": "Match cut: same room, same frame, empty bed."
+    },
+    {
+      "id": "clock-dissolve",
+      "shot": "ClockDissolve",
+      "start": 13.1,
+      "intent": "The object that ruled the morning comes apart."
+    },
+    {
+      "id": "city-night",
+      "shot": "CityNight",
+      "start": 15.8,
+      "intent": "A city that stopped switching off."
+    },
+    {
+      "id": "city-sweep",
+      "shot": "CitySweep",
+      "start": 18.9,
+      "intent": "Day sweeps over it and nothing slows down."
+    },
+    {
+      "id": "hours-graphic",
+      "shot": "HoursGraphic",
+      "start": 21.9,
+      "intent": "The single number worth putting on screen."
+    },
+    {
+      "id": "closing-window",
+      "shot": "ClosingWindow",
+      "start": 25.6,
+      "intent": "One person, awake, holding the extra hours."
+    }
+  ]
+}

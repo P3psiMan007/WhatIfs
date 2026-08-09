@@ -4,111 +4,111 @@
   "render": {
     "episodeId": "20260807-episode",
     "episodeMatchesProduction": true,
-    "runId": "31290820807",
+    "runId": "31323107119",
     "artifactName": "episode-render",
     "codec": "h264",
     "width": 1920,
     "height": 1080,
     "frameRate": "30/1",
-    "durationSeconds": 385.109333,
+    "durationSeconds": 391.402667,
     "technicalShapeOk": true,
     "visualQa": {
       "syncBasis": "measured-per-scene-audio",
-      "totalBeats": 99,
+      "totalBeats": 97,
       "first30BeatCount": 8,
-      "maxBeatDuration": 6,
-      "averageBeatDuration": 3.882
+      "maxBeatDuration": 5.919,
+      "averageBeatDuration": 4.03
     },
     "visualGrade": "publish-grade",
     "qaInputsReady": true,
     "publishBlocker": null
   },
   "captions": {
-    "cueCount": 95,
+    "cueCount": 96,
     "overlapCount": 0,
     "overlaps": [],
     "invalidTimingCount": 0,
     "invalidTimingCueNumbers": [],
-    "firstStart": 0.05,
-    "lastEnd": 384.972
+    "firstStart": 0.0,
+    "lastEnd": 391.766
   },
   "narration": {
-    "provider": "edge-tts",
+    "provider": "kokoro",
     "model": null,
     "license": null,
-    "voice": "en-US-BrianNeural",
-    "cueCount": 95,
-    "medianWpm": 151.7,
-    "p90Wpm": 189.3,
-    "maxWpm": 240.9,
+    "voice": "af_heart",
+    "cueCount": 96,
+    "medianWpm": 153.3,
+    "p90Wpm": 184.0,
+    "maxWpm": 184.3,
     "fastestCues": [
       {
-        "start": 373.217,
-        "end": 377.7,
-        "wpm": 240.9,
-        "text": "Maybe it is the last part of the day that the world cannot ask us to give back."
+        "start": 372.223,
+        "end": 372.874,
+        "wpm": 184.3,
+        "text": "Your employer?"
       },
       {
-        "start": 0.05,
-        "end": 2.451,
-        "wpm": 224.9,
-        "text": "Tonight, you go to bed for the last time."
+        "start": 373.526,
+        "end": 374.177,
+        "wpm": 184.3,
+        "text": "The economy?"
       },
       {
-        "start": 359.095,
-        "end": 365.356,
-        "wpm": 220.4,
-        "text": "We would gain roughly a third of each day back as waking time \u2014 and immediately have to decide who gets to claim it."
+        "start": 374.177,
+        "end": 374.828,
+        "wpm": 184.3,
+        "text": "The internet?"
       },
       {
-        "start": 313.955,
-        "end": 315.889,
-        "wpm": 217.2,
-        "text": "You wake up and call it tomorrow."
+        "start": 354.96,
+        "end": 357.566,
+        "wpm": 184.2,
+        "text": "So would a sleepless humanity be better off?"
       },
       {
-        "start": 23.629,
-        "end": 27.548,
-        "wpm": 199.0,
-        "text": "But within a few years, those eight hours might stop belonging to you."
+        "start": 357.566,
+        "end": 362.777,
+        "wpm": 184.2,
+        "text": "Biologically, under our impossible premise, probably in many ways: more usable time and no fatigue tax."
       }
     ]
   },
   "payoff": {
     "cueCount": 12,
-    "medianWpm": 155.4,
-    "p90Wpm": 218.2,
-    "maxWpm": 240.9,
+    "medianWpm": 184.2,
+    "p90Wpm": 184.3,
+    "maxWpm": 184.3,
     "fastestCues": [
       {
-        "start": 373.217,
-        "end": 377.7,
-        "wpm": 240.9,
-        "text": "Maybe it is the last part of the day that the world cannot ask us to give back."
+        "start": 372.223,
+        "end": 372.874,
+        "wpm": 184.3,
+        "text": "Your employer?"
       },
       {
-        "start": 359.095,
-        "end": 365.356,
-        "wpm": 220.4,
-        "text": "We would gain roughly a third of each day back as waking time \u2014 and immediately have to decide who gets to claim it."
+        "start": 373.526,
+        "end": 374.177,
+        "wpm": 184.3,
+        "text": "The economy?"
       },
       {
-        "start": 377.7,
-        "end": 384.972,
-        "wpm": 198.0,
-        "text": "And if humans never needed sleep, protecting eight hours of doing absolutely nothing might become one of the most radical things you could do."
+        "start": 374.177,
+        "end": 374.828,
+        "wpm": 184.3,
+        "text": "The internet?"
       },
       {
-        "start": 370.525,
-        "end": 373.217,
-        "wpm": 178.3,
-        "text": "Maybe sleep is not only time we lose."
+        "start": 354.96,
+        "end": 357.566,
+        "wpm": 184.2,
+        "text": "So would a sleepless humanity be better off?"
       },
       {
-        "start": 369.803,
-        "end": 370.525,
-        "wpm": 166.2,
-        "text": "Or you?"
+        "start": 357.566,
+        "end": 362.777,
+        "wpm": 184.2,
+        "text": "Biologically, under our impossible premise, probably in many ways: more usable time and no fatigue tax."
       }
     ]
   },
@@ -120,13 +120,13 @@
     "licenseMentioned": true,
     "voiceMentioned": true,
     "commercialUseMentioned": true,
-    "declaredProvider": "edge-tts",
+    "declaredProvider": "kokoro",
     "declaredModel": null,
     "declaredLicense": null,
-    "declaredVoice": "en-US-BrianNeural"
+    "declaredVoice": "af_heart"
   },
   "sourceWorkflow": {
     "name": "Episode Factory",
-    "runId": "31290820807"
+    "runId": "31323107119"
   }
 }

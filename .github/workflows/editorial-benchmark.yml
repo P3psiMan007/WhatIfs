@@ -3,6 +3,9 @@ on:
   push:
     branches: [feat/editorial-collage-benchmark]
     paths: ['video/src/editorial-benchmark.jsx','video/src/root.jsx','.github/workflows/editorial-benchmark.yml']
+  pull_request:
+    branches: [main]
+    paths: ['video/src/editorial-benchmark.jsx','video/src/root.jsx','.github/workflows/editorial-benchmark.yml']
   workflow_dispatch:
 permissions: {contents: read}
 jobs:

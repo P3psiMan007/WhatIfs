@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "QA_PASSED",
-  "state_revision": 65,
-  "updated_at": "2026-08-09T00:05:49.315Z",
-  "updated_by": "critic-qa-independent",
+  "state": "SCRIPTED",
+  "state_revision": 67,
+  "updated_at": "2026-08-09T02:31:42.452Z",
+  "updated_by": "narrator-voice-lock-repair",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -49,27 +49,24 @@
     "estimated_duration_min": 6.52,
     "pronunciation_dictionary": [],
     "voice_candidates": [
-      "am_michael"
+      "en-US-BrianNeural"
     ],
-    "selected_voice": "am_michael",
-    "voice_asset": "github-actions://run/31285143280/artifact/episode-render-normalized/narration.mp3",
-    "render_asset": "github-actions://run/31285143280/artifact/episode-render-normalized/episode.mp4",
-    "qa_inputs_ready": true
+    "selected_voice": null,
+    "voice_asset": null,
+    "render_asset": null,
+    "qa_inputs_ready": false
   },
   "qa": {
-    "status": "QA_PASSED",
-    "scores": {
-      "factual": 9.6,
-      "package": 9.4,
-      "retention": 9.2,
-      "narration": 9.1,
-      "visual": 9.2,
-      "technical": 9.8,
-      "policy": 9.6,
-      "copyright": 9.5
-    },
-    "top_issues": [],
-    "required_fixes": [],
+    "status": "REWORK_REQUIRED",
+    "scores": {},
+    "top_issues": [
+      "Previous render silently substituted an unapproved narrator for the locked narrator.",
+      "Previous render composited procedural doodles over already-composed authored scene artwork."
+    ],
+    "required_fixes": [
+      "Regenerate narration with the exact locked narrator en-US-BrianNeural; do not substitute another voice.",
+      "Regenerate video with one visual owner per beat and independently review the exact render before any publication action."
+    ],
     "user_action_required": null
   },
   "analytics": {
@@ -594,6 +591,22 @@
       "from": "QA_PASSED",
       "to": "QA_PASSED",
       "reason": "patch"
+    },
+    {
+      "revision": 66,
+      "at": "2026-08-09T02:31:42.421Z",
+      "actor": "narrator-voice-lock-repair",
+      "from": "QA_PASSED",
+      "to": "QA_PASSED",
+      "reason": "patch"
+    },
+    {
+      "revision": 67,
+      "at": "2026-08-09T02:31:42.452Z",
+      "actor": "narrator-voice-lock-repair",
+      "from": "QA_PASSED",
+      "to": "SCRIPTED",
+      "reason": "invalidate rejected render and restore exact approved narrator"
     }
   ]
 }

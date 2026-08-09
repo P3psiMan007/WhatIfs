@@ -1,10 +1,11 @@
 {
-  "revision": 21,
-  "updatedAt": "2026-08-08T23:40:33.302Z",
-  "kind": "PRODUCER_RAN",
-  "reason": null,
-  "details": null,
+  "revision": 22,
+  "updatedAt": "2026-08-09T02:31:43.095Z",
+  "kind": "BLOCKED",
+  "reason": "producer_exception",
+  "details": "PRODUCER_BLOCKED producer_exception: Error: batch narration generation failed\n    at generateNarration (file:///home/runner/work/WhatIfs/WhatIfs/tools/episode-producer.mjs:291:31)\n    at main (file:///home/runner/work/WhatIfs/WhatIfs/tools/episode-producer.mjs:341:62)\n    at file:///home/runner/work/WhatIfs/WhatIfs/tools/episode-producer.mjs:363:9\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)",
   "episodeId": "20260807-episode",
-  "state": "RENDERED",
-  "stateRevision": 61
+  "state": "SCRIPTED",
+  "stateRevision": 67,
+  "exitCode": 2
 }

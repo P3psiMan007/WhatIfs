@@ -69,12 +69,20 @@ def main() -> None:
         str(mixed),
     ])
 
+    # Remotion's MJPEG pipeline tags the picture full-range (yuvj420p). On a
+    # film this dark, a player that ignores the tag crushes every black in it,
+    # so the master is conformed to limited-range yuv420p with explicit
+    # BT.709 signalling rather than stream-copied.
     run([
         "ffmpeg", "-y", "-v", "error",
         "-i", args.picture,
         "-i", str(mixed),
         "-map", "0:v:0", "-map", "1:a:0",
-        "-c:v", "copy",
+        "-vf", "scale=in_range=full:out_range=limited,format=yuv420p",
+        "-c:v", "libx264", "-preset", "slow", "-crf", "17",
+        "-pix_fmt", "yuv420p",
+        "-color_range", "tv", "-colorspace", "bt709",
+        "-color_primaries", "bt709", "-color_trc", "bt709",
         "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-ac", "2",
         "-movflags", "+faststart",
         "-shortest",

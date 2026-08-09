@@ -365,9 +365,13 @@ export const WindowDawn = ({durationInFrames}) => {
   const {progress, exposure, breath} = useShot(durationInFrames);
   const zoom = (1.0 + progress * 0.15) * breath;
   const dawn = easeInOut(progress, 0.08, 0.92);
-  const skyTop = mixColor('#07142b', '#2a4a7a', dawn);
-  const skyMid = mixColor('#123055', mixColor('#b9714a', '#e8a765', dawn), dawn);
-  const skyLow = mixColor('#1a3a63', '#ffcf92', dawn);
+  // Four stops interpolated independently. A dawn is not one colour getting
+  // lighter - it is a dark blue that stays dark at the top while the band just
+  // above the horizon goes hot. Collapsing that into one mix gives mud.
+  const skyTop = mixColor('#050c1c', '#14315e', dawn);
+  const skyUpper = mixColor('#0a1c38', '#2f5480', dawn);
+  const skyMid = mixColor('#102a4c', '#b4643a', dawn);
+  const skyLow = mixColor('#173456', '#ffc079', dawn);
 
   return (
     <FilmFrame exposure={exposure} vignette={0.78} grain={0.07} lift="rgba(30,56,100,0.10)">
@@ -381,30 +385,33 @@ export const WindowDawn = ({durationInFrames}) => {
             top: 74,
             width: 1432,
             height: 916,
-            background: `linear-gradient(180deg, ${skyTop} 0%, ${skyMid} 58%, ${skyLow} 100%)`,
+            background: `linear-gradient(180deg, ${skyTop} 0%, ${skyUpper} 34%, ${skyMid} 66%, ${skyLow} 100%)`,
             overflow: 'hidden',
           }}
         >
-          <div style={{position: 'absolute', inset: 0, transform: 'translate(-244px,-74px)', opacity: 1 - dawn}}>
+          <div style={{position: 'absolute', inset: 0, transform: 'translate(-244px,-74px)', opacity: Math.max(0, 1 - dawn * 1.25)}}>
             <Starfield seed={73} count={140} area={{x: 244, y: 74, w: 1432, h: 520}} />
           </div>
-          {/* horizon bloom */}
+          {/* Horizon bloom: a tight hot band sitting on the rooftops, not a
+              soft blob over the middle of the glass. */}
           <div
             style={{
               position: 'absolute',
-              left: 300,
-              top: 470,
-              width: 900,
-              height: 560,
-              background: `radial-gradient(50% 50% at 50% 50%, rgba(255,196,120,${0.06 + dawn * 0.5}), transparent 68%)`,
-              filter: 'blur(28px)',
+              left: 240,
+              top: 626,
+              width: 960,
+              height: 300,
+              background: `radial-gradient(58% 46% at 50% 78%, rgba(255,206,138,${0.05 + dawn * 0.62}) 0%, rgba(255,176,96,${dawn * 0.22}) 44%, transparent 72%)`,
+              filter: 'blur(22px)',
               mixBlendMode: 'screen',
             }}
           />
           <svg width={1432} height={916} viewBox="0 0 1432 916" style={{position: 'absolute', inset: 0}}>
+            {/* Rooftops stay near-black throughout: against a brightening sky
+                a silhouette is the only thing holding the frame together. */}
             <path
               d="M0 742h96v-58h72v58h104v-96h84v96h132v-72h70v72h118v-118h86v118h150v-64h74v64h152v-92h84v92h110v174H0Z"
-              fill={mixColor('#050810', '#231a1c', dawn)}
+              fill={mixColor('#04070e', '#0e0c12', dawn)}
             />
           </svg>
         </div>
@@ -421,13 +428,14 @@ export const WindowDawn = ({durationInFrames}) => {
         </svg>
       </Plane>
 
+      {/* Light entering the room, thrown from the lower half of the glass
+          where the sun actually is. Kept weak so it does not flatten the sky. */}
       <LightShaft
-        points="300,120 1620,120 1900,1080 20,1080"
-        color={`rgba(255,206,150,${0.05 + dawn * 0.3})`}
-        blur={60}
+        points="420,560 1500,560 1900,1080 20,1080"
+        color={`rgba(255,200,138,${0.03 + dawn * 0.17})`}
+        blur={70}
       />
-      <DustField seed={53} count={34} speed={8} color={`rgba(255,226,186,${0.2 + dawn * 0.4})`} />
-      <Haze color={`rgba(${Math.round(60 + dawn * 140)},${Math.round(90 + dawn * 90)},${Math.round(160 - dawn * 60)},0.14)`} top="46%" />
+      <DustField seed={53} count={34} speed={8} color={`rgba(255,226,186,${0.18 + dawn * 0.36})`} />
     </FilmFrame>
   );
 };

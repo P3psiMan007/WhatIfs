@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "RENDERED",
-  "state_revision": 63,
-  "updated_at": "2026-08-08T23:59:03.510112Z",
-  "updated_by": "episode1-audio-repair",
+  "state": "QA_PASSED",
+  "state_revision": 65,
+  "updated_at": "2026-08-09T00:05:49.315Z",
+  "updated_by": "critic-qa-independent",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -57,8 +57,17 @@
     "qa_inputs_ready": true
   },
   "qa": {
-    "status": "AWAITING_INDEPENDENT_QA",
-    "scores": {},
+    "status": "QA_PASSED",
+    "scores": {
+      "factual": 9.6,
+      "package": 9.4,
+      "retention": 9.2,
+      "narration": 9.1,
+      "visual": 9.2,
+      "technical": 9.8,
+      "policy": 9.6,
+      "copyright": 9.5
+    },
     "top_issues": [],
     "required_fixes": [],
     "user_action_required": null
@@ -568,6 +577,22 @@
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 64,
+      "at": "2026-08-09T00:05:49.261Z",
+      "actor": "critic-qa-independent",
+      "from": "RENDERED",
+      "to": "QA_PASSED",
+      "reason": "Exact normalized Kokoro artifact passed full independent pre-publish QA"
+    },
+    {
+      "revision": 65,
+      "at": "2026-08-09T00:05:49.315Z",
+      "actor": "critic-qa-independent",
+      "from": "QA_PASSED",
+      "to": "QA_PASSED",
       "reason": "patch"
     }
   ]

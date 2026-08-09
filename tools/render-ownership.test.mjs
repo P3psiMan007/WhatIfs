@@ -16,13 +16,18 @@ test('episode has exactly one cinematic visual owner per beat and does not mount
   assert.doesNotMatch(cinematic, /visualAsset|\.svg/);
 });
 
-test('factory restores the exact approved af_heart narrator with no silent fallback', () => {
+test('factory restores the exact approved af_heart narrator with continuous-v2 flow and no silent fallback', () => {
   assert.match(narratorRepair, /approvedVoice\s*=\s*['"]af_heart['"]/);
   assert.match(narratorRepair, /approvedSpeed\s*=\s*0\.95/);
+  assert.match(narratorRepair, /approvedFlow\s*=\s*['"]continuous-v2['"]/);
   assert.match(narrator, /LOCKED_VOICE\s*=\s*"af_heart"/);
   assert.match(narrator, /LOCKED_SPEED\s*=\s*0\.95/);
   assert.match(narrator, /pipeline\(text, voice=LOCKED_VOICE, speed=LOCKED_SPEED\)/);
-  assert.doesNotMatch(narrator, /am_michael/);
+  assert.match(narrator, /stop_duration=0\.35/);
+  assert.match(narrator, /stop_silence=0\.12/);
+  assert.match(narrator, /loudnorm=I=-18:TP=-1\.5:LRA=7/);
+  assert.match(narrator, /raw_audio\.size\s*==\s*0/);
+  assert.doesNotMatch(narrator, /am_michael|parts\.append\(silence\)|sentence_pauses/);
   assert.match(workflow, /kokoro==0\.9\.4/);
   assert.doesNotMatch(workflow, /edge-tts==7\.2\.8/);
 });

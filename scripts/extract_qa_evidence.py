@@ -147,11 +147,12 @@ def _render_summary(manifest: dict, production: dict) -> dict:
 
 def _rights_summary(production: dict, rights_path: Path) -> dict:
     narrator = production.get("narrator") or {}
+    declared_voice = str(narrator.get("voice") or "").strip()
     evidence = rights_path.read_text(encoding="utf-8") if rights_path.is_file() else ""
     lower = evidence.lower()
     model_ok = "kokoro-82m" in lower
     license_ok = "apache-2.0" in lower
-    voice_ok = "am_michael" in lower
+    voice_ok = bool(declared_voice) and declared_voice.lower() in lower
     commercial_ok = any(word in lower for word in ("commercial", "production"))
     return {
         "evidencePath": str(rights_path),

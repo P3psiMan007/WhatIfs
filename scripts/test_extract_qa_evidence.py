@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import tempfile
 from pathlib import Path
 from unittest import TestCase
@@ -33,14 +32,14 @@ class QaEvidenceTests(TestCase):
         self.assertAlmostEqual(cues[1]["start"], 2.14)
         self.assertEqual(cues[-1]["text"], "Maybe it is the last part of the day that the world cannot ask us to give back.")
 
-    def test_build_evidence_identifies_payoff_and_manifest_facts(self):
+    def test_build_evidence_identifies_payoff_manifest_and_af_heart_rights(self):
         production = {
             "episodeId": "ep-1",
             "narrator": {
-                "provider": "kokoro-82m",
+                "provider": "kokoro",
                 "model": "hexgrad/Kokoro-82M",
                 "license": "Apache-2.0",
-                "voice": "am_michael",
+                "voice": "af_heart",
             },
             "scenes": [
                 {"id": "scene-01", "narration": "This is a calm opening line. The middle sentence has a little more room to breathe."},
@@ -59,15 +58,27 @@ class QaEvidenceTests(TestCase):
         }
         with tempfile.TemporaryDirectory() as tmp:
             rights = Path(tmp) / "rights.md"
-            rights.write_text("Kokoro-82M Apache-2.0 am_michael commercial production", encoding="utf-8")
+            rights.write_text("Kokoro-82M Apache-2.0 af_heart commercial production", encoding="utf-8")
             evidence = build_evidence(parse_srt(SRT), production, manifest, rights)
 
         self.assertEqual(evidence["render"]["runId"], "999")
         self.assertTrue(evidence["render"]["technicalShapeOk"])
-        self.assertEqual(evidence["narration"]["provider"], "kokoro-82m")
+        self.assertEqual(evidence["narration"]["provider"], "kokoro")
+        self.assertEqual(evidence["narration"]["voice"], "af_heart")
         self.assertEqual(evidence["payoff"]["cueCount"], 2)
         self.assertGreater(evidence["payoff"]["maxWpm"], 0)
         self.assertTrue(evidence["rights"]["kokoroEvidencePresent"])
+        self.assertTrue(evidence["rights"]["voiceMentioned"])
+
+    def test_rights_fail_if_document_does_not_cover_declared_voice(self):
+        production = {"episodeId": "ep", "narrator": {"voice": "af_heart"}, "scenes": []}
+        manifest = {"episodeId": "ep", "githubRunId": "1", "technical": {"streams": [{}], "format": {}}, "visualQa": {}}
+        with tempfile.TemporaryDirectory() as tmp:
+            rights = Path(tmp) / "rights.md"
+            rights.write_text("Kokoro-82M Apache-2.0 am_michael commercial production", encoding="utf-8")
+            evidence = build_evidence([], production, manifest, rights)
+        self.assertFalse(evidence["rights"]["kokoroEvidencePresent"])
+        self.assertFalse(evidence["rights"]["voiceMentioned"])
 
     def test_overlapping_captions_are_reported_not_hidden(self):
         srt = """1

@@ -2,9 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import re
 
 
 BLOCKING_SEVERITIES = {"publish-blocking", "owner-only-blocker", "major"}
+DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+LOCKED_NARRATOR = {
+    "provider": "kokoro",
+    "voice": "af_heart",
+    "speed": 0.95,
+    "flowVersion": "continuous-v2",
+}
 
 
 @dataclass(frozen=True)
@@ -20,6 +29,20 @@ def _parse_timestamp(value: str) -> datetime:
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.astimezone(timezone.utc)
+
+
+def narrator_contract_reasons(narrator: object, *, require_verified: bool = False) -> tuple[str, ...]:
+    if not isinstance(narrator, dict):
+        return ("narrator attestation is missing",)
+    reasons: list[str] = []
+    if require_verified and narrator.get("verified") is not True:
+        reasons.append("narrator attestation is not verified")
+    for field, expected in LOCKED_NARRATOR.items():
+        if narrator.get(field) != expected:
+            reasons.append(f"narrator {field} is not locked to {expected!r}")
+    if require_verified and not SHA256_RE.fullmatch(str(narrator.get("audioSha256") or "").lower()):
+        reasons.append("narrator audioSha256 is missing or invalid")
+    return tuple(reasons)
 
 
 def evaluate_publication_gate(
@@ -77,6 +100,25 @@ def evaluate_publication_gate(
     render_uri = qa_review.get("reviewedRenderAsset")
     if not isinstance(render_uri, str) or not render_uri.startswith("github-actions://run/"):
         reasons.append("reviewed render asset URI is missing or invalid")
+    if qa_review.get("episodeId") != episode_state.get("episode_id"):
+        reasons.append("QA episode does not match the current episode state")
+    state_render_asset = (episode_state.get("production") or {}).get("render_asset")
+    if not isinstance(state_render_asset, str) or render_uri != state_render_asset:
+        reasons.append("QA reviewed render asset does not match the current state render asset")
+    if qa_review.get("reviewedExactArtifact") is not True:
+        reasons.append("QA does not attest to reviewing the exact render artifact")
+    if qa_review.get("authority") != "critic-qa-independent":
+        reasons.append("QA authority is not independent")
+    if not DIGEST_RE.fullmatch(str(qa_review.get("artifactDigest") or "").lower()):
+        reasons.append("QA artifact digest is missing or invalid")
+    reasons.extend(narrator_contract_reasons(qa_review.get("narratorVerification"), require_verified=True))
+    image_assets = qa_review.get("imageAssetsVerification")
+    if not isinstance(image_assets, dict) or image_assets.get("verified") is not True:
+        reasons.append("image asset attestation is missing or not verified")
+    elif not SHA256_RE.fullmatch(str(image_assets.get("manifestSha256") or "").lower()):
+        reasons.append("image asset manifest SHA-256 is missing or invalid")
+    elif not isinstance(image_assets.get("assetRevision"), str) or not image_assets["assetRevision"].strip():
+        reasons.append("image asset revision is missing")
 
     scores = qa_review.get("coreScores") or {}
     for gate in required_gates:
@@ -94,6 +136,9 @@ def evaluate_publication_gate(
             finding = failure.get("finding") or "unspecified finding"
             reasons.append(f"blocking QA failure ({severity}): {finding}")
 
+    for blocker in qa_review.get("majorBlockers") or []:
+        reasons.append(f"major QA blocker: {blocker}")
+
     if qa_review.get("externalBlocker"):
         reasons.append("external QA blocker is present")
 
@@ -103,6 +148,7 @@ def evaluate_publication_gate(
         "requireProcessingVerification",
         "requireMetadataVerification",
         "requireThumbnailVerification",
+        "requirePlaybackVerification",
         "promoteSameVideoIdOnly",
     )
     for flag in required_verification_flags:

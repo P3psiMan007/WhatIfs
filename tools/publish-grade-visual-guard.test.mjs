@@ -1,19 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {clampSrtToDuration,isPublishGradeVisualInput, visualGuardDecision} from './publish-grade-visual-guard.mjs';
+import {EPISODE1_IMAGE_ASSET_REVISION,EPISODE1_IMAGE_SCENE_IDS,imageAssetsForScene} from '../video/src/episode1-image-assets.mjs';
 
 const publishGradeInput = {
   visualGrade:'publish-grade',
-  scenes:[
-    {visualAsset:'assets/a.mp4'},
-    {visualAsset:'assets/b.mp4'},
-  ],
+  imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION,
+  imageAssetManifest:'episodes/current/image-assets-v1.json',
+  scenes:EPISODE1_IMAGE_SCENE_IDS.map((id)=>({id,imageAssets:[...imageAssetsForScene(id)]})),
 };
 
-test('publish-grade visual readiness requires explicit grade and per-scene assets', () => {
+test('publish-grade visual readiness requires the exact local image-first asset manifest and every section pair', () => {
   assert.equal(isPublishGradeVisualInput(publishGradeInput), true);
   assert.equal(isPublishGradeVisualInput({...publishGradeInput, visualGrade:'heuristic-placeholder'}), false);
-  assert.equal(isPublishGradeVisualInput({...publishGradeInput, scenes:[{visualAsset:'assets/a.mp4'},{visualAsset:null}]}), false);
+  assert.equal(isPublishGradeVisualInput({...publishGradeInput, imageFirstAssetRevision:'other'}), false);
+  assert.equal(isPublishGradeVisualInput({...publishGradeInput, scenes:[...publishGradeInput.scenes.slice(0,8),{...publishGradeInput.scenes[8],imageAssets:null}]}), false);
 });
 
 test('final captions are clamped to the exact rendered duration',()=>{
@@ -48,7 +49,7 @@ test('publish-grade assets clear a stale visual-assets blocker revision-safely',
   assert.equal(decision.kind, 'CLEAR');
   assert.equal(decision.reason, 'publish_grade_visuals_verified');
   assert.deepEqual(decision.patch, {production:{qa_inputs_ready:true}, qa:{user_action_required:null}});
-  assert.deepEqual(decision.manifestPatch, {visualGrade:'publish-grade', qaInputsReady:true, technicalPreview:false, publishBlocker:null});
+  assert.deepEqual(decision.manifestPatch, {visualGrade:'publish-grade', imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION, qaInputsReady:true, technicalPreview:false, publishBlocker:null});
 });
 
 test('non-rendered states are not mutated', () => {

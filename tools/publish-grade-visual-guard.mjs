@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
+import {EPISODE1_IMAGE_ASSET_REVISION,assertEpisode1ImageAssetCoverage,imageAssetsForScene} from '../video/src/episode1-image-assets.mjs';
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const writeJson = (p, value) => fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
@@ -48,10 +49,16 @@ function clampRenderedCaptions() {
 }
 
 export function isPublishGradeVisualInput(input) {
-  return input?.visualGrade === 'publish-grade'
-    && Array.isArray(input?.scenes)
-    && input.scenes.length >= 2
-    && input.scenes.every((scene) => typeof scene?.visualAsset === 'string' && scene.visualAsset.trim().length > 0);
+  try {
+    if (input?.visualGrade !== 'publish-grade' || input?.imageFirstAssetRevision !== EPISODE1_IMAGE_ASSET_REVISION || input?.imageAssetManifest !== 'episodes/current/image-assets-v1.json') return false;
+    assertEpisode1ImageAssetCoverage((input.scenes || []).map((scene) => scene?.id));
+    return input.scenes.every((scene) => {
+      const expected = imageAssetsForScene(scene.id);
+      return !Object.hasOwn(scene, 'visualAsset') && Array.isArray(scene.imageAssets) && scene.imageAssets.length === expected.length && scene.imageAssets.every((asset,index) => asset === expected[index]);
+    });
+  } catch {
+    return false;
+  }
 }
 
 export function visualGuardDecision({state, input, manifest}) {
@@ -68,7 +75,7 @@ export function visualGuardDecision({state, input, manifest}) {
         kind:'CLEAR',
         reason:'publish_grade_visuals_verified',
         patch:{production:{qa_inputs_ready:true}, qa:{user_action_required:null}},
-        manifestPatch:{visualGrade:'publish-grade', qaInputsReady:true, technicalPreview:false, publishBlocker:null},
+        manifestPatch:{visualGrade:'publish-grade', imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION, qaInputsReady:true, technicalPreview:false, publishBlocker:null},
       };
     }
     return {kind:'READY', reason:'publish_grade_visuals_verified'};

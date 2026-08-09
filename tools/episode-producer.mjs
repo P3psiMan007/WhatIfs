@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const writeJson = (p, value) => {
@@ -9,6 +11,18 @@ const writeJson = (p, value) => {
   fs.writeFileSync(p, JSON.stringify(value, null, 2) + '\n');
 };
 const roundMs = (n) => Math.round(Number(n) * 1000) / 1000;
+const fileSha256 = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+
+export function describeImageAssetManifest(input, root = process.cwd()) {
+  const declaredPath = input?.imageAssetManifest;
+  if (typeof declaredPath !== 'string' || !declaredPath.trim()) throw new Error('image asset manifest is required');
+  const normalized = declaredPath.replaceAll('\\', '/');
+  if (path.isAbsolute(declaredPath) || normalized.startsWith('../') || normalized.includes('/../')) throw new Error('invalid image asset manifest path');
+  const resolved = path.resolve(root, declaredPath);
+  const relative = path.relative(root, resolved).replaceAll('\\', '/');
+  if (!relative || relative.startsWith('../') || !fs.existsSync(resolved)) throw new Error('invalid image asset manifest path');
+  return {path:relative, sha256:fileSha256(resolved), assetRevision:input.imageFirstAssetRevision || null};
+}
 
 function sentenceCaseTopic(topic) {
   const raw = String(topic || 'What if this changed?').trim();
@@ -81,7 +95,7 @@ export function buildProductionInputFromArtifacts(state, scriptText, researchTex
     episodeId: state?.episode_id,
     title: packages[0].title,
     description: `A factual thought experiment from What If Explains: ${topic} Sources and caveats are preserved in the episode research ledger.`,
-    narrator: {voice:'en-US-BrianNeural', rate:'+4%'},
+    narrator: {provider:'kokoro', voice:'af_heart', speed:0.95, locked:true, flowVersion:'continuous-v2'},
     palette: {background:'#0b0d12', foreground:'#eae7e1', accent:'#ffb340'},
     experimentAssignment: 'baseline-dark-amber-v2',
     packages,
@@ -154,9 +168,10 @@ export function countWords(scenes) {
 }
 
 export function buildNarrationBatchPayload(input) {
+  const narrator=input?.narrator||{};
+  if(narrator.provider!=='kokoro'||narrator.voice!=='af_heart'||Number(narrator.speed)!==0.95||narrator.flowVersion!=='continuous-v2') throw new Error('Episode 1 narration is fail-closed to Kokoro af_heart at 0.95 with continuous-v2 flow');
   return {
-    voice: input?.narrator?.voice || 'am_michael',
-    rate: input?.narrator?.rate || '+0%',
+    provider:'kokoro', voice:'af_heart', speed:0.95, flowVersion:'continuous-v2',
     scenes: (input?.scenes || []).map((scene) => ({id:scene.id, text:String(scene.narration || '').trim()})),
   };
 }
@@ -332,6 +347,9 @@ function main() {
   if (plan.kind==='NOOP') { console.log(`PRODUCER_NOOP ${plan.reason}`); return; }
   if (plan.kind==='BLOCKED') return block(plan.reason);
   const input=readJson(inputPath); const validationError=validateProductionInput(input,state); if (validationError) return block('invalid_production_input',validationError);
+  let imageAssetProvenance = null;
+  try { if (input.imageAssetManifest) imageAssetProvenance = describeImageAssetManifest(input); }
+  catch (error) { return block('invalid_image_asset_manifest', error.message); }
   let current=state;
   if (plan.kind==='SCRIPT') {
     const words=countWords(input.scenes); const selected=runState(['transition',String(current.state_revision),current.episode_id,'SCRIPTED','episode-producer','validated production input']); current=readJson(statePath);
@@ -343,7 +361,8 @@ function main() {
     const production={episodeId:input.episodeId,title:input.title,durationSeconds:timeline.durationSeconds,scenes:timeline.scenes,beats,palette:input.palette || {background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'},audio:'narration.mp3',captions:timeline.captions};
     writeJson(renderDataPath,production); writeJson(thumbnailPropsPath,{episodeId:input.episodeId,title:input.packages[0]?.title || input.title,thumbnailText:input.packages[0]?.thumbnailText || 'WHAT IF?',palette:production.palette,visual:'clock'});
     const patched=runState(['patch',String(current.state_revision),current.episode_id,'episode-producer',JSON.stringify({production:{voice_candidates:[input.narrator.voice],selected_voice:input.narrator.voice,voice_asset:`github-actions://run/${process.env.GITHUB_RUN_ID || 'local'}/artifact/episode-render/narration.mp3`}})]);
-    if (current.state!=='VOICE_READY') runState(['transition',String(patched.state_revision),current.episode_id,'VOICE_READY','episode-producer','per-scene narration generated, concatenated, and probed']); current=readJson(statePath);
+    if (current.state!=='VOICE_READY') runState(['transition',String(patched.state_revision),current.episode_id,'VOICE_READY','episode-producer','per-scene narration generated, concatenated, and probed']);
+    current=readJson(statePath);
   }
   if (current.state==='VOICE_READY') {
     fs.mkdirSync(distDir,{recursive:true}); if (!fs.existsSync(renderDataPath)) return block('missing_render_data'); const production=readJson(renderDataPath);
@@ -353,12 +372,12 @@ function main() {
     if (thumb.status!==0 || !fs.existsSync(thumbnailPath) || fs.statSync(thumbnailPath).size<1024) return block('thumbnail_render_failed');
     const technical=probeVideo(outputPath); const stream=technical.streams?.[0] || {}; if (Number(stream.width)!==1920 || Number(stream.height)!==1080) return block('render_dimension_mismatch');
     const contacts=makeContactSheet(outputPath,distDir,Number(technical.format?.duration || production.durationSeconds)); const beatDurations=production.beats.map((b)=>Number(b.duration)); const first30BeatCount=production.beats.filter((b)=>Number(b.start)<30).length;
-    const manifest={episodeId:current.episode_id,generatedAt:new Date().toISOString(),githubRunId:process.env.GITHUB_RUN_ID || null,artifactName:'episode-render',filename:'episode.mp4',thumbnailFilename:'thumbnail.png',contactSheetFilename:path.basename(contacts.fullPath),first30ContactSheetFilename:path.basename(contacts.first30Path),title:input.title,description:input.description,packages:input.packages,chosenPackage:input.packages[0]?.id || 'A',experimentAssignment:input.experimentAssignment || 'control',technical,visualQa:{syncBasis:'measured-per-scene-audio',totalBeats:production.beats.length,first30BeatCount,maxBeatDuration:roundMs(Math.max(...beatDurations)),averageBeatDuration:roundMs(beatDurations.reduce((a,b)=>a+b,0)/beatDurations.length)},sourceCount:input.sources.length};
+    const manifest={episodeId:current.episode_id,generatedAt:new Date().toISOString(),githubRunId:process.env.GITHUB_RUN_ID || null,artifactName:'episode-render',filename:'episode.mp4',thumbnailFilename:'thumbnail.png',contactSheetFilename:path.basename(contacts.fullPath),first30ContactSheetFilename:path.basename(contacts.first30Path),title:input.title,description:input.description,packages:input.packages,chosenPackage:input.packages[0]?.id || 'A',experimentAssignment:input.experimentAssignment || 'control',technical,visualQa:{syncBasis:'measured-per-scene-audio',totalBeats:production.beats.length,first30BeatCount,maxBeatDuration:roundMs(Math.max(...beatDurations)),averageBeatDuration:roundMs(beatDurations.reduce((a,b)=>a+b,0)/beatDurations.length)},narrator:{provider:input.narrator.provider,voice:input.narrator.voice,speed:input.narrator.speed,flowVersion:input.narrator.flowVersion,audioSha256:fileSha256(audioPath)},imageAssets:imageAssetProvenance,sourceCount:input.sources.length};
     writeJson(renderManifestPath,manifest); const patched=runState(['patch',String(current.state_revision),current.episode_id,'episode-producer',JSON.stringify({production:{render_asset:`github-actions://run/${process.env.GITHUB_RUN_ID || 'local'}/artifact/episode-render/episode.mp4`,qa_inputs_ready:true}})]);
     runState(['transition',String(patched.state_revision),current.episode_id,'RENDERED','episode-producer','1080p synchronized render, thumbnail, and contact sheets verified']);
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try { main(); } catch (error) { block('producer_exception',error?.stack || String(error)); }
 }

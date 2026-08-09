@@ -6,7 +6,7 @@ const state={
   episode_id:'20260807-episode',
   state:'RENDERED',
   state_revision:23,
-  production:{render_asset:'github-actions://run/next/artifact/episode-render/episode.mp4',qa_inputs_ready:true,selected_voice:'en-US-BrianNeural'},
+  production:{render_asset:'github-actions://run/next/artifact/episode-render/episode.mp4',qa_inputs_ready:true,selected_voice:'af_heart'},
 };
 const input={
   episodeId:'20260807-episode',

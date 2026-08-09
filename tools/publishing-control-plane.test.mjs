@@ -23,6 +23,7 @@ const validAutonomy = {
     requireProcessingVerification: true,
     requireMetadataVerification: true,
     requireThumbnailVerification: true,
+    requirePlaybackVerification: true,
     promoteSameVideoIdOnly: true,
   },
   publication: {

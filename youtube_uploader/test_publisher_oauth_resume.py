@@ -1,3 +1,5 @@
+import hashlib
+import hashlib
 import tempfile
 from pathlib import Path
 from unittest import TestCase
@@ -12,14 +14,20 @@ class PublisherOAuthResumeTests(TestCase):
         video = root / "episode.mp4"
         thumb = root / "thumbnail.png"
         publication = root / "publication.json"
-        video.write_bytes(b"video")
-        thumb.write_bytes(b"thumb")
+        video_bytes = b"video"
+        thumbnail_bytes = b"thumb"
+        video.write_bytes(video_bytes)
+        thumb.write_bytes(thumbnail_bytes)
+        video_sha256 = hashlib.sha256(video_bytes).hexdigest()
+        narration_sha256 = hashlib.sha256(b"narration").hexdigest()
+        image_manifest_sha256 = hashlib.sha256(b"image-manifest").hexdigest()
         identity = {
             "runId": "123",
             "artifactName": "episode-render",
-            "videoSha256": "video-sha",
-            "thumbnailSha256": "thumb-sha",
-            "manifestSha256": "manifest-sha",
+            "filename": "episode.mp4",
+            "videoSha256": video_sha256,
+            "thumbnailSha256": hashlib.sha256(thumbnail_bytes).hexdigest(),
+            "manifestSha256": hashlib.sha256(b"manifest").hexdigest(),
         }
         qa = {
             "status": "QA_PASSED",
@@ -30,14 +38,31 @@ class PublisherOAuthResumeTests(TestCase):
                 "policy": 9.0, "copyright": 9.0,
             },
             "failures": [],
+            "majorBlockers": [],
+            "authority": "critic-qa-independent",
+            "reviewedExactArtifact": True,
+            "artifactDigest": "sha256:" + video_sha256,
+            "narratorVerification": {
+                "verified": True,
+                "provider": "kokoro",
+                "voice": "af_heart",
+                "speed": 0.95,
+                "flowVersion": "continuous-v2",
+                "audioSha256": narration_sha256,
+            },
+            "episodeId": "ep-1",
+            "imageAssetsVerification": {"verified": True, "manifestSha256": image_manifest_sha256, "assetRevision": "image-first-cinematic-v2"},
             "reviewedStateRevision": 56,
             "reviewedRenderAsset": "github-actions://run/123/artifact/episode-render/episode.mp4",
         }
-        state = {"episode_id": "ep-1", "state": "QA_PASSED", "state_revision": 56}
+        state = {"episode_id": "ep-1", "state": "QA_PASSED", "state_revision": 56, "production": {"render_asset": qa["reviewedRenderAsset"]}}
         manifest = {
             "episodeId": "ep-1", "title": "What If Test?",
             "description": "Description", "chosenPackage": "A",
             "experimentAssignment": "baseline",
+            "githubRunId": "123", "artifactName": "episode-render", "filename": "episode.mp4",
+            "narrator": {"provider": "kokoro", "voice": "af_heart", "speed": 0.95, "flowVersion": "continuous-v2", "audioSha256": narration_sha256},
+            "imageAssets": {"path": "episodes/current/image-assets-v1.json", "sha256": image_manifest_sha256, "assetRevision": "image-first-cinematic-v2"},
         }
         autonomy = {
             "autoPublishEnabled": True,
@@ -49,6 +74,7 @@ class PublisherOAuthResumeTests(TestCase):
                 "requireProcessingVerification": True,
                 "requireMetadataVerification": True,
                 "requireThumbnailVerification": True,
+                "requirePlaybackVerification": True,
                 "promoteSameVideoIdOnly": True,
             },
             "publication": {"failClosedOnUncertainty": True},
@@ -56,7 +82,15 @@ class PublisherOAuthResumeTests(TestCase):
         daily = {"pauseAllProduction": False, "pausePublishing": False,
                  "dailyPublishQuota": 1, "publishedToday": 0,
                  "minimumSpacingMinutes": 0, "lastPublicationAt": None}
-        return video, thumb, publication, identity, qa, state, manifest, autonomy, daily
+        production_input = {
+            "narrator": {
+                "provider": "kokoro",
+                "voice": "af_heart",
+                "speed": 0.95,
+                "flowVersion": "continuous-v2",
+            }
+        }
+        return video, thumb, publication, identity, qa, state, manifest, autonomy, daily, production_input
 
     @patch("youtube_uploader.publisher.build_public_promotion_service")
     @patch("youtube_uploader.publisher.fetch_video")
@@ -78,7 +112,7 @@ class PublisherOAuthResumeTests(TestCase):
         upload_private_mock.return_value = "abc"
         private_video = {
             "id": "abc",
-            "status": {"privacyStatus": "private"},
+            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True},
             "processingDetails": {"processingStatus": "succeeded"},
             "snippet": {
                 "title": "What If Test?",
@@ -88,6 +122,7 @@ class PublisherOAuthResumeTests(TestCase):
         }
         wait_mock.return_value = private_video
         build_promotion_service.side_effect = RuntimeError("re-authorize once")
+        fetch_mock.return_value = {"id": "3EGJqkrn42A", "status": {"privacyStatus": "private"}}
 
         with tempfile.TemporaryDirectory() as tmp:
             args = self._inputs(Path(tmp))
@@ -98,6 +133,7 @@ class PublisherOAuthResumeTests(TestCase):
                     publication_record_path=str(args[2]),
                     identity=args[3], qa_review=args[4], episode_state=args[5],
                     render_manifest=args[6], autonomy=args[7], daily_control=args[8],
+                    production_input=args[9],
                 )
             record = load_publication_record(args[2])
             self.assertEqual(record["youtube"]["videoId"], "abc")
@@ -107,4 +143,3 @@ class PublisherOAuthResumeTests(TestCase):
             self.assertIsNotNone(record["youtube"]["privateVerifiedAt"])
             self.assertIsNone(record["youtube"]["publicVerifiedAt"])
             self.assertIn("re-authorize", record["youtube"]["lastError"])
-            fetch_mock.assert_not_called()

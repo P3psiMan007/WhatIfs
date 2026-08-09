@@ -20,10 +20,33 @@ class PublishGateTests(TestCase):
                 "copyright": 9.0,
             },
             "failures": [],
+            "majorBlockers": [],
+            "authority": "critic-qa-independent",
+            "reviewedExactArtifact": True,
+            "artifactDigest": "sha256:" + "a" * 64,
+            "narratorVerification": {
+                "verified": True,
+                "provider": "kokoro",
+                "voice": "af_heart",
+                "speed": 0.95,
+                "flowVersion": "continuous-v2",
+                "audioSha256": "a" * 64,
+            },
+            "episodeId": "ep-1",
+            "imageAssetsVerification": {
+                "verified": True,
+                "manifestSha256": "b" * 64,
+                "assetRevision": "image-first-cinematic-v2",
+            },
             "reviewedStateRevision": 56,
             "reviewedRenderAsset": "github-actions://run/123/artifact/episode-render/episode.mp4",
         }
-        state = {"state": "QA_PASSED", "state_revision": 56}
+        state = {
+            "episode_id": "ep-1",
+            "state": "QA_PASSED",
+            "state_revision": 56,
+            "production": {"render_asset": qa["reviewedRenderAsset"]},
+        }
         autonomy = {
             "autoPublishEnabled": True,
             "requiredCoreScore": 9,
@@ -34,6 +57,7 @@ class PublishGateTests(TestCase):
                 "requireProcessingVerification": True,
                 "requireMetadataVerification": True,
                 "requireThumbnailVerification": True,
+                "requirePlaybackVerification": True,
                 "promoteSameVideoIdOnly": True,
             },
             "publication": {"failClosedOnUncertainty": True},
@@ -63,6 +87,43 @@ class PublishGateTests(TestCase):
         qa, state, autonomy, daily = self.base()
         qa["failures"] = [{"severity": "publish-blocking", "finding": "bad"}]
         self.assertFalse(evaluate_publication_gate(qa, state, autonomy, daily).allowed)
+
+    def test_blocks_declared_major_blocker_even_without_failures_array(self):
+        qa, state, autonomy, daily = self.base()
+        qa["majorBlockers"] = ["visual repetition"]
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("major QA blocker", " ".join(result.reasons))
+
+    def test_blocks_missing_exact_artifact_attestation_or_digest(self):
+        qa, state, autonomy, daily = self.base()
+        qa["reviewedExactArtifact"] = False
+        qa["artifactDigest"] = ""
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("exact render artifact", " ".join(result.reasons))
+        self.assertIn("artifact digest", " ".join(result.reasons))
+
+    def test_blocks_wrong_or_missing_narrator_attestation(self):
+        qa, state, autonomy, daily = self.base()
+        qa["narratorVerification"]["voice"] = "other"
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("narrator", " ".join(result.reasons))
+
+    def test_blocks_missing_image_asset_attestation(self):
+        qa, state, autonomy, daily = self.base()
+        qa["imageAssetsVerification"]["verified"] = False
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("image asset", " ".join(result.reasons))
+
+    def test_blocks_when_playback_verification_is_not_required(self):
+        qa, state, autonomy, daily = self.base()
+        autonomy["verification"]["requirePlaybackVerification"] = False
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("requirePlaybackVerification", " ".join(result.reasons))
 
     def test_blocks_owner_only_blocker(self):
         qa, state, autonomy, daily = self.base()
@@ -110,6 +171,15 @@ class PublishGateTests(TestCase):
         qa, state, autonomy, daily = self.base()
         qa["reviewedRenderAsset"] = ""
         self.assertFalse(evaluate_publication_gate(qa, state, autonomy, daily).allowed)
+
+    def test_blocks_qa_for_another_episode_or_render_asset(self):
+        qa, state, autonomy, daily = self.base()
+        qa["episodeId"] = "another-episode"
+        qa["reviewedRenderAsset"] = "github-actions://run/999/artifact/episode-render/episode.mp4"
+        result = evaluate_publication_gate(qa, state, autonomy, daily)
+        self.assertFalse(result.allowed)
+        self.assertIn("episode", " ".join(result.reasons))
+        self.assertIn("render asset", " ".join(result.reasons))
 
     def test_blocks_before_minimum_spacing_elapsed(self):
         qa, state, autonomy, daily = self.base()

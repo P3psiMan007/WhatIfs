@@ -26,6 +26,8 @@ on:
       - "tools/episode1-illustrated-v3-rebuild.test.mjs"
       - "tools/episode1-character-payoff-v4-rebuild.mjs"
       - "tools/episode1-character-payoff-v4-rebuild.test.mjs"
+      - "tools/episode1-image-first-rebuild.mjs"
+      - "tools/episode1-image-first-rebuild.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
@@ -33,13 +35,16 @@ on:
       - "episodes/current/research.md"
       - "episodes/current/script.md"
       - "episodes/current/production-input.json"
+      - "episodes/current/image-assets-v1.json"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "queue/topics.json"
       - "queue/runner-status.json"
       - "package.json"
+      - "package-lock.json"
       - "video/**"
       - "public/visuals/**"
+      - "public/generated/**"
       - ".github/workflows/episode-factory.yml"
   pull_request:
     paths:
@@ -62,6 +67,8 @@ on:
       - "tools/episode1-illustrated-v3-rebuild.test.mjs"
       - "tools/episode1-character-payoff-v4-rebuild.mjs"
       - "tools/episode1-character-payoff-v4-rebuild.test.mjs"
+      - "tools/episode1-image-first-rebuild.mjs"
+      - "tools/episode1-image-first-rebuild.test.mjs"
       - "tools/publish-grade-visual-guard.mjs"
       - "tools/publish-grade-visual-guard.test.mjs"
       - "tools/episode-state.mjs"
@@ -69,13 +76,16 @@ on:
       - "episodes/current/research.md"
       - "episodes/current/script.md"
       - "episodes/current/production-input.json"
+      - "episodes/current/image-assets-v1.json"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "queue/topics.json"
       - "queue/runner-status.json"
       - "package.json"
+      - "package-lock.json"
       - "video/**"
       - "public/visuals/**"
+      - "public/generated/**"
       - ".github/workflows/episode-factory.yml"
 
 permissions:
@@ -98,7 +108,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install video dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Validate locked af_heart narrator repair
         run: |
           node --check tools/narration-provider-repair.mjs
@@ -108,7 +118,7 @@ jobs:
           grep -q "LOCKED_SPEED = 0.95" tools/edge-tts
           ! grep -q "am_michael" tools/edge-tts
       - name: Run state, producer, cinematic ownership, timeline, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs video/src/cinematic-full-episode.test.mjs tools/publish-grade-visual-guard.test.mjs
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs tools/episode1-image-first-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs video/src/cinematic-full-episode.test.mjs video/src/cinematic-benchmark.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test
@@ -137,7 +147,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg espeak-ng
-          npm install --no-audit --no-fund
+          npm ci --no-audit --no-fund
           python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
           chmod +x tools/edge-tts
           echo "$GITHUB_WORKSPACE/tools" >> "$GITHUB_PATH"
@@ -154,6 +164,8 @@ jobs:
           PY
       - name: Restore locked approved narrator and invalidate rejected render
         run: node tools/narration-provider-repair.mjs
+      - name: Activate the verified first-party image-first Episode 1 rebuild
+        run: node tools/episode1-image-first-rebuild.mjs
       - name: Activate one-shot late-beat QA repair when applicable
         run: node tools/episode1-late-beat-rebuild.mjs
       - name: Activate one-shot hook contrast QA repair when applicable
@@ -194,6 +206,8 @@ jobs:
             public/voice-parts/*.srt
             episodes/current/render-manifest.json
             episodes/current/production-input.json
+            episodes/current/image-assets-v1.json
+            public/generated/episode1/**
           if-no-files-found: ignore
           retention-days: 14
       - name: Persist canonical state changes

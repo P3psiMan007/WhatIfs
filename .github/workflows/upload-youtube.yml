@@ -8,7 +8,10 @@ on:
       - "episodes/current/qa-review.json"
       - "episodes/current/episode-state.json"
       - "episodes/current/render-manifest.json"
+      - "episodes/current/production-input.json"
       - "episodes/current/thumbnail-source.json"
+      - "episodes/current/rejected-publications/**"
+      - "public/approved/**"
       - "config/autonomy.json"
       - "queue/daily-control.json"
       - "youtube_uploader/**"
@@ -52,7 +55,7 @@ jobs:
           import json
           import os
           from pathlib import Path
-          from youtube_uploader.publish_gate import evaluate_publication_gate
+          from youtube_uploader.publish_gate import evaluate_publication_gate, narrator_contract_reasons
 
           load = lambda p: json.loads(Path(p).read_text(encoding="utf-8"))
           decision = evaluate_publication_gate(
@@ -61,13 +64,19 @@ jobs:
               load("config/autonomy.json"),
               load("queue/daily-control.json"),
           )
+          narrator_reasons = narrator_contract_reasons(
+              (load("episodes/current/production-input.json").get("narrator") or {})
+          )
+          allowed = decision.allowed and not narrator_reasons
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              print(f"eligible={'true' if decision.allowed else 'false'}", file=out)
-          if decision.allowed:
+              print(f"eligible={'true' if allowed else 'false'}", file=out)
+          if allowed:
               print("Publication gate PASS")
           else:
               print("Publication gate BLOCKED")
               for reason in decision.reasons:
+                  print(f"- {reason}")
+              for reason in narrator_reasons:
                   print(f"- {reason}")
           PY
 
@@ -154,6 +163,7 @@ jobs:
             --render-manifest episodes/current/render-manifest.json \
             --autonomy config/autonomy.json \
             --daily-control queue/daily-control.json \
+            --production-input episodes/current/production-input.json \
             --publication-record episodes/current/publication.json \
             --stop-after-private
 
@@ -193,7 +203,7 @@ jobs:
               raise SystemExit("publication record does not prove private privacy state")
           if yt.get("publicVerifiedAt") or "public" in transitions:
               raise SystemExit("private-only staging unexpectedly became public")
-          if not yt.get("processingVerified") or not yt.get("metadataVerified") or not yt.get("thumbnailSetSucceeded"):
-              raise SystemExit("private staging verification is incomplete")
+          if not yt.get("processingVerified") or not yt.get("metadataVerified") or not yt.get("thumbnailSetSucceeded") or not yt.get("playbackVerified"):
+            raise SystemExit("private staging verification is incomplete")
           print(f"Verified private YouTube video: https://www.youtube.com/watch?v={yt['videoId']}")
           PY

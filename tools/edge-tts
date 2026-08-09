@@ -14,6 +14,7 @@ import soundfile as sf
 
 LOCKED_VOICE = "af_heart"
 LOCKED_SPEED = 0.95
+LOCKED_FLOW_VERSION = "continuous-v2"
 SAMPLE_RATE = 24000
 EDGE_THRESHOLD = 0.002
 EDGE_PAD_SECONDS = 0.04
@@ -65,15 +66,16 @@ def render_batch(batch_json: str, output_dir: str) -> None:
     provider = str(payload.get("provider") or "").strip()
     voice = str(payload.get("voice") or "").strip()
     speed = float(payload.get("speed", LOCKED_SPEED))
+    flow_version = str(payload.get("flowVersion") or "").strip()
     scenes = payload.get("scenes") or []
-    # The current producer predates provider metadata in its batch payload, so an
-    # omitted provider is accepted. Any explicit non-Kokoro provider is rejected.
-    if provider and provider != "kokoro":
+    if provider != "kokoro":
         raise SystemExit(f"narration provider must be kokoro; got {provider}")
     if voice != LOCKED_VOICE:
         raise SystemExit(f"narrator must be {LOCKED_VOICE}; got {voice or 'missing'}")
     if abs(speed - LOCKED_SPEED) > 1e-9:
         raise SystemExit(f"narrator speed must be {LOCKED_SPEED}; got {speed}")
+    if flow_version != LOCKED_FLOW_VERSION:
+        raise SystemExit(f"narration flow must be {LOCKED_FLOW_VERSION}; got {flow_version or 'missing'}")
     if not scenes:
         raise SystemExit("batch narration contains no scenes")
     out = Path(output_dir); out.mkdir(parents=True, exist_ok=True)

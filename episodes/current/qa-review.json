@@ -1,58 +1,37 @@
 {
-  "qaReviewVersion": "1.1",
+  "qaReviewVersion": "1.2",
   "episodeId": "20260807-episode",
-  "reviewedStateRevision": 65,
-  "reviewedRenderAsset": "github-actions://run/31285143280/artifact/episode-render-normalized/episode.mp4",
-  "reviewedAt": "2026-08-09T00:05:49.343806Z",
+  "reviewedStateRevision": 87,
+  "reviewedRenderAsset": "github-actions://run/31325045813/artifact/episode-render/episode.mp4",
+  "reviewedAt": "2026-08-10T00:00:00Z",
   "authority": "critic-qa-independent",
-  "status": "QA_PASSED",
-  "publishDecision": "PASS",
-  "changedArtifactsReviewed": [
-    "episodes/current/script.md",
-    "episodes/current/production-input.json",
-    "episodes/current/render-manifest.json",
-    "episodes/current/qa-evidence.json",
-    "episodes/current/thumbnail-source.json",
-    "docs/licenses/kokoro-82m.md",
-    "public/narration.mp3",
-    "public/narration.srt",
-    "dist/episode.mp4",
-    "dist/first-30s-contact-sheet.jpg",
-    "dist/contact-sheet.jpg"
-  ],
+  "status": "REWORK_REQUIRED",
+  "publishDecision": "BLOCK",
+  "artifactDigest": "sha256:e714f6f0851006182b88e600817c4a13aa6ec1dcf5f4fc425f1c8cb368c6cb0c",
+  "reviewedExactArtifact": true,
   "coreScores": {
-    "factual": 9.6,
-    "package": 9.4,
-    "retention": 9.2,
+    "factual": 9.2,
+    "package": 8.8,
+    "retention": 8.5,
     "narration": 9.1,
-    "visual": 9.2,
-    "technical": 9.8,
-    "policy": 9.6,
-    "copyright": 9.5
+    "visual": 7.4,
+    "technical": 9.6,
+    "policy": 9.4,
+    "copyright": 8.8
   },
-  "additionalScores": {
-    "endingPayoff": 9.2,
-    "advertiserSuitability": 9.8,
-    "misleadingRisk": 9.6,
-    "captionSafety": 9.5
-  },
-  "verifiedPasses": [
-    "Corrected payoff wording is present: gain roughly a third of each day back as waking time; the prior arithmetic error is absent.",
-    "Kokoro-82M narration uses the published am_michael voice with durable Apache-2.0/commercial-use evidence.",
-    "Narration pace is materially improved: 114.9 WPM median overall, 106.6 WPM median payoff, and no prior 220-241 WPM payoff spikes.",
-    "The exact normalized artifact independently measures -16.85 LUFS integrated and -1.52 dBTP true peak with stereo AAC at 48 kHz.",
-    "The normalized artifact preserves the reviewed H.264 video stream bit-for-bit; source and normalized video-stream SHA-256 hashes match.",
-    "No black segment of at least 0.5 seconds and no unintended silence of at least 1.5 seconds below -50 dB were detected.",
-    "Visual pacing remains publish-grade: 122 visual beats, 9 in the first 30 seconds, maximum beat duration 5.95 seconds.",
-    "Full-video contact-sheet and first-30-second sampled-frame review show coherent bespoke storytelling and no dead visual frame.",
-    "Package A title and the approved verified ChatGPT Images 8 HOURS BACK thumbnail accurately match the recovered-time promise.",
-    "No third-party footage, music, logos, photographs, or copied creator assets were identified in the final video."
+  "majorBlockers": [
+    "Visual storytelling is below threshold: repeated template motifs dominate the exact failed artifact.",
+    "Visual variety is below threshold: repeated environments and presentation-led beats are visible through the full contact sheet.",
+    "This review is for a superseded artifact and cannot authorize upload."
   ],
-  "failures": [],
-  "externalBlocker": null,
-  "postPublishAnalytics": {
-    "due": false,
-    "reason": "No verified published-video record exists yet; private YouTube staging is the next step."
+  "requiredFixes": [
+    "Render the locally tracked image-first cinematic rebuild.",
+    "Independently inspect the exact new MP4, narration, captions, package, policy, factual claims, and asset provenance.",
+    "Write a new exact-artifact QA review with every core score at least 9/10 before private upload."
+  ],
+  "supersededBy": {
+    "assetRevision": "image-first-cinematic-v1",
+    "status": "NOT_RENDERED_YET"
   },
-  "privateUploadTrigger": "2026-08-09T00:08:00Z"
+  "externalBlocker": null
 }

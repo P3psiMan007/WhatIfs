@@ -1,9 +1,9 @@
 # Script — What if humans never needed sleep?
 
-**Target:** ~7–8 minutes
+**Target:** approximately 6:20. Exact timing is measured from the regenerated locked narration before render.
 **Premise rule:** Humans are biologically redesigned so the restorative functions of sleep happen continuously while awake. This is not ordinary sleep deprivation.
 
-## 0:00–0:30 — Hook
+## Hook
 
 Tonight, you go to bed for the last time.
 
@@ -15,7 +15,7 @@ That sounds like a superpower.
 
 But within a few years, those eight hours might stop belonging to you.
 
-## 0:30–1:20 — You gain a second life
+## You gain a second life
 
 Start with the obvious win.
 
@@ -29,7 +29,7 @@ But there is a catch hiding inside the premise.
 
 We cannot simply remove sleep from the human body we have today.
 
-## 1:20–2:20 — Sleep is doing work
+## Sleep is doing work
 
 Real sleep is not eight hours of your body switching off.
 
@@ -45,7 +45,7 @@ Now things get stranger.
 
 Because deleting sleep does not necessarily delete your body clock.
 
-## 2:20–3:10 — Night still exists inside you
+## Night still exists inside you
 
 Your circadian rhythm helps coordinate biology with the light-dark cycle. Sleep and circadian timing overlap, but they are not the same thing.
 
@@ -57,7 +57,7 @@ Cities would stop having one shared bedtime. Instead, humanity could split into 
 
 And that would change the economy almost immediately.
 
-## 3:10–4:20 — The 24-hour economy
+## The 24-hour economy
 
 Today, one reason businesses close is simple: humans have to sleep.
 
@@ -75,7 +75,7 @@ An eight-hour workday was built in a world where a large part of every 24 hours 
 
 How much of your extra life belongs to work?
 
-## 4:20–5:20 — Sleep was a boundary
+## Sleep was a boundary
 
 Sleep does something socially useful even before we talk about biology: it creates a universal excuse to be unavailable.
 
@@ -91,7 +91,7 @@ The strangest consequence of eliminating sleep might be that society has to recr
 
 Not because our bodies need rest — but because our attention does.
 
-## 5:20–6:15 — Homes and relationships change
+## Homes and relationships change
 
 Bedrooms would change too.
 
@@ -109,7 +109,7 @@ There is no bedtime.
 
 Ever.
 
-## 6:15–7:05 — What happens to memory and time?
+## What happens to memory and time?
 
 There is also a psychological question.
 
@@ -125,7 +125,7 @@ You gain more conscious time.
 
 But consciousness itself may become something you occasionally want to escape from.
 
-## 7:05–7:45 — Payoff
+## Payoff
 
 So would a sleepless humanity be better off?
 

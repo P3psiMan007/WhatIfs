@@ -9,6 +9,7 @@ import {
   buildVisualBeats,
   formatSrt,
   extractBeatCallout,
+  buildNarrationSceneCommand,
 } from './episode-producer.mjs';
 import {isPublishGradeVisualInput} from './publish-grade-visual-guard.mjs';
 
@@ -60,6 +61,19 @@ test('publish-grade visual readiness requires explicit grade and per-scene asset
   assert.equal(isPublishGradeVisualInput(validInput), true);
   assert.equal(isPublishGradeVisualInput({...validInput, visualGrade:'heuristic-placeholder'}), false);
   assert.equal(isPublishGradeVisualInput({...validInput, scenes:[validInput.scenes[0], {...validInput.scenes[1], visualAsset:null}]}), false);
+});
+
+test('builds exact Edge TTS command per scene without unsupported batch flags or voice fallback', () => {
+  const command = buildNarrationSceneCommand(validInput, '/tmp/scene.txt', '/tmp/scene.mp3', '/tmp/scene.srt');
+  assert.equal(command.program, 'edge-tts');
+  assert.deepEqual(command.args, [
+    '--file','/tmp/scene.txt',
+    '--voice','en-US-BrianNeural',
+    '--rate=+4%',
+    '--write-media','/tmp/scene.mp3',
+    '--write-subtitles','/tmp/scene.srt',
+  ]);
+  assert.ok(!command.args.includes('--batch-json'));
 });
 
 test('parses SRT captions into second-based cues', () => {

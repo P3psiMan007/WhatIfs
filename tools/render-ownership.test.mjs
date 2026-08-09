@@ -3,24 +3,26 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const episode = fs.readFileSync('video/src/what-if-episode.jsx','utf8');
-const assetScene = fs.readFileSync('video/src/sleep-asset-scene.jsx','utf8');
-const scene01 = fs.readFileSync('public/visuals/20260807-episode/scene-01.svg','utf8');
+const cinematic = fs.readFileSync('video/src/cinematic-full-episode.jsx','utf8');
 const narratorRepair = fs.readFileSync('tools/narration-provider-repair.mjs','utf8');
+const narrator = fs.readFileSync('tools/edge-tts','utf8');
 const workflow = fs.readFileSync('.github/workflows/episode-factory.yml','utf8');
 
-test('authored sleep scene art has exactly one render owner in the episode', () => {
-  assert.match(scene01, /id="characters"/);
-  assert.match(episode, /<SleepAssetScene/);
-  assert.doesNotMatch(episode, /<SleepScene\b/);
-  assert.doesNotMatch(episode, /HookHoursContrastOverlay/);
-  assert.match(assetScene, /data-visual-owner="authored-asset-only"/);
-  assert.match(assetScene, /if \(!spec\) throw new Error/);
+test('episode has exactly one cinematic visual owner per beat and does not mount rejected SVG renderer', () => {
+  assert.match(episode, /CinematicEpisodeScene/);
+  assert.match(episode, /data-visual-owner="cinematic-single"/);
+  assert.doesNotMatch(episode, /SleepAssetScene|SleepScene\b|HookHoursContrastOverlay/);
+  assert.match(cinematic, /data-visual-owner="cinematic-single"/);
+  assert.doesNotMatch(cinematic, /visualAsset|\.svg/);
 });
 
-test('factory restores the exact approved narrator instead of silently substituting Kokoro', () => {
-  assert.match(narratorRepair, /en-US-BrianNeural/);
-  assert.doesNotMatch(narratorRepair, /voice:\s*['"]am_michael['"]/);
-  assert.doesNotMatch(narratorRepair, /qa\?\.status\s*===\s*['"]QA_PASSED['"]/);
-  assert.match(workflow, /edge-tts==7\.2\.8/);
-  assert.doesNotMatch(workflow, /kokoro==/);
+test('factory restores the exact approved af_heart narrator with no silent fallback', () => {
+  assert.match(narratorRepair, /approvedVoice\s*=\s*['"]af_heart['"]/);
+  assert.match(narratorRepair, /approvedSpeed\s*=\s*0\.95/);
+  assert.match(narrator, /LOCKED_VOICE\s*=\s*"af_heart"/);
+  assert.match(narrator, /LOCKED_SPEED\s*=\s*0\.95/);
+  assert.match(narrator, /pipeline\(text, voice=LOCKED_VOICE, speed=LOCKED_SPEED\)/);
+  assert.doesNotMatch(narrator, /am_michael/);
+  assert.match(workflow, /kokoro==0\.9\.4/);
+  assert.doesNotMatch(workflow, /edge-tts==7\.2\.8/);
 });

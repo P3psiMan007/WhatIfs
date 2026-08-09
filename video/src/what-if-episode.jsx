@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {SleepThumbnailArt} from './sleep-scenes.jsx';
-import {SleepAssetScene} from './sleep-asset-scene.jsx';
+import {CinematicEpisodeScene} from './cinematic-full-episode.jsx';
 import {getSleepThumbnailArtPlacement} from './thumbnail-layout.mjs';
 import {buildContinuousBeatFrames} from './visual-timeline.mjs';
 
@@ -15,8 +15,8 @@ const Captions=({captions,palette})=>{
   if(!cue)return null;
   const cueFrame=Math.max(0,frame-Math.floor(Number(cue.start)*fps));
   const opacity=interpolate(cueFrame,[0,4],[0,1],clamp);
-  return <div style={{position:'absolute',left:160,right:160,bottom:38,display:'flex',justifyContent:'center',pointerEvents:'none',opacity}}>
-    <div style={{maxWidth:1280,fontFamily:font,fontSize:34,lineHeight:1.2,fontWeight:700,color:palette.foreground,textAlign:'center',background:'rgba(11,13,18,.76)',border:'1px solid rgba(234,231,225,.11)',borderRadius:18,padding:'11px 21px 12px',boxShadow:'0 10px 42px rgba(0,0,0,.42)',textShadow:'0 3px 12px rgba(0,0,0,.7)'}}>{cue.text}</div>
+  return <div style={{position:'absolute',left:150,right:150,bottom:38,display:'flex',justifyContent:'center',pointerEvents:'none',opacity,zIndex:50}}>
+    <div style={{maxWidth:1320,fontFamily:font,fontSize:34,lineHeight:1.2,fontWeight:700,color:palette.foreground,textAlign:'center',background:'rgba(5,8,14,.70)',borderRadius:12,padding:'11px 20px 12px',boxShadow:'0 10px 35px rgba(0,0,0,.30)',textShadow:'0 3px 12px rgba(0,0,0,.7)'}}>{cue.text}</div>
   </div>;
 };
 
@@ -33,12 +33,13 @@ export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
   const beats=withLocalBeatOrdinals(buildContinuousBeatFrames(props.beats||[],fps,props.durationSeconds||0));
-  return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden'}}>
+  return <AbsoluteFill data-visual-owner="cinematic-single" style={{backgroundColor:'#090c12',overflow:'hidden'}}>
+    <AbsoluteFill style={{background:'radial-gradient(90% 75% at 50% 42%,#10151e 0%,#090c12 76%)'}}/>
     {beats.map((beat)=>{
       const from=beat.from;
       const durationInFrames=beat.durationInFrames;
-      return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.5*fps))}>
-        <SleepAssetScene beat={beat} beatOrdinal={beat.localBeatOrdinal} palette={palette}/>
+      return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.6*fps))}>
+        <CinematicEpisodeScene beat={beat} beatOrdinal={beat.localBeatOrdinal} durationInFrames={durationInFrames} palette={palette}/>
       </Sequence>;
     })}
     {props.audio?<Audio src={staticFile(props.audio)}/>:null}

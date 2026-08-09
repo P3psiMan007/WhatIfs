@@ -8,12 +8,22 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
-import numpy as np
-import soundfile as sf
-from kokoro import KPipeline
+try:
+    import numpy as np
+    import soundfile as sf
+    from kokoro import KPipeline
+except ImportError:
+    subprocess.run([
+        sys.executable, "-m", "pip", "install", "--disable-pip-version-check",
+        "kokoro==0.9.4", "soundfile", "numpy"
+    ], check=True)
+    import numpy as np
+    import soundfile as sf
+    from kokoro import KPipeline
 
 APPROVED_VOICE = "af_heart"
 APPROVED_SPEED = 0.95

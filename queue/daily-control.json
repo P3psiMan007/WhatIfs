@@ -1,6 +1,6 @@
 {
   "control_version": "1.0",
-  "revision": 7,
+  "revision": 8,
   "date": "2026-08-09",
   "pauseAllProduction": false,
   "pausePublishing": false,
@@ -9,5 +9,5 @@
   "minimumSpacingMinutes": 360,
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "Clean external retrigger after verified Episode Factory persistence fix. Complete canonical Kokoro render persistence, strict 9/10 independent QA, and verified private-first YouTube upload without waiting for cron."
+  "notes": "External publication retrigger after exact normalized Episode 1 artifact passed independent QA at revision 65. Run canonical private-first YouTube verification/promotion on the same approved video identity; fail closed on any mismatch."
 }

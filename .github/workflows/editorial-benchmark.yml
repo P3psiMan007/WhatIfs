@@ -20,13 +20,13 @@ jobs:
           sudo apt-get update && sudo apt-get install -y ffmpeg espeak-ng
           npm install --no-audit --no-fund
           python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
-      - name: Generate approved Kokoro narration
+      - name: Generate locked female Kokoro narration
         run: |
           mkdir -p public dist/editorial-frames
           cat >/tmp/editorial.txt <<'EOF'
           Tonight, you go to bed for the last time. Not because something is wrong. Tomorrow, sleep is simply unnecessary. No fatigue. No brain fog. No hidden health cost. You just gained roughly eight extra hours every day.
           EOF
-          python tools/edge-tts --file /tmp/editorial.txt --voice am_michael --rate=+4% --write-media public/editorial-narration.mp3 --write-subtitles public/editorial-narration.srt
+          python tools/edge-tts --file /tmp/editorial.txt --voice af_heart --rate=+0% --write-media public/editorial-narration.mp3 --write-subtitles public/editorial-narration.srt
           test -s public/editorial-narration.mp3
       - name: Render editorial benchmark
         run: npx remotion render video/src/index.jsx WhatIfEditorialBenchmark dist/editorial-benchmark.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p

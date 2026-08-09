@@ -1,0 +1,27 @@
+{
+  "file": "benchmark/what-if-episode1-hook-benchmark.mp4",
+  "sizeBytes": 8796997,
+  "durationSeconds": 27.976,
+  "fps": 30.0,
+  "resolution": "1920x1080",
+  "videoCodec": "h264",
+  "pixelFormat": "yuv420p",
+  "audioCodec": "aac",
+  "audioChannels": 2,
+  "audioSampleRate": "48000",
+  "framesAnalysed": 839,
+  "minFrameLuma": 30.53,
+  "meanFrameLuma": 46.86,
+  "blackFrames": [],
+  "luminanceDips": [],
+  "captions": {
+    "cues": 9,
+    "firstStart": 0.854,
+    "lastEnd": 26.581
+  },
+  "audio": {
+    "integratedLufs": -14.2
+  },
+  "failures": [],
+  "pass": true
+}

@@ -84,6 +84,27 @@ Behind a TLS-terminating egress proxy, point `SSL_CERT_FILE` at the proxy CA
 before running the narration step; the script hands that bundle to edge-tts
 explicitly and never weakens verification.
 
+## Verified result
+
+Objective checks on the exact rendered file (`benchmark/qa-report.json`):
+
+| Check | Result |
+| --- | --- |
+| Format | 1920x1080, 30fps, h264 / aac, 8.80 MB |
+| Duration | 27.976s |
+| Colour | yuv420p, limited range, BT.709 |
+| Near-black frames | 0 of 839 |
+| Single-frame flashes | 0 |
+| Darkest frame | luma 30.5 of 255 |
+| Subtitles | 9 cues, last ends 26.581s, inside the picture |
+| Programme loudness | -14.2 LUFS |
+| Narrator | en-US-BrianNeural, verified at generation and again at mix |
+
+Frames were pulled at every cut and reviewed one at a time. Four rounds of fixes
+came out of that review rather than out of the metrics, because the metrics were
+green well before the frames were acceptable. That gap is the whole reason this
+document exists.
+
 ## What this benchmark does not settle
 
 Approval here is approval of **style**. The full episode still needs its own

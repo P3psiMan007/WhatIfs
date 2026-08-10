@@ -1,0 +1,36 @@
+{
+  "episodeId": "renderer-benchmark",
+  "title": "Doodle Renderer Benchmark",
+  "durationSeconds": 20,
+  "audio": null,
+  "palette": {
+    "background": "#0b0d12",
+    "foreground": "#eae7e1",
+    "accent": "#ffb340"
+  },
+  "captions": [],
+  "scenes": [
+    {"id":"bench-01","start":0,"duration":2,"headline":"CHARACTER ACTION","narration":"A person points toward a new idea."},
+    {"id":"bench-02","start":2,"duration":2,"headline":"TWO PEOPLE","narration":"Two people compare opposite choices."},
+    {"id":"bench-03","start":4,"duration":2,"headline":"CHARACTER AND PROP","narration":"A worker points at an office screen."},
+    {"id":"bench-04","start":6,"duration":2,"headline":"WORLD SCENE","narration":"A city keeps moving through the night."},
+    {"id":"bench-05","start":8,"duration":2,"headline":"PROCESS","narration":"The brain turns information into memory."},
+    {"id":"bench-06","start":10,"duration":2,"headline":"COMPARISON","narration":"One side is twice as large compared with the other."},
+    {"id":"bench-07","start":12,"duration":2,"headline":"TIMELINE","narration":"Hours become days and years over time."},
+    {"id":"bench-08","start":14,"duration":2,"headline":"SPATIAL","narration":"Earth and the Moon move through space."},
+    {"id":"bench-09","start":16,"duration":2,"headline":"DATA","narration":"The population increases by 50 percent.","callout":"50%"},
+    {"id":"bench-10","start":18,"duration":2,"headline":"TRANSFORMATION","narration":"A simple idea transforms into something unexpected."}
+  ],
+  "beats": [
+    {"id":"bench-01-beat-001","start":0,"duration":2,"sceneId":"bench-01","sceneHeadline":"CHARACTER ACTION","text":"A person points toward a new idea."},
+    {"id":"bench-02-beat-001","start":2,"duration":2,"sceneId":"bench-02","sceneHeadline":"TWO PEOPLE","text":"Two people compare opposite choices."},
+    {"id":"bench-03-beat-001","start":4,"duration":2,"sceneId":"bench-03","sceneHeadline":"CHARACTER AND PROP","text":"A worker points at an office screen."},
+    {"id":"bench-04-beat-001","start":6,"duration":2,"sceneId":"bench-04","sceneHeadline":"WORLD SCENE","text":"A city keeps moving through the night."},
+    {"id":"bench-05-beat-001","start":8,"duration":2,"sceneId":"bench-05","sceneHeadline":"PROCESS","text":"The brain turns information into memory."},
+    {"id":"bench-06-beat-001","start":10,"duration":2,"sceneId":"bench-06","sceneHeadline":"COMPARISON","text":"One side is twice as large compared with the other."},
+    {"id":"bench-07-beat-001","start":12,"duration":2,"sceneId":"bench-07","sceneHeadline":"TIMELINE","text":"Hours become days and years over time."},
+    {"id":"bench-08-beat-001","start":14,"duration":2,"sceneId":"bench-08","sceneHeadline":"SPATIAL","text":"Earth and the Moon move through space."},
+    {"id":"bench-09-beat-001","start":16,"duration":2,"sceneId":"bench-09","sceneHeadline":"DATA","text":"The population increases by 50 percent.","callout":"50%"},
+    {"id":"bench-10-beat-001","start":18,"duration":2,"sceneId":"bench-10","sceneHeadline":"TRANSFORMATION","text":"A simple idea transforms into something unexpected."}
+  ]
+}

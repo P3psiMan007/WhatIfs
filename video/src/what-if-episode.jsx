@@ -30,26 +30,35 @@ function withLocalBeatOrdinals(beats){
   });
 }
 
+const EpisodeLayers=({props,palette,beats,useDoodle,fps})=><>
+  <AbsoluteFill style={{background:'radial-gradient(90% 75% at 50% 42%,#10151e 0%,#090c12 76%)'}}/>
+  {beats.map((beat)=>{
+    const from=beat.from;
+    const durationInFrames=beat.durationInFrames;
+    return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.6*fps))}>
+      {useDoodle
+        ? <DoodleExplainerScene beat={beat} durationInFrames={durationInFrames} palette={palette}/>
+        : <CinematicEpisodeScene beat={beat} beatOrdinal={beat.localBeatOrdinal} durationInFrames={durationInFrames} palette={palette}/>
+      }
+    </Sequence>;
+  })}
+  {props.audio?<Audio src={staticFile(props.audio)}/>:null}
+  <Captions captions={props.captions||[]} palette={palette}/>
+</>;
+
 export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
   const visualSystem=props.visualSystem||'cinematic-image-first-v5';
   const useDoodle=visualSystem==='doodle-explainer-v1';
   const beats=withLocalBeatOrdinals(buildContinuousBeatFrames(props.beats||[],fps,props.durationSeconds||0));
-  return <AbsoluteFill data-visual-owner={useDoodle?'doodle-explainer-v1':'cinematic-single'} style={{backgroundColor:'#090c12',overflow:'hidden'}}>
-    <AbsoluteFill style={{background:'radial-gradient(90% 75% at 50% 42%,#10151e 0%,#090c12 76%)'}}/>
-    {beats.map((beat)=>{
-      const from=beat.from;
-      const durationInFrames=beat.durationInFrames;
-      return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.6*fps))}>
-        {useDoodle
-          ? <DoodleExplainerScene beat={beat} durationInFrames={durationInFrames} palette={palette}/>
-          : <CinematicEpisodeScene beat={beat} beatOrdinal={beat.localBeatOrdinal} durationInFrames={durationInFrames} palette={palette}/>
-        }
-      </Sequence>;
-    })}
-    {props.audio?<Audio src={staticFile(props.audio)}/>:null}
-    <Captions captions={props.captions||[]} palette={palette}/>
+  if(useDoodle){
+    return <AbsoluteFill data-visual-owner="doodle-explainer-v1" style={{backgroundColor:'#090c12',overflow:'hidden'}}>
+      <EpisodeLayers props={props} palette={palette} beats={beats} useDoodle={true} fps={fps}/>
+    </AbsoluteFill>;
+  }
+  return <AbsoluteFill data-visual-owner="cinematic-single" style={{backgroundColor:'#090c12',overflow:'hidden'}}>
+    <EpisodeLayers props={props} palette={palette} beats={beats} useDoodle={false} fps={fps}/>
   </AbsoluteFill>;
 };
 

@@ -3,8 +3,8 @@
   "episode_id": "20260810-episode",
   "state": "SELECTED",
   "state_revision": 2,
-  "updated_at": "2026-08-10T12:24:51.556Z",
-  "updated_by": "episode-factory",
+  "updated_at": "2026-08-10T17:11:08.000Z",
+  "updated_by": "automation-topic-gate",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -13,14 +13,23 @@
   },
   "growth": {
     "opportunity_score": null,
-    "why_this_wins": null,
-    "core_paradox": null,
+    "why_this_wins": "A current 2026 NASA research hook adds freshness to an evergreen, universally understandable infrastructure-risk premise. The story has a clean beauty-to-danger contrast, strong myth-busting value, multiple escalating systems, and rich diagrammatic visual potential without requiring sensational apocalypse claims.",
+    "core_paradox": "The most beautiful visible effect of the storm can be the least important part; the real danger is invisible current and degraded infrastructure underneath it.",
     "hook_promise": "Start with beautiful worldwide auroras, then escalate through satellites, navigation, radio, power-grid stress, and the surprising parts modern infrastructure can actually survive.",
-    "target_length_min": null,
-    "critic_lessons_applied": [],
+    "target_length_min": 9.5,
+    "critic_lessons_applied": [
+      "Open on a concrete visual event before explanation.",
+      "Escalate through distinct systems rather than repeating the same consequence.",
+      "Use the phone-does-not-explode myth break as a mid-video curiosity reset.",
+      "End by snapping back to the beautiful-sky opening image."
+    ],
     "packages": {},
     "research_questions": [],
-    "fact_risks": [],
+    "fact_risks": [
+      "Do not describe the event as a universal EMP.",
+      "Do not promise a worldwide blackout or years-long recovery.",
+      "Keep the 2026 Nature/NASA result framed as challenging an assumed ceiling, not proving unlimited effects."
+    ],
     "topic_id": "super-solar-storm",
     "topic": "What if the strongest solar storm we can realistically get hit Earth?",
     "topic_source": "growth-research-2026-08-08"

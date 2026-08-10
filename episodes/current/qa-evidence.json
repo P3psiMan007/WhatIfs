@@ -4,7 +4,7 @@
   "render": {
     "episodeId": "20260807-episode",
     "episodeMatchesProduction": true,
-    "runId": "31325045813",
+    "runId": "31342488193",
     "artifactName": "episode-render",
     "codec": "h264",
     "width": 1920,
@@ -21,7 +21,10 @@
     },
     "visualGrade": "publish-grade",
     "qaInputsReady": true,
-    "publishBlocker": null
+    "publishBlocker": null,
+    "narratorAudioSha256": "65565aa6b0dc94d04d1743cf8791243c71940ce8bd0e686e6ce1e6324ce9a9ab",
+    "imageAssetManifestSha256": "76b2e0ffed5b89c476ea9667aa070e897e9958aeea7c5cf3b5d51a184df1e71b",
+    "imageAssetRevision": "image-first-cinematic-v5"
   },
   "captions": {
     "cueCount": 96,
@@ -127,6 +130,6 @@
   },
   "sourceWorkflow": {
     "name": "Episode Factory",
-    "runId": "31325045813"
+    "runId": "31342488193"
   }
 }

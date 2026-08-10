@@ -59,7 +59,7 @@ test('rendered publish-grade assets remain eligible for independent QA when cano
 });
 
 test('rendered proof-bound doodle output is eligible for independent QA',()=>{
-  const decision=visualGuardDecision({state:{state:'RENDERED',production:{qa_inputs_ready:true},qa:{user_action_required:null}},input:doodlePublishGradeInput,manifest:{visualGrade:'publish-grade',visualSystem:'doodle-explainer-v2',qaInputsReady:true,technicalPreview:false,publishBlocker:null}});
+  const decision=visualGuardDecision({state:{state:'RENDERED',production:{qa_inputs_ready:true},qa:{user_action_required:null}},input:doodlePublishGradeInput,manifest:{visualGrade:'publish-grade',visualSystem:'doodle-explainer-v2',rendererProofRunId:31377404863,rendererProofDigest:'sha256:de473a44cc86577a05eb2eea1c1a7204862a66b96aae5f681396b10fb4422700',qaInputsReady:true,technicalPreview:false,publishBlocker:null}});
   assert.deepEqual(decision,{kind:'READY',reason:'publish_grade_visuals_verified'});
 });
 

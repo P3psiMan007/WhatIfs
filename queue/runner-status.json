@@ -1,9 +1,9 @@
 {
-  "revision": 30,
-  "updatedAt": "2026-08-10T17:14:00.000Z",
-  "kind": "RESUME_REQUESTED",
+  "revision": 31,
+  "updatedAt": "2026-08-10T18:12:00.000Z",
+  "kind": "RUN_NOW_REQUESTED",
   "reason": null,
-  "details": "Current production input verified for episode 20260810-episode after rollover isolation repair; factory resumption requested from SELECTED state.",
+  "details": "Fresh Episode 2 research, script, and production input are present for episode 20260810-episode; retrigger factory from SELECTED after verified rollover isolation repair.",
   "episodeId": "20260810-episode",
   "state": "SELECTED",
   "stateRevision": 2,

@@ -16,6 +16,19 @@ test('episode has exactly one cinematic visual owner per beat and does not mount
   assert.doesNotMatch(cinematic, /visualAsset|\.svg/);
 });
 
+test('finished Episode 1 stays cinematic while future episodes default to the pro doodle renderer', () => {
+  assert.match(episode, /LEGACY_CINEMATIC_EPISODE_ID\s*=\s*['"]20260807-episode['"]/);
+  assert.match(episode, /props\.episodeId===LEGACY_CINEMATIC_EPISODE_ID/);
+  assert.match(episode, /doodle-explainer-v2/);
+  assert.match(episode, /DoodleExplainerScenePro/);
+});
+
+test('future thumbnails use package text and doodle art instead of the sleep-specific 8 HOURS BACK plate', () => {
+  assert.match(episode, /props\.thumbnailText/);
+  assert.match(episode, /DoodleExplainerScenePro/);
+  assert.match(episode, /legacyEpisode/);
+});
+
 test('factory restores the exact approved af_heart narrator with continuous-v2 flow and no silent fallback', () => {
   assert.match(narratorRepair, /approvedVoice\s*=\s*['"]af_heart['"]/);
   assert.match(narratorRepair, /approvedSpeed\s*=\s*0\.95/);

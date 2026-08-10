@@ -1,0 +1,44 @@
+name: Renderer Proof
+
+on:
+  pull_request:
+    paths:
+      - "video/src/doodle-explainer*.jsx"
+      - "video/src/doodle-renderer-proof.jsx"
+      - "video/src/root.jsx"
+      - ".github/workflows/renderer-proof.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Render representative proof frames
+        shell: bash
+        run: |
+          mkdir -p dist/renderer-proof
+          frames=(45 135 225 315 405 495 585 675 765 855)
+          i=1
+          for frame in "${frames[@]}"; do
+            printf -v name "%02d" "$i"
+            npx remotion still video/src/index.jsx WhatIfDoodleRendererProof "dist/renderer-proof/${name}.png" --frame="$frame"
+            i=$((i+1))
+          done
+          test "$(find dist/renderer-proof -name '*.png' | wc -l)" -eq 10
+      - name: Upload renderer proof frames
+        uses: actions/upload-artifact@v4
+        with:
+          name: renderer-proof-frames
+          path: dist/renderer-proof/*.png
+          if-no-files-found: error
+          retention-days: 7

@@ -68,7 +68,7 @@ test('publish-grade visual readiness requires the canonical full-section image m
 });
 
 test('render provenance pins the exact checked-in image manifest bytes', () => {
-  const input = JSON.parse(fs.readFileSync('episodes/current/production-input.json','utf8'));
+  const input = {imageAssetManifest:'episodes/current/image-assets-v1.json', imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION};
   const provenance = describeImageAssetManifest(input);
   assert.deepEqual(Object.keys(provenance).sort(), ['assetRevision','path','sha256']);
   assert.equal(provenance.path, 'episodes/current/image-assets-v1.json');

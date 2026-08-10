@@ -9,6 +9,7 @@ import {buildContinuousBeatFrames} from './visual-timeline.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
+const LEGACY_CINEMATIC_EPISODE_ID='20260807-episode';
 
 const Captions=({captions,palette})=>{
   const frame=useCurrentFrame(); const {fps}=useVideoConfig(); const t=frame/fps;
@@ -49,7 +50,7 @@ const EpisodeLayers=({props,palette,beats,useDoodle,fps})=><>
 export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
-  const visualSystem=props.visualSystem||'cinematic-image-first-v5';
+  const visualSystem=props.visualSystem||(props.episodeId===LEGACY_CINEMATIC_EPISODE_ID?'cinematic-image-first-v5':'doodle-explainer-v2');
   const useDoodle=visualSystem==='doodle-explainer-v1'||visualSystem==='doodle-explainer-v2';
   const beats=withLocalBeatOrdinals(buildContinuousBeatFrames(props.beats||[],fps,props.durationSeconds||0));
   if(useDoodle){
@@ -62,8 +63,7 @@ export const WhatIfEpisode=(props)=>{
   </AbsoluteFill>;
 };
 
-export const WhatIfThumbnail=(props)=>{
-  const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
+const LegacySleepThumbnail=({palette})=>{
   const placement=getSleepThumbnailArtPlacement();
   return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden',fontFamily:font}}>
     <div style={{position:'absolute',inset:-100,background:'radial-gradient(circle at 77% 48%, rgba(255,179,64,.20), transparent 34%), radial-gradient(circle at 30% 68%, rgba(234,231,225,.055), transparent 31%)'}}/>
@@ -72,5 +72,20 @@ export const WhatIfThumbnail=(props)=>{
     <div style={{position:'absolute',left:58,top:142,width:650,fontSize:108,lineHeight:.86,letterSpacing:-5,fontWeight:900,color:palette.foreground,textTransform:'uppercase',zIndex:3}}>8 HOURS<br/><span style={{color:palette.accent}}>BACK</span></div>
     <div style={{position:'absolute',left:62,bottom:62,width:510,height:8,borderRadius:99,background:palette.accent,zIndex:3}}/>
     <div style={{position:'absolute',left:0,top:0,width:1920,height:1080,transform:`translate(${placement.x}px, ${placement.y}px) scale(${placement.scale})`,transformOrigin:'top left'}}><SleepThumbnailArt palette={palette}/></div>
+  </AbsoluteFill>;
+};
+
+export const WhatIfThumbnail=(props)=>{
+  const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
+  const legacyEpisode=props.episodeId===LEGACY_CINEMATIC_EPISODE_ID;
+  if(legacyEpisode)return <LegacySleepThumbnail palette={palette}/>;
+  const label=String(props.thumbnailText||'WHAT IF?').trim().toUpperCase();
+  const beat={id:'thumbnail-beat',sceneId:'thumbnail',sceneHeadline:String(props.title||''),text:`${props.title||''} ${label}`,callout:null};
+  return <AbsoluteFill style={{backgroundColor:palette.background,overflow:'hidden',fontFamily:font}}>
+    <DoodleExplainerScenePro beat={beat} durationInFrames={90} palette={palette}/>
+    <AbsoluteFill style={{background:'linear-gradient(90deg,rgba(8,11,17,.98) 0%,rgba(8,11,17,.90) 31%,rgba(8,11,17,.28) 57%,rgba(8,11,17,0) 78%)'}}/>
+    <div style={{position:'absolute',left:54,top:42,fontSize:18,fontWeight:900,letterSpacing:5,color:palette.accent,zIndex:5}}>WHAT IF EXPLAINS</div>
+    <div style={{position:'absolute',left:54,top:150,width:575,fontSize:76,lineHeight:.88,letterSpacing:-3.4,fontWeight:900,color:palette.foreground,textTransform:'uppercase',zIndex:5,textShadow:'0 8px 28px rgba(0,0,0,.6)'}}>{label}</div>
+    <div style={{position:'absolute',left:58,bottom:58,width:370,height:7,borderRadius:99,background:palette.accent,zIndex:5}}/>
   </AbsoluteFill>;
 };

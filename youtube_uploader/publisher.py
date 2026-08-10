@@ -74,7 +74,15 @@ def _assert_video_not_rejected(video_id: str | None, rejected_video_ids: frozens
 
 def _verify_rejected_videos_remain_private(youtube, rejected_video_ids: frozenset[str]) -> None:
     for video_id in sorted(rejected_video_ids):
-        video = fetch_video(youtube, video_id)
+        try:
+            video = fetch_video(youtube, video_id)
+        except RuntimeError as exc:
+            # A rejected ID that no longer exists, or is no longer visible to the
+            # authenticated channel, must never block a fresh upload. The denylist
+            # remains authoritative below, so that exact ID still cannot be reused.
+            if str(exc) == f"YouTube video not found or ambiguous: {video_id}":
+                continue
+            raise
         if not verify_privacy(video, "private"):
             raise RuntimeError(f"rejected YouTube video is no longer private: {video_id}")
 

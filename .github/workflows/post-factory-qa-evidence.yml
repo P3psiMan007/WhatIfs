@@ -21,16 +21,59 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      - name: Check for exact factory render artifact
+        id: render_artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          source_run_id = os.environ["SOURCE_RUN_ID"]
+          repository = os.environ["GITHUB_REPOSITORY"]
+          response = subprocess.check_output(
+              ["gh", "api", f"repos/{repository}/actions/runs/{source_run_id}/artifacts?per_page=100"],
+              text=True,
+          )
+          matches = [
+              artifact
+              for artifact in json.loads(response).get("artifacts", [])
+              if artifact.get("name") == "episode-render"
+          ]
+          if not matches:
+              available = "false"
+              message = f"No episode-render artifact for factory run {source_run_id}; skipping QA evidence extraction."
+          elif len(matches) != 1:
+              raise SystemExit(
+                  f"Expected exactly one episode-render artifact for factory run {source_run_id}; found {len(matches)}."
+              )
+          elif matches[0].get("expired") is not False:
+              raise SystemExit(f"episode-render artifact for factory run {source_run_id} is expired.")
+          else:
+              available = "true"
+              message = f"Found exact episode-render artifact for factory run {source_run_id}."
+
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              print(f"available={available}", file=output)
+          print(message)
+          PY
+
+      - uses: actions/checkout@v4
+        if: steps.render_artifact.outputs.available == 'true'
+        with:
+          ref: main
+          fetch-depth: 0
+
       - name: Download exact factory render artifact
+        if: steps.render_artifact.outputs.available == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
@@ -46,6 +89,7 @@ jobs:
           test -s incoming-render/episodes/current/image-assets-v1.json
 
       - name: Require artifact to identify source workflow run
+        if: steps.render_artifact.outputs.available == 'true'
         env:
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
@@ -63,6 +107,7 @@ jobs:
           PY
 
       - name: Extract objective QA evidence
+        if: steps.render_artifact.outputs.available == 'true'
         env:
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
@@ -87,6 +132,7 @@ jobs:
           PY
 
       - name: Persist evidence for independent QA
+        if: steps.render_artifact.outputs.available == 'true'
         run: |
           git config user.name "whatifs-qa-evidence"
           git config user.email "whatifs-qa-evidence@users.noreply.github.com"
@@ -100,6 +146,7 @@ jobs:
           git push
 
       - uses: actions/upload-artifact@v4
+        if: steps.render_artifact.outputs.available == 'true'
         with:
           name: qa-evidence-${{ github.event.workflow_run.id }}
           path: episodes/current/qa-evidence.json

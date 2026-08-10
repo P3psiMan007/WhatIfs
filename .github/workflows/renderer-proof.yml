@@ -15,7 +15,7 @@ permissions:
 jobs:
   proof:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,7 +23,7 @@ jobs:
           node-version: "22"
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
-      - name: Render representative proof frames
+      - name: Render representative proof frames and motion
         shell: bash
         run: |
           mkdir -p dist/renderer-proof
@@ -35,10 +35,12 @@ jobs:
             i=$((i+1))
           done
           test "$(find dist/renderer-proof -name '*.png' | wc -l)" -eq 10
-      - name: Upload renderer proof frames
+          npx remotion render video/src/index.jsx WhatIfDoodleRendererProof dist/renderer-proof/proof.mp4 --scale=0.5 --crf=28
+          test -s dist/renderer-proof/proof.mp4
+      - name: Upload renderer proof artifacts
         uses: actions/upload-artifact@v4
         with:
           name: renderer-proof-frames
-          path: dist/renderer-proof/*.png
+          path: dist/renderer-proof/*
           if-no-files-found: error
           retention-days: 7

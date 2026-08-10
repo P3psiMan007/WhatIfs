@@ -1,5 +1,6 @@
 name: Publish verified episode to YouTube
 
+# Publication workflow: exact QA-approved artifact, private-first verification.
 on:
   workflow_dispatch:
   push:

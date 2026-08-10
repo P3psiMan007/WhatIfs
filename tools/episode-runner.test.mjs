@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planNextAction, sameStatus, resolveProducerCommand, extractProducerFailureReason, extractProducerFailureDetails } from './episode-runner.mjs';
+import { planNextAction, sameStatus, resolveProducerCommand, extractProducerFailureReason, extractProducerFailureDetails, planProductionInputRepair } from './episode-runner.mjs';
 import {planNextEpisodeBootstrap,blankEpisodeState} from './next-episode-bootstrap.mjs';
 
 const controls = { pauseAllProduction: false, pausePublishing: false };
@@ -69,6 +69,25 @@ test('preserves useful producer exception details for durable diagnosis', () => 
   assert.match(details, /ffprobe duration failed/);
   assert.match(details, /probeDuration/);
   assert.ok(details.length <= 1600);
+});
+
+test('stale production input is deleted so the producer can derive the active episode', () => {
+  const repair = planProductionInputRepair({
+    state: {episode_id:'20260810-episode'},
+    input: {episodeId:'20260807-episode'},
+  });
+  assert.equal(repair.kind, 'DELETE_STALE_INPUT');
+  assert.equal(repair.expectedEpisodeId, '20260810-episode');
+  assert.equal(repair.staleEpisodeId, '20260807-episode');
+});
+
+test('matching production input is preserved', () => {
+  const repair = planProductionInputRepair({
+    state: {episode_id:'20260810-episode'},
+    input: {episodeId:'20260810-episode'},
+  });
+  assert.equal(repair.kind, 'NOOP');
+  assert.equal(repair.reason, 'input_matches_episode');
 });
 
 test('next episode rollover requires exact verified private publication and a queued topic',()=>{

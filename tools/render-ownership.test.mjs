@@ -16,6 +16,13 @@ test('episode has exactly one cinematic visual owner per beat and does not mount
   assert.doesNotMatch(cinematic, /visualAsset|\.svg/);
 });
 
+test('future episodes default to doodle explainer while the finished Episode 1 remains isolated on cinematic', () => {
+  assert.match(episode, /LEGACY_CINEMATIC_EPISODE_ID\s*=\s*['"]20260807-episode['"]/);
+  assert.match(episode, /props\.episodeId\s*===\s*LEGACY_CINEMATIC_EPISODE_ID/);
+  assert.match(episode, /'doodle-explainer-v1'/);
+  assert.match(episode, /'cinematic-image-first-v5'/);
+});
+
 test('factory restores the exact approved af_heart narrator with continuous-v2 flow and no silent fallback', () => {
   assert.match(narratorRepair, /approvedVoice\s*=\s*['"]af_heart['"]/);
   assert.match(narratorRepair, /approvedSpeed\s*=\s*0\.95/);

@@ -1,9 +1,9 @@
 {
-  "revision": 32,
-  "updatedAt": "2026-08-10T19:12:00.000Z",
-  "kind": "RUN_NOW_REQUESTED",
+  "revision": 33,
+  "updatedAt": "2026-08-10T20:22:00.000Z",
+  "kind": "RUN_NOW_RETRY_REQUESTED",
   "reason": null,
-  "details": "Run Episode 2 now from clean isolated current slot. Solar-storm research, script, and production input are current; stale Episode 1 current-slot artifacts have been removed and archived.",
+  "details": "Run Episode 2 immediately from the clean isolated current slot. Current production input matches episode 20260810-episode and must advance through script validation, locked af_heart narration, doodle render, and QA artifact generation.",
   "episodeId": "20260810-episode",
   "state": "SELECTED",
   "stateRevision": 2,

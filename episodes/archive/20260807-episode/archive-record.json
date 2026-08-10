@@ -1,0 +1,47 @@
+{
+  "episodeId": "20260807-episode",
+  "status": "finished-private",
+  "archivedAt": "2026-08-10T10:20:00Z",
+  "canonicalSnapshotCommit": "052d15958852dae86029d6cbdda1bc69672550f3",
+  "sourcePathsAtSnapshot": [
+    "episodes/current/episode-state.json",
+    "episodes/current/research.md",
+    "episodes/current/script.md",
+    "episodes/current/production-input.json",
+    "episodes/current/render-manifest.json",
+    "episodes/current/qa-review.json",
+    "episodes/current/qa-evidence.json",
+    "episodes/current/thumbnail-source.json",
+    "episodes/current/image-assets-v1.json",
+    "episodes/current/publication.json"
+  ],
+  "publication": {
+    "videoId": "a38JmdjDOo0",
+    "url": "https://www.youtube.com/watch?v=a38JmdjDOo0",
+    "privacy": "private",
+    "privateVerifiedAt": "2026-08-10T07:38:35.657254Z",
+    "processingVerified": true,
+    "metadataVerified": true,
+    "thumbnailVerified": true,
+    "playbackVerified": true,
+    "syntheticMediaDisclosureVerified": true
+  },
+  "sourceRender": {
+    "runId": "31342488193",
+    "artifactName": "episode-render",
+    "videoSha256": "1f76ce4022ba05874f369a8a091b30de43c402151d31bbc7e8c4653db3425260",
+    "narrationSha256": "65565aa6b0dc94d04d1743cf8791243c71940ce8bd0e686e6ce1e6324ce9a9ab",
+    "thumbnailSha256": "7887340b904cc3f1db153ebdcbc4c5959101543fc9f21af3528fb128dceab00f"
+  },
+  "qa": {
+    "factual": 9.4,
+    "package": 9.4,
+    "retention": 9.1,
+    "narration": 9.2,
+    "visual": 9.3,
+    "technical": 9.6,
+    "policy": 9.3,
+    "copyright": 9.2
+  },
+  "notes": "The finished Episode 1 remains immutable on private YouTube. Its full repo-era canonical files remain recoverable at canonicalSnapshotCommit; current/ may now be rotated to the next episode. The rejected video ID 3EGJqkrn42A remains denied from reuse."
+}

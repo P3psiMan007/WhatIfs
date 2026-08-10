@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
   "state": "RENDERED",
-  "state_revision": 9,
-  "updated_at": "2026-08-10T21:44:38.854Z",
+  "state_revision": 15,
+  "updated_at": "2026-08-10T22:40:00.518Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -74,15 +74,20 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31432950026/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31432950026/artifact/episode-render/episode.mp4",
-    "qa_inputs_ready": false
+    "voice_asset": "github-actions://run/31437731688/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31437731688/artifact/episode-render/episode.mp4",
+    "qa_inputs_ready": false,
+    "semantic_visual_revision": "solar-storm-semantic-v1"
   },
   "qa": {
-    "status": null,
+    "status": "REWORK_REQUIRED",
     "scores": {},
-    "top_issues": [],
-    "required_fixes": [],
+    "top_issues": [
+      "The technical preview used repetitive generic visual templates."
+    ],
+    "required_fixes": [
+      "Render and inspect the semantic solar-storm visual revision before independent QA."
+    ],
     "user_action_required": "publish_grade_visual_assets_missing"
   },
   "analytics": {
@@ -163,6 +168,54 @@
     {
       "revision": 9,
       "at": "2026-08-10T21:44:38.854Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 10,
+      "at": "2026-08-10T22:22:12.232Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 11,
+      "at": "2026-08-10T22:22:12.259Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "replace generic placeholder visuals with semantic solar-storm storytelling"
+    },
+    {
+      "revision": 12,
+      "at": "2026-08-10T22:25:43.508Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 13,
+      "at": "2026-08-10T22:40:00.037Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 14,
+      "at": "2026-08-10T22:40:00.065Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 15,
+      "at": "2026-08-10T22:40:00.518Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

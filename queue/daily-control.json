@@ -1,13 +1,13 @@
 {
   "control_version": "1.0",
-  "revision": 8,
-  "date": "2026-08-09",
-  "pauseAllProduction": false,
-  "pausePublishing": false,
   "dailyPublishQuota": 1,
-  "publishedToday": 0,
-  "minimumSpacingMinutes": 360,
+  "date": "2026-08-09",
   "lastPublicationAt": null,
   "lastSuccessfulCanaryAt": null,
-  "notes": "Episode 1 is in a first-party image-first rebuild. The prior render and its QA are superseded; publishing remains blocked until a fresh exact-artifact independent review passes every gate."
+  "minimumSpacingMinutes": 360,
+  "notes": "Episode 1 is in a first-party image-first rebuild. The prior render and its QA are superseded; publishing remains blocked until a fresh exact-artifact independent review passes every gate.",
+  "pauseAllProduction": false,
+  "pausePublishing": false,
+  "publishedToday": 0,
+  "revision": 8
 }

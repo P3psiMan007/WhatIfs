@@ -21,15 +21,15 @@
   },
   "youtube": {
     "lastError": null,
-    "metadataVerified": false,
-    "playbackVerified": false,
+    "metadataVerified": true,
+    "playbackVerified": true,
     "privacyTransitions": [
       "private"
     ],
-    "privateVerifiedAt": null,
-    "processingVerified": false,
+    "privateVerifiedAt": "2026-08-10T07:38:35.657254Z",
+    "processingVerified": true,
     "publicVerifiedAt": null,
-    "syntheticMediaDisclosureVerified": false,
+    "syntheticMediaDisclosureVerified": true,
     "thumbnailSetSucceeded": true,
     "url": "https://www.youtube.com/watch?v=a38JmdjDOo0",
     "videoId": "a38JmdjDOo0"

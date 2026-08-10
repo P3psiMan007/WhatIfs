@@ -18,6 +18,14 @@ test('routes representative solar storm beats to distinct visual classes',()=>{
   for(const [text,expected] of cases) assert.equal(classifySolarStormVisual({text}),expected,text);
 });
 
+test('beat semantics override a broad aurora section heading',()=>{
+  const heading='THE BEAUTIFUL WARNING';
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'Satellite operators start getting warnings.'}),'satellite-orbit');
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'Power-grid control rooms see currents appearing in lines.'}),'grid-current');
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'GPS positions begin to drift.'}),'gps-ionosphere');
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'The problem left the Sun hours ago.'}),'sun-earth');
+});
+
 test('unknown solar-storm narration falls back to the Sun-Earth causal frame instead of a generic card',()=>{
   assert.equal(classifySolarStormVisual({text:'A consequence we have not classified yet'}),'sun-earth');
 });

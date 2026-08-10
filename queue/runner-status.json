@@ -1,10 +1,11 @@
 {
-  "revision": 26,
-  "updatedAt": "2026-08-10T00:21:02.971Z",
-  "kind": "PRODUCER_RAN",
-  "reason": null,
-  "details": null,
-  "episodeId": "20260807-episode",
-  "state": "RENDERED",
-  "stateRevision": 96
+  "revision": 28,
+  "updatedAt": "2026-08-10T12:24:51.652Z",
+  "kind": "BLOCKED",
+  "reason": "missing_production_input",
+  "details": "PRODUCER_BLOCKED missing_production_input",
+  "episodeId": "20260810-episode",
+  "state": "SELECTED",
+  "stateRevision": 2,
+  "exitCode": 2
 }

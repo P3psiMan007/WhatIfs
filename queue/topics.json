@@ -22,7 +22,7 @@
       "hookPromise": "Start with beautiful worldwide auroras, then escalate through satellites, navigation, radio, power-grid stress, and the surprising parts modern infrastructure can actually survive.",
       "source": "growth-research-2026-08-08",
       "enabled": true,
-      "consumedAt": null,
+      "consumedAt": "2026-08-10T12:24:51.560Z",
       "evidenceSignals": [
         "NASA Goddard reported on 2026-07-15 that a NASA-led Nature paper suggests the assumed ceiling on Earth's response to solar storms may be an illusion.",
         "A June 2026 astronomy community question asked how a Carrington-scale event would look and how damaging a visible event could be.",
@@ -40,7 +40,7 @@
         "noveltyTiming": 9.5,
         "saturation": 7.8,
         "advertiserFit": 8.5,
-        "misleadingRiskSafety": 9.0,
+        "misleadingRiskSafety": 9,
         "overall": 9.2
       },
       "packages": [
@@ -62,7 +62,8 @@
           "thumbnailText": "NO GPS. NO GRID?",
           "thumbnailConcept": "A modern city beneath extreme aurora, satellite and power-line silhouettes splitting the frame."
         }
-      ]
+      ],
+      "episodeId": "20260810-episode"
     },
     {
       "id": "water-on-sun",
@@ -87,7 +88,7 @@
         "evidenceDepth": 8.8,
         "noveltyTiming": 9.1,
         "saturation": 8.6,
-        "advertiserFit": 8.0,
+        "advertiserFit": 8,
         "misleadingRiskSafety": 8.4,
         "overall": 9.1
       },

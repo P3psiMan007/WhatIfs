@@ -66,6 +66,14 @@ function runEpisodeState(args) {
   return JSON.parse(r.stdout);
 }
 
+function runSafeNextEpisodeBootstrap() {
+  if (!fs.existsSync('tools/next-episode-bootstrap.mjs')) return;
+  const r = spawnSync(process.execPath, ['tools/next-episode-bootstrap.mjs'], {encoding:'utf8', env:process.env});
+  if (r.stdout) process.stdout.write(r.stdout);
+  if (r.stderr) process.stderr.write(r.stderr);
+  if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'next episode bootstrap failed').trim());
+}
+
 function main() {
   const statePath = process.env.EPISODE_STATE_PATH || 'episodes/current/episode-state.json';
   const autonomyPath = process.env.AUTONOMY_PATH || 'config/autonomy.json';
@@ -81,6 +89,8 @@ function main() {
       return;
     }
   }
+
+  runSafeNextEpisodeBootstrap();
 
   const state = readJson(statePath);
   const autonomy = readJson(autonomyPath);

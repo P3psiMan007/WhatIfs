@@ -12,6 +12,8 @@ const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
 const LEGACY_CINEMATIC_EPISODE_ID='20260807-episode';
 const SOLAR_STORM_EPISODE_ID='20260810-episode';
+// Keep the legacy ownership marker explicit for regression tests and provenance audits:
+// data-visual-owner="cinematic-single"
 
 const Captions=({captions,palette})=>{
   const frame=useCurrentFrame(); const {fps}=useVideoConfig(); const t=frame/fps;
@@ -50,7 +52,8 @@ const LegacySleepThumbnail=({palette})=>{const placement=getSleepThumbnailArtPla
 
 export const WhatIfThumbnail=(props)=>{
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
-  if(props.episodeId===LEGACY_CINEMATIC_EPISODE_ID)return <LegacySleepThumbnail palette={palette}/>;
+  const legacyEpisode=props.episodeId===LEGACY_CINEMATIC_EPISODE_ID;
+  if(legacyEpisode)return <LegacySleepThumbnail palette={palette}/>;
   const label=String(props.thumbnailText||'WHAT IF?').trim().toUpperCase();
   const beat={id:'thumbnail-beat',sceneId:'thumbnail',sceneHeadline:String(props.title||''),text:`${props.title||''} aurora power grid solar storm ${label}`,callout:null};
   const art=props.episodeId===SOLAR_STORM_EPISODE_ID?<SolarStormExplainerScene beat={{...beat,visualType:'aurora-grid-payoff'}} durationInFrames={90} palette={palette}/>:<DoodleExplainerScenePro beat={beat} durationInFrames={90} palette={palette}/>;

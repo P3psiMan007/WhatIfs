@@ -7,7 +7,7 @@ const readJson=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const writeJson=(p,value)=>fs.writeFileSync(p,JSON.stringify(value,null,2)+'\n');
 const BLOCKER='publish_grade_visual_assets_missing';
 const PROGRAMMATIC_SYSTEMS=new Set(['doodle-explainer-v1','doodle-explainer-v2','solar-storm-explainer-v1']);
-const SOLAR_SEMANTIC_REVISION='solar-storm-semantic-v2';
+const SOLAR_SEMANTIC_REVISION='solar-storm-semantic-v3';
 
 function parseStamp(value){const m=String(value).trim().match(/(\d+):(\d+):(\d+),(\d+)/);if(!m)return NaN;return Number(m[1])*3600+Number(m[2])*60+Number(m[3])+Number(m[4])/1000;}
 function stamp(seconds){let ms=Math.max(0,Math.round(Number(seconds)*1000));const h=Math.floor(ms/3600000);ms%=3600000;const m=Math.floor(ms/60000);ms%=60000;const s=Math.floor(ms/1000);ms%=1000;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;}

@@ -1,0 +1,48 @@
+# Episode 2 — AI + Grid Claim Ledger
+
+Working title: **What If AI Uses More Power Than the Grid Can Handle?**
+Date checked: 2026-08-10
+Rule: important numbers/causal claims must map to a source and safe spoken wording before they enter narration.
+
+| ID | Claim | Source | Confidence | Caveat | Safe spoken wording |
+|---|---|---|---|---|---|
+| C01 | Worldwide data-center electricity consumption is forecast at 565 TWh in 2026, up from 447 TWh in 2025 (26.4%). | Gartner, 2026-06-10 | High | Forecast, not measured final 2026 consumption. Gartner scope is all data centers. | `Gartner expects data centers worldwide to use about 565 terawatt-hours of electricity in 2026 — roughly a quarter more than its 2025 estimate.` |
+| C02 | Gartner forecasts worldwide data-center power demand at 132 GW in 2026, up from 104 GW in 2025. | Gartner, 2026-06-10 | High | Forecast. `Power demand` is GW capacity/load, distinct from TWh energy. | `Gartner's 2026 forecast puts worldwide data-center power demand at about 132 gigawatts.` |
+| C03 | AI-optimized servers are forecast to use 175 TWh in 2026 vs 95 TWh in 2025 and account for about 31% of total data-center electricity consumption in 2026. | Gartner, 2026-06-10 | High | Gartner forecast/model; do not imply every AI query has same energy cost. | `In Gartner's forecast, electricity used by AI-optimized servers jumps from about 95 to 175 terawatt-hours in a year.` |
+| C04 | Five large technology companies spent >$400B in capex in 2025; IEA expected another 75% increase in 2026. | IEA, Key Questions on Energy and AI, 2026-04-16 | High | Capex is broader than electricity infrastructure alone. | `The IEA says capital spending by just five large tech companies topped 400 billion dollars in 2025 and was expected to jump another 75 percent in 2026.` |
+| C05 | U.S. electricity demand grew ~1.7% annually 2020–2025 vs ~0.1% annually 2005–2019; data centers are driving the recent demand growth. | EIA Today in Energy, 2026-03-12 | High | Data centers are a major driver, not the only driver. | `After years of almost-flat U.S. electricity demand, demand began climbing again — and EIA says data centers are a major driver.` |
+| C06 | EIA forecast the strongest four-year stretch of U.S. electricity-demand growth since 2000, with large computing facilities a key driver. | EIA press release, 2026-01-13 | High | Forecast through 2027; avoid implying permanent trend. | `EIA expects the strongest four-year run of U.S. electricity-demand growth since 2000, driven in large part by big computing facilities.` |
+| C07 | IEA expects U.S. data centers to account for nearly half of electricity-demand growth through 2030. | IEA Energy and AI executive summary | High | Base-case projection, not certainty. | `In the IEA's base case, data centers account for nearly half of U.S. electricity-demand growth through 2030.` |
+| C08 | IEA base case projects global data-center electricity consumption to more than double to ~945 TWh by 2030. | IEA Energy and AI executive summary | High | Base-case projection; sensitivity cases are wide. | `The IEA's base case has global data-center electricity use more than doubling to roughly 945 terawatt-hours by 2030.` |
+| C09 | New transmission lines can take roughly 4–8 years in advanced economies; wait times for critical grid components such as transformers/cables have doubled over the past three years. | IEA Energy and AI executive summary | High | Generalized across advanced economies; individual projects vary. | `A new transmission line can take years — the IEA gives a typical range of roughly four to eight years in advanced economies — and some critical equipment is taking longer to procure.` |
+| C10 | If grid expansion lags, the result need not be immediate blackout; projects can face connection delays and trade-offs with affordability/manufacturing/electrification goals. | IEA Energy and AI executive summary; LBNL Speed to Power (2026-06) | High | `Trade-offs` depend on local rules/market structure. | `When the grid cannot connect a giant new load quickly, the first outcome can be a queue, a new power plan, a different site or a cost fight — not an instant nationwide blackout.` |
+| C11 | Large-load/data-center connection bottlenecks are already slowing some grid connections; LBNL identifies >40 potential solutions across forecasting, interconnection, planning/procurement, markets/operations and cost allocation/rates. | Lawrence Berkeley National Laboratory, Speed to Power, 2026-06 | High | U.S.-focused report. | `This is already an engineering and planning problem: Berkeley Lab's 2026 review describes bottlenecks slowing large-load connections and dozens of possible fixes.` |
+| C12 | IEA says options include locating new data centers where power/grid capacity is available and operating servers, onsite generation or storage more flexibly. | IEA Energy and AI executive summary | High | Flexibility depends heavily on workload and economics. | `One escape route is to put new compute where the grid has room — and to make some workloads, batteries or backup assets flexible instead of treating every megawatt as immovable.` |
+| C13 | IEA says about 50% of U.S. data centers under development are in pre-existing large clusters, potentially increasing local bottleneck risk. | IEA Energy and AI executive summary | High | `Potentially`; clustering has benefits too. | `The IEA says about half of U.S. data centers under development are in existing large clusters, which can concentrate local grid pressure.` |
+| C14 | Renewables, natural gas and nuclear are all projected to contribute to meeting data-center electricity growth; no single source supplies the whole increase. | IEA Energy and AI executive summary | High | Global/base-case mix differs by region. | `There is no single generator waiting to solve this. The IEA expects a mix — especially renewables, gas, grids and storage, with nuclear contributing too.` |
+| C15 | Demand flexibility can reduce peak-capacity requirements, defer grid investment, lower renewable-integration costs and improve resilience. | IEA Electricity 2026 flexibility chapter; IEA Scaling Up Demand Flexibility, 2026-06-26 | High | General demand-response claim, not specifically a guarantee for AI data centers. | `Moving or curbing flexible demand at the right hours can reduce the amount of peak capacity a grid needs.` |
+| C16 | A 2026 research demonstration showed a 130 kW GPU cluster could provide rapid/sustained load reductions and geographically shift workloads while preserving priority services. | Williams et al., `Power-Flexible AI Data Centers`, arXiv:2606.25098, 2026-06-23 | Medium | Preprint / one experimental system; not evidence that all AI facilities can do this. | `Researchers have already demonstrated the idea on a much smaller GPU cluster: some compute could be curtailed or shifted while priority work stayed online. That does not mean every AI workload is flexible.` |
+| C17 | AI training loads can be dynamic rather than perfectly flat; DOE is studying power oscillations from large AI data centers. | U.S. DOE Office of Electricity, 2026-05-28 | High | Dynamic behavior varies by facility/workload. | `An AI data center is not always a perfectly flat block of demand; the Department of Energy is studying the grid effects of large, rapidly changing AI training loads.` |
+| C18 | Advanced-economy electricity demand is accelerating again after ~15 years of stagnation; AI/data centers are among several drivers. | IEA Electricity 2026 | High | Not solely caused by AI. | `Across advanced economies, electricity demand is growing again after a long plateau. AI is part of a wider electrification wave, not the whole story.` |
+
+## Claims intentionally excluded or downgraded
+
+- **`AI will cause blackouts`** — excluded. Too deterministic; local reliability depends on planning, generation, transmission, reserves, regulation and timing.
+- **`AI is making everyone's power bill rise`** — excluded. There are real local cost-allocation disputes, but effects vary by market and tariff structure.
+- **`A data center uses as much power as X homes/city`** — excluded unless a specific facility/load and a consistent household-average basis are sourced. Easy to make misleading comparisons.
+- **`AI uses more electricity than country X`** — excluded from narration; comparison is clicky but unnecessary and definition-sensitive.
+- **Water-use claims** — out of scope unless story later requires them; this episode is about electricity/grid capacity.
+- **Any single forecast presented as certainty** — prohibited. Use `forecast`, `base case`, `expects`, or conditional wording.
+
+## Primary URLs
+
+- Gartner 2026-06-10: https://www.gartner.com/en/newsroom/press-releases/2026-06-10-gartner-says-data-center-electricity-demand-to-grow-26-percent-in-2026
+- IEA Key Questions on Energy and AI (2026): https://www.iea.org/reports/key-questions-on-energy-and-ai
+- IEA Energy and AI executive summary: https://www.iea.org/reports/energy-and-ai/executive-summary
+- IEA Electricity 2026: https://www.iea.org/reports/electricity-2026
+- IEA Electricity 2026 flexibility: https://www.iea.org/reports/electricity-2026/flexibility
+- EIA 2026-03-12: https://www.eia.gov/todayinenergy/detail.php?id=67344
+- EIA 2026-01-13: https://www.eia.gov/pressroom/releases/press582.php
+- Berkeley Lab Speed to Power: https://emp.lbl.gov/publications/speed-power-solutions-accelerating
+- DOE Office of Electricity 2026-05-28: https://www.energy.gov/oe/articles/monitoring-oscillations-large-data-centers
+- Williams et al. 2026 preprint: https://arxiv.org/abs/2606.25098

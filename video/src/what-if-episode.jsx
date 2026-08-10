@@ -9,6 +9,7 @@ import {buildContinuousBeatFrames} from './visual-timeline.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const font='Arial, Helvetica, sans-serif';
+const LEGACY_CINEMATIC_EPISODE_ID='20260807-episode';
 
 const Captions=({captions,palette})=>{
   const frame=useCurrentFrame(); const {fps}=useVideoConfig(); const t=frame/fps;
@@ -49,7 +50,7 @@ const EpisodeLayers=({props,palette,beats,useDoodle,fps})=><>
 export const WhatIfEpisode=(props)=>{
   const {fps}=useVideoConfig();
   const palette=props.palette||{background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
-  const visualSystem=props.visualSystem||'cinematic-image-first-v5';
+  const visualSystem=props.visualSystem || (props.episodeId===LEGACY_CINEMATIC_EPISODE_ID ? 'cinematic-image-first-v5' : 'doodle-explainer-v1');
   const useDoodle=visualSystem==='doodle-explainer-v1';
   const beats=withLocalBeatOrdinals(buildContinuousBeatFrames(props.beats||[],fps,props.durationSeconds||0));
   if(useDoodle){

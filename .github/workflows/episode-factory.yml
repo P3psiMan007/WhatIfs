@@ -117,6 +117,10 @@ jobs:
           grep -q "LOCKED_VOICE = \"af_heart\"" tools/edge-tts
           grep -q "LOCKED_SPEED = 0.95" tools/edge-tts
           ! grep -q "am_michael" tools/edge-tts
+      - name: Restore archived Episode 1 manifest for legacy regression tests
+        run: |
+          git fetch --no-tags --depth=1 origin 6a7f52b7af91de1c15318fb57e7ece962aae28e6
+          git show 6a7f52b7af91de1c15318fb57e7ece962aae28e6:episodes/current/image-assets-v1.json > episodes/current/image-assets-v1.json
       - name: Run state, producer, cinematic ownership, timeline, and visual guard tests
         run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs tools/episode1-image-first-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs video/src/cinematic-full-episode.test.mjs video/src/cinematic-benchmark.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Remotion episode smoke test

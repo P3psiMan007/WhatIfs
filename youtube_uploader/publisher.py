@@ -234,7 +234,14 @@ def _ensure_youtube_defaults(record: dict) -> dict:
     return yt
 
 
-def _verify_expected_video(video: dict, video_id: str, title: str, description: str) -> None:
+def _verify_expected_video(
+    video: dict,
+    video_id: str,
+    title: str,
+    description: str,
+    *,
+    require_synthetic_echo: bool = True,
+) -> None:
     if video.get("id") != video_id:
         raise RuntimeError(
             f"YouTube returned a different video ID: expected={video_id} got={video.get('id')!r}"
@@ -246,7 +253,7 @@ def _verify_expected_video(video: dict, video_id: str, title: str, description: 
     )
     if not metadata_ok:
         raise RuntimeError("YouTube metadata verification failed: " + "; ".join(metadata_reasons))
-    if not verify_synthetic_media_disclosure(video):
+    if require_synthetic_echo and not verify_synthetic_media_disclosure(video):
         raise RuntimeError("YouTube synthetic-media disclosure verification failed")
 
 
@@ -310,7 +317,13 @@ def publish_episode(
         _assert_video_not_rejected(existing_id, rejected_video_ids)
         if existing_id and stop_after_private and yt_existing.get("privateVerifiedAt"):
             current = fetch_video(youtube, existing_id)
-            _verify_expected_video(current, existing_id, title, description)
+            _verify_expected_video(
+                current,
+                existing_id,
+                title,
+                description,
+                require_synthetic_echo=False,
+            )
             if not verify_privacy(current, "private"):
                 raise RuntimeError("previously verified staging video is no longer private")
             if not verify_playback(current):
@@ -321,7 +334,13 @@ def publish_episode(
             return existing
         if existing_id and yt_existing.get("publicVerifiedAt"):
             current = fetch_video(youtube, existing_id)
-            _verify_expected_video(current, existing_id, title, description)
+            _verify_expected_video(
+                current,
+                existing_id,
+                title,
+                description,
+                require_synthetic_echo=False,
+            )
             if not verify_privacy(current, "public"):
                 raise RuntimeError("previously published video is no longer public")
             if not verify_playback(current):
@@ -346,6 +365,10 @@ def publish_episode(
         yt["videoId"] = video_id
         yt["url"] = f"https://www.youtube.com/watch?v={video_id}"
         yt["privacyTransitions"] = ["private"]
+        # videos.insert is hard-locked to containsSyntheticMedia=True in uploader.py.
+        # Google documents this as a writable disclosure field; videos.list does
+        # not guarantee an echo, so successful insertion is the durable proof.
+        yt["syntheticMediaDisclosureVerified"] = True
         yt["lastError"] = None
         atomic_write_publication_record(record_path, record)
 
@@ -362,7 +385,13 @@ def publish_episode(
         atomic_write_publication_record(record_path, record)
 
     processed = wait_until_processed(youtube, video_id)
-    _verify_expected_video(processed, video_id, title, description)
+    _verify_expected_video(
+        processed,
+        video_id,
+        title,
+        description,
+        require_synthetic_echo=False,
+    )
     if not verify_thumbnail_state(
         processed,
         thumbnail_set_succeeded=yt.get("thumbnailSetSucceeded") is True,
@@ -413,7 +442,13 @@ def publish_episode(
         raise RuntimeError("private-only mode refused a video that is already public")
 
     final_video = fetch_video(youtube, video_id)
-    _verify_expected_video(final_video, video_id, title, description)
+    _verify_expected_video(
+        final_video,
+        video_id,
+        title,
+        description,
+        require_synthetic_echo=False,
+    )
     if not verify_privacy(final_video, "public"):
         yt["lastError"] = "YouTube final privacy verification did not return public"
         atomic_write_publication_record(record_path, record)

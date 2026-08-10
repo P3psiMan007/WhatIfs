@@ -7,6 +7,7 @@ const readJson=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const writeJson=(p,value)=>fs.writeFileSync(p,JSON.stringify(value,null,2)+'\n');
 const BLOCKER='publish_grade_visual_assets_missing';
 const PROGRAMMATIC_SYSTEMS=new Set(['doodle-explainer-v1','doodle-explainer-v2','solar-storm-explainer-v1']);
+const SOLAR_SEMANTIC_REVISION='solar-storm-semantic-v2';
 
 function parseStamp(value){const m=String(value).trim().match(/(\d+):(\d+):(\d+),(\d+)/);if(!m)return NaN;return Number(m[1])*3600+Number(m[2])*60+Number(m[3])+Number(m[4])/1000;}
 function stamp(seconds){let ms=Math.max(0,Math.round(Number(seconds)*1000));const h=Math.floor(ms/3600000);ms%=3600000;const m=Math.floor(ms/60000);ms%=60000;const s=Math.floor(ms/1000);ms%=1000;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;}
@@ -15,7 +16,7 @@ export function clampSrtToDuration(text,durationSeconds){const limit=Number(dura
 
 function isProofBoundProgrammaticInput(input){
   if(input?.visualGrade!=='publish-grade'||!PROGRAMMATIC_SYSTEMS.has(input?.visualSystem))return false;
-  if(input.visualSystem==='solar-storm-explainer-v1'&&input?.semanticVisualRevision!=='solar-storm-semantic-v1')return false;
+  if(input.visualSystem==='solar-storm-explainer-v1'&&input?.semanticVisualRevision!==SOLAR_SEMANTIC_REVISION)return false;
   const proof=input?.rendererProof;
   if(!Number.isInteger(Number(proof?.workflowRunId))||Number(proof.workflowRunId)<=0)return false;
   if(!/^sha256:[0-9a-f]{64}$/i.test(String(proof?.artifactDigest||'')))return false;

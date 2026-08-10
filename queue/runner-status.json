@@ -1,9 +1,9 @@
 {
-  "revision": 31,
-  "updatedAt": "2026-08-10T18:12:00.000Z",
+  "revision": 32,
+  "updatedAt": "2026-08-10T19:12:00.000Z",
   "kind": "RUN_NOW_REQUESTED",
   "reason": null,
-  "details": "Fresh Episode 2 research, script, and production input are present for episode 20260810-episode; retrigger factory from SELECTED after verified rollover isolation repair.",
+  "details": "Run Episode 2 now from clean isolated current slot. Solar-storm research, script, and production input are current; stale Episode 1 current-slot artifacts have been removed and archived.",
   "episodeId": "20260810-episode",
   "state": "SELECTED",
   "stateRevision": 2,

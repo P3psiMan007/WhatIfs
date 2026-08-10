@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { planNextAction, sameStatus, resolveProducerCommand, extractProducerFailureReason, extractProducerFailureDetails } from './episode-runner.mjs';
+import {planNextEpisodeBootstrap,blankEpisodeState} from './next-episode-bootstrap.mjs';
 
 const controls = { pauseAllProduction: false, pausePublishing: false };
 const autonomy = { publishReadyStates: ['QA_PASSED','AUTO_PUBLISH_READY'] };
@@ -68,4 +69,21 @@ test('preserves useful producer exception details for durable diagnosis', () => 
   assert.match(details, /ffprobe duration failed/);
   assert.match(details, /probeDuration/);
   assert.ok(details.length <= 1600);
+});
+
+test('next episode rollover requires exact verified private publication and a queued topic',()=>{
+  const state={state:'QA_PASSED',episode_id:'ep1'};
+  const publication={episodeId:'ep1',youtube:{videoId:'abc',privateVerifiedAt:'2026-08-10T07:38:35Z',processingVerified:true,playbackVerified:true,metadataVerified:true,thumbnailSetSucceeded:true}};
+  const topics=[{id:'solar',enabled:true,consumedAt:null}];
+  assert.equal(planNextEpisodeBootstrap({state,publication,topics}).kind,'ROLLOVER');
+  assert.equal(planNextEpisodeBootstrap({state,publication:{...publication,youtube:{...publication.youtube,playbackVerified:false}},topics}).reason,'private_publication_not_verified');
+});
+
+test('fresh rollover state cannot inherit Episode 1 render or QA',()=>{
+  const fresh=blankEpisodeState();
+  assert.equal(fresh.state,'IDLE');
+  assert.equal(fresh.episode_id,null);
+  assert.equal(fresh.production.render_asset,null);
+  assert.equal(fresh.qa.status,null);
+  assert.deepEqual(fresh.production.voice_candidates,['af_heart']);
 });

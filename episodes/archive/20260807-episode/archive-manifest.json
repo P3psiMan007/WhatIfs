@@ -1,0 +1,16 @@
+{
+  "episodeId": "20260807-episode",
+  "title": "What If Humans Never Needed Sleep?",
+  "archivedFromGitHistory": true,
+  "sourceCommitBeforeEpisode2Repair": "6a7f52b7af91de1c15318fb57e7ece962aae28e6",
+  "finalRenderRunId": "31342488193",
+  "privateYouTube": {
+    "videoId": "a38JmdjDOo0",
+    "url": "https://www.youtube.com/watch?v=a38JmdjDOo0",
+    "privacy": "private",
+    "verifiedAt": "2026-08-10T07:38:35.657254Z"
+  },
+  "artifactDigest": "sha256:1f76ce4022ba05874f369a8a091b30de43c402151d31bbc7e8c4653db3425260",
+  "narrationSha256": "65565aa6b0dc94d04d1743cf8791243c71940ce8bd0e686e6ce1e6324ce9a9ab",
+  "note": "Episode 1 canonical script, research, production input, QA review, publication record, render manifest and image-asset manifest remain recoverable from the source commit above. This archive marker prevents Episode 2 cleanup from losing provenance while keeping stale Episode 1 artifacts out of episodes/current."
+}

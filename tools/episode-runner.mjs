@@ -24,6 +24,13 @@ export function extractProducerFailureDetails(stderr = '') {
   return useful.slice(0, 1600);
 }
 
+export function planProductionInputRepair({ state, input }) {
+  if (!input) return { kind: 'NOOP', reason: 'missing_input' };
+  if (!state?.episode_id) return { kind: 'NOOP', reason: 'missing_episode_id' };
+  if (input.episodeId === state.episode_id) return { kind: 'NOOP', reason: 'input_matches_episode' };
+  return { kind: 'DELETE_STALE_INPUT', expectedEpisodeId: state.episode_id, staleEpisodeId: input.episodeId || null };
+}
+
 export function planNextAction({ state, controls, autonomy, topics, producerConfigured }) {
   if (controls?.pauseAllProduction === true) return { kind: 'NOOP', reason: 'pauseAllProduction' };
 
@@ -74,6 +81,23 @@ function runSafeNextEpisodeBootstrap() {
   if (r.status !== 0) throw new Error((r.stderr || r.stdout || 'next episode bootstrap failed').trim());
 }
 
+function repairStaleProductionInput(state) {
+  const inputPath = process.env.PRODUCTION_INPUT_PATH || 'episodes/current/production-input.json';
+  if (!fs.existsSync(inputPath)) return;
+  let input;
+  try {
+    input = readJson(inputPath);
+  } catch {
+    fs.rmSync(inputPath, {force:true});
+    console.log(`Removed unreadable ${inputPath}; producer will derive it from current script/research.`);
+    return;
+  }
+  const repair = planProductionInputRepair({state, input});
+  if (repair.kind !== 'DELETE_STALE_INPUT') return;
+  fs.rmSync(inputPath, {force:true});
+  console.log(`Removed stale production input for ${repair.staleEpisodeId || 'unknown'}; active episode is ${repair.expectedEpisodeId}.`);
+}
+
 function main() {
   const statePath = process.env.EPISODE_STATE_PATH || 'episodes/current/episode-state.json';
   const autonomyPath = process.env.AUTONOMY_PATH || 'config/autonomy.json';
@@ -93,6 +117,7 @@ function main() {
   runSafeNextEpisodeBootstrap();
 
   const state = readJson(statePath);
+  repairStaleProductionInput(state);
   const autonomy = readJson(autonomyPath);
   const controls = readJson(controlsPath);
   const queue = readJson(topicsPath);

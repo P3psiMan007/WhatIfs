@@ -1,11 +1,12 @@
 {
-  "revision": 29,
-  "updatedAt": "2026-08-10T13:44:45.020Z",
-  "kind": "BLOCKED",
-  "reason": "invalid_production_input",
-  "details": "PRODUCER_BLOCKED invalid_production_input: episode mismatch: input 20260807-episode state 20260810-episode",
+  "revision": 30,
+  "updatedAt": "2026-08-10T17:14:00.000Z",
+  "kind": "RESUME_REQUESTED",
+  "reason": null,
+  "details": "Current production input verified for episode 20260810-episode after rollover isolation repair; factory resumption requested from SELECTED state.",
   "episodeId": "20260810-episode",
   "state": "SELECTED",
   "stateRevision": 2,
-  "exitCode": 2
+  "topicId": "super-solar-storm",
+  "exitCode": null
 }

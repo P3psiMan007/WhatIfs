@@ -14,6 +14,7 @@ on:
       - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/render-ownership.test.mjs"
+      - "tools/episode2-semantic-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.test.mjs"
       - "tools/episode1-thumbnail-rebuild.mjs"
@@ -55,6 +56,7 @@ on:
       - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/render-ownership.test.mjs"
+      - "tools/episode2-semantic-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.mjs"
       - "tools/episode1-visual-rebuild.test.mjs"
       - "tools/episode1-thumbnail-rebuild.mjs"
@@ -123,6 +125,8 @@ jobs:
           git show 6a7f52b7af91de1c15318fb57e7ece962aae28e6:episodes/current/image-assets-v1.json > episodes/current/image-assets-v1.json
       - name: Run state, producer, cinematic ownership, timeline, and visual guard tests
         run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs tools/episode1-image-first-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs video/src/cinematic-full-episode.test.mjs video/src/cinematic-benchmark.test.mjs tools/publish-grade-visual-guard.test.mjs
+      - name: Validate semantic rerender planner
+        run: node --check tools/episode2-semantic-visual-rebuild.mjs
       - name: Remotion episode smoke test
         run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/whatifs-smoke.png --frame=60
       - name: Remotion thumbnail smoke test
@@ -182,6 +186,8 @@ jobs:
         run: node tools/episode1-illustrated-v3-rebuild.mjs
       - name: Activate one-shot character-payoff v4 Episode 1 repair
         run: node tools/episode1-character-payoff-v4-rebuild.mjs
+      - name: Activate semantic Episode 2 visual revision when applicable
+        run: node tools/episode2-semantic-visual-rebuild.mjs
       - name: Advance factory and run built-in producer
         shell: bash
         run: |

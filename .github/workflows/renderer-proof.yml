@@ -44,3 +44,70 @@ jobs:
           path: dist/renderer-proof/*
           if-no-files-found: error
           retention-days: 7
+
+  episode2-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deterministic production dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng
+          npm ci --no-audit --no-fund
+          python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
+          chmod +x tools/edge-tts
+          echo "$GITHUB_WORKSPACE/tools" >> "$GITHUB_PATH"
+      - name: Run focused production regression tests
+        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/publish-grade-visual-guard.test.mjs
+      - name: Produce current episode through rendered state
+        shell: bash
+        run: |
+          node tools/narration-provider-repair.mjs
+          for pass in 1 2 3 4 5 6 7 8; do
+            echo "=== production pass $pass ==="
+            set +e
+            node tools/episode-runner.mjs
+            rc=$?
+            set -e
+            if [ "$rc" -eq 2 ]; then
+              cat queue/runner-status.json || true
+              exit 2
+            fi
+            if [ "$rc" -ne 0 ]; then exit "$rc"; fi
+            state=$(node -p "require('./episodes/current/episode-state.json').state")
+            echo "STATE=$state"
+            if [ "$state" = "RENDERED" ] || [ "$state" = "QA_PASSED" ] || [ "$state" = "AUTO_PUBLISH_READY" ] || [ "$state" = "PUBLISHED" ]; then break; fi
+          done
+          node -e "const s=require('./episodes/current/episode-state.json'); if(!['RENDERED','QA_PASSED','AUTO_PUBLISH_READY','PUBLISHED'].includes(s.state)){console.error('Did not reach rendered state:',s.state);process.exit(1)}"
+          test -s dist/episode.mp4
+          test -s dist/thumbnail.png
+          test -s public/narration.mp3
+      - name: Enforce publish-grade visual readiness
+        run: node tools/publish-grade-visual-guard.mjs
+      - name: Upload Episode 2 production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode2-production-evidence
+          path: |
+            dist/episode.mp4
+            dist/thumbnail.png
+            dist/contact-sheet.jpg
+            dist/first-30s-contact-sheet.jpg
+            public/narration.mp3
+            public/narration.srt
+            public/voice-parts/*.srt
+            public/production.json
+            episodes/current/episode-state.json
+            episodes/current/production-input.json
+            episodes/current/render-manifest.json
+            queue/runner-status.json
+          if-no-files-found: warn
+          retention-days: 14

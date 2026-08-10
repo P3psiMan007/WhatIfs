@@ -1,10 +1,10 @@
 {
-  "queue_version": "1.0",
-  "revision": 1,
+  "queue_version": "1.1",
+  "revision": 2,
   "research_snapshot": {
-    "at": "2026-08-08T00:03:00Z",
-    "method": "current web + YouTube + Reddit/community demand, then editorial scoring",
-    "notes": "Only candidates scoring >=8.8 overall were enqueued. Saturated or weak-filler ideas were rejected."
+    "at": "2026-08-10T10:10:00Z",
+    "method": "fresh web/news + primary-source research + Semrush US demand snapshot + indexed YouTube/competitor scan + editorial scoring",
+    "notes": "AI-grid candidate won the 2026-08-10 pre-production gate. Solar storm remains the highest-priority evergreen backup. Full evidence is in research/topic-intelligence-2026-08-10.md."
   },
   "topics": [
     {
@@ -17,50 +17,96 @@
       "episodeId": "20260807-episode"
     },
     {
-      "id": "super-solar-storm",
-      "topic": "What if the strongest solar storm we can realistically get hit Earth?",
-      "hookPromise": "Start with beautiful worldwide auroras, then escalate through satellites, navigation, radio, power-grid stress, and the surprising parts modern infrastructure can actually survive.",
-      "source": "growth-research-2026-08-08",
+      "id": "ai-grid-capacity",
+      "topic": "What if AI electricity demand grows faster than the grid can handle?",
+      "hookPromise": "Follow one hypothetical giant AI load from server rack to substation to regional grid, then show what really happens when compute scales faster than physical power infrastructure — delays, new supply, grid buildout, cost fights and flexible compute rather than an automatic blackout apocalypse.",
+      "source": "topic-intelligence-2026-08-10",
       "enabled": true,
       "consumedAt": null,
       "evidenceSignals": [
-        "NASA Goddard reported on 2026-07-15 that a NASA-led Nature paper suggests the assumed ceiling on Earth's response to solar storms may be an illusion.",
-        "A June 2026 astronomy community question asked how a Carrington-scale event would look and how damaging a visible event could be.",
-        "An April 2026 Reddit discussion explicitly asked why extreme solar storms can threaten technology for months or years, showing active lay curiosity around the exact consequence chain."
+        "Semrush US snapshot: 'AI data centers' about 12,100 monthly searches with a strongly rising recent trend.",
+        "Gartner 2026-06-10 forecasts worldwide data-center electricity consumption at 565 TWh in 2026, up 26% YoY, with AI-optimized servers at 31% of data-center electricity use.",
+        "IEA 2026 research says data-center investment and electricity use are surging while grid/supply-chain bottlenecks are becoming a central constraint.",
+        "EIA 2026 says data centers are a major driver of renewed U.S. electricity-demand growth after years of near-flat demand.",
+        "A current 2026 news cycle around power constraints, cost allocation and local opposition gives the topic immediate relevance without requiring a news-only script."
       ],
       "score": {
-        "universalCuriosity": 9.4,
-        "titleOpenLoop": 9.3,
-        "thumbnailMystery": 9.5,
-        "paradox": 8.6,
-        "first30SecondHook": 9.5,
-        "escalation": 9.6,
-        "visualPotential": 9.7,
-        "evidenceDepth": 9.7,
-        "noveltyTiming": 9.5,
-        "saturation": 7.8,
-        "advertiserFit": 8.5,
-        "misleadingRiskSafety": 9.0,
-        "overall": 9.2
+        "universalCuriosity": 8.8,
+        "momentumEvergreen": 9.8,
+        "freshAngleGap": 9.1,
+        "titleThumbnail": 9.0,
+        "storyDepth": 9.3,
+        "visualPotential": 9.4,
+        "evidenceDepth": 9.8,
+        "saturationTiming": 8.9,
+        "overall": 9.18
       },
       "packages": [
         {
           "id": "A",
-          "title": "What If the Biggest Solar Storm Hit Earth?",
-          "thumbnailText": "THE GRID GOES DARK?",
-          "thumbnailConcept": "Earth under an enormous red-orange solar eruption, one hemisphere lit by aurora while city lights flicker out."
+          "title": "What If AI Uses More Power Than the Grid Can Handle?",
+          "thumbnailText": "NOT ENOUGH POWER",
+          "thumbnailConcept": "A glowing AI data center on one side and a dim city on the other, connected through one visibly overloaded amber substation/cable."
         },
         {
           "id": "B",
-          "title": "A Super Solar Storm Could Hit Earth — What Happens Next?",
-          "thumbnailText": "18 HOURS WARNING",
-          "thumbnailConcept": "A CME racing from the Sun toward Earth with a simple countdown arc between them."
+          "title": "What Happens If AI Runs Out of Electricity?",
+          "thumbnailText": "POWER LIMIT",
+          "thumbnailConcept": "A server rack at full load beside a grid-capacity meter pinned at the limit."
         },
         {
           "id": "C",
-          "title": "What Would a Carrington Event Do to the Modern World?",
-          "thumbnailText": "NO GPS. NO GRID?",
-          "thumbnailConcept": "A modern city beneath extreme aurora, satellite and power-line silhouettes splitting the frame."
+          "title": "AI Is Building a New Power Problem",
+          "thumbnailText": "WHO GETS THE POWER?",
+          "thumbnailConcept": "A giant server rack plugged into a city-scale substation while new power lines lag behind."
+        }
+      ],
+      "researchBrief": "research/topic-intelligence-2026-08-10.md",
+      "benchmarkBrief": "research/episode2-ai-grid-benchmark.md",
+      "claimLedger": "research/episode2-ai-grid-claim-ledger.md",
+      "scriptDraft": "research/episode2-ai-grid-script-v1.md"
+    },
+    {
+      "id": "super-solar-storm",
+      "topic": "What if the next extreme solar storm is stronger than we planned for?",
+      "hookPromise": "Use NASA's July 2026 result as the fresh angle, then escalate through satellites, navigation, radio, power-grid stress and what modern infrastructure can actually survive without generic apocalypse claims.",
+      "source": "growth-research-2026-08-08+refresh-2026-08-10",
+      "enabled": true,
+      "consumedAt": null,
+      "evidenceSignals": [
+        "NASA Goddard reported on 2026-07-15 that a NASA-led Nature paper suggests the assumed ceiling on Earth's response to solar storms may be an illusion.",
+        "Semrush US snapshot: solar flare about 40,500 monthly searches, solar storm about 27,100, Carrington event about 22,200.",
+        "NOAA documents direct impacts on power grids, GPS/GNSS, satellites, aviation and communications."
+      ],
+      "score": {
+        "universalCuriosity": 9.5,
+        "momentumEvergreen": 8.6,
+        "freshAngleGap": 8.9,
+        "titleThumbnail": 9.5,
+        "storyDepth": 9.6,
+        "visualPotential": 9.8,
+        "evidenceDepth": 9.7,
+        "saturationTiming": 7.7,
+        "overall": 9.10
+      },
+      "packages": [
+        {
+          "id": "A",
+          "title": "What If the Next Solar Storm Is Stronger Than We Planned For?",
+          "thumbnailText": "NO SAFETY CEILING?",
+          "thumbnailConcept": "Earth under an enormous solar eruption with aurora and modern infrastructure beneath it."
+        },
+        {
+          "id": "B",
+          "title": "NASA Just Changed the Worst-Case Solar Storm",
+          "thumbnailText": "EARTH'S LIMIT?",
+          "thumbnailConcept": "A CME compressing Earth's magnetic shield with the old assumed ceiling breaking apart."
+        },
+        {
+          "id": "C",
+          "title": "What Would an Extreme Solar Storm Actually Break?",
+          "thumbnailText": "GPS • GRID • SATELLITES",
+          "thumbnailConcept": "A modern city beneath extreme aurora with satellite, GPS and grid icons failing selectively."
         }
       ]
     },
@@ -87,7 +133,6 @@
         "evidenceDepth": 8.8,
         "noveltyTiming": 9.1,
         "saturation": 8.6,
-        "advertiserFit": 8.0,
         "misleadingRiskSafety": 8.4,
         "overall": 9.1
       },

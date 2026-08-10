@@ -17,3 +17,7 @@ test('routes representative solar storm beats to distinct visual classes',()=>{
   ];
   for(const [text,expected] of cases) assert.equal(classifySolarStormVisual({text}),expected,text);
 });
+
+test('unknown solar-storm narration falls back to the Sun-Earth causal frame instead of a generic card',()=>{
+  assert.equal(classifySolarStormVisual({text:'A consequence we have not classified yet'}),'sun-earth');
+});

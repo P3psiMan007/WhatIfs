@@ -3,7 +3,7 @@ import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoCon
 import {Audio} from '@remotion/media';
 import {SleepThumbnailArt} from './sleep-scenes.jsx';
 import {CinematicEpisodeScene} from './cinematic-full-episode.jsx';
-import {DoodleExplainerScenePlus} from './doodle-explainer-plus.jsx';
+import {DoodleExplainerScenePro} from './doodle-explainer-pro.jsx';
 import {getSleepThumbnailArtPlacement} from './thumbnail-layout.mjs';
 import {buildContinuousBeatFrames} from './visual-timeline.mjs';
 
@@ -37,7 +37,7 @@ const EpisodeLayers=({props,palette,beats,useDoodle,fps})=><>
     const durationInFrames=beat.durationInFrames;
     return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.6*fps))}>
       {useDoodle
-        ? <DoodleExplainerScenePlus beat={beat} durationInFrames={durationInFrames} palette={palette}/>
+        ? <DoodleExplainerScenePro beat={beat} durationInFrames={durationInFrames} palette={palette}/>
         : <CinematicEpisodeScene beat={beat} beatOrdinal={beat.localBeatOrdinal} durationInFrames={durationInFrames} palette={palette}/>
       }
     </Sequence>;

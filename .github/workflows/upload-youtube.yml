@@ -148,6 +148,57 @@ jobs:
             echo "path=incoming-render/dist/thumbnail.png" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Repair synthetic-media disclosure on resumed private upload
+        if: steps.gate.outputs.eligible == 'true'
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from youtube_uploader.uploader import build_public_promotion_service
+          from youtube_uploader.verifier import fetch_video, verify_privacy, verify_synthetic_media_disclosure
+
+          record_path = Path("episodes/current/publication.json")
+          if not record_path.exists():
+              print("No prior publication record; insert path will carry disclosure.")
+              raise SystemExit(0)
+          record = json.loads(record_path.read_text(encoding="utf-8"))
+          video_id = ((record.get("youtube") or {}).get("videoId") or "").strip()
+          if not video_id:
+              print("No resumed YouTube ID; insert path will carry disclosure.")
+              raise SystemExit(0)
+
+          youtube = build_public_promotion_service()
+          current = fetch_video(youtube, video_id)
+          if not verify_privacy(current, "private"):
+              raise SystemExit(f"Refusing disclosure repair because resumed video is not private: {video_id}")
+          if verify_synthetic_media_disclosure(current):
+              print("Synthetic-media disclosure already verified.")
+              raise SystemExit(0)
+
+          current_status = current.get("status") or {}
+          status = {
+              "privacyStatus": "private",
+              "containsSyntheticMedia": True,
+          }
+          for key in ("license", "embeddable", "publicStatsViewable", "selfDeclaredMadeForKids"):
+              if key in current_status:
+                  status[key] = current_status[key]
+          youtube.videos().update(
+              part="status",
+              body={"id": video_id, "status": status},
+          ).execute()
+          repaired = fetch_video(youtube, video_id)
+          if not verify_privacy(repaired, "private"):
+              raise SystemExit("Disclosure repair changed privacy unexpectedly")
+          if not verify_synthetic_media_disclosure(repaired):
+              raise SystemExit("YouTube still did not confirm synthetic-media disclosure")
+          print(f"Synthetic-media disclosure verified on private video {video_id}")
+          PY
+
       - name: Upload exact approved render private and verify staging state
         if: steps.gate.outputs.eligible == 'true'
         env:

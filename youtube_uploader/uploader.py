@@ -78,6 +78,7 @@ def upload_private(
         "status": {
             "privacyStatus": PRIVACY_STATUS,
             "selfDeclaredMadeForKids": False,
+            "containsSyntheticMedia": True,
         },
     }
 

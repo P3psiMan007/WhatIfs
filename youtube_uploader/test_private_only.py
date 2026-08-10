@@ -23,7 +23,7 @@ class PrivateOnlyPublisherTests(TestCase):
         image_manifest_sha256 = hashlib.sha256(b'image-manifest').hexdigest()
         private_video = {
             'id': 'new-private-id',
-            'status': {'privacyStatus': 'private', 'uploadStatus': 'processed', 'embeddable': True},
+            'status': {'privacyStatus': 'private', 'uploadStatus': 'processed', 'embeddable': True, 'containsSyntheticMedia': True},
             'processingDetails': {'processingStatus': 'succeeded'},
             'snippet': {
                 'title': 'What If Humans Never Needed Sleep?',
@@ -90,6 +90,7 @@ class PrivateOnlyPublisherTests(TestCase):
         self.assertTrue(yt['privateVerifiedAt'])
         self.assertIsNone(yt['publicVerifiedAt'])
         self.assertEqual(yt['privacyTransitions'], ['private'])
+        self.assertTrue(yt['syntheticMediaDisclosureVerified'])
         promote_public.assert_not_called()
         fetch_video.assert_called_once()
         self.assertEqual(daily['publishedToday'], 0)

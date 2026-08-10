@@ -27,6 +27,7 @@ from .verifier import (
     verify_metadata,
     verify_playback,
     verify_privacy,
+    verify_synthetic_media_disclosure,
     verify_thumbnail_state,
     wait_until_processed,
 )
@@ -195,6 +196,7 @@ def _new_record(render_manifest: dict, identity: dict) -> dict:
             "thumbnailSetSucceeded": False,
             "processingVerified": False,
             "metadataVerified": False,
+            "syntheticMediaDisclosureVerified": False,
             "playbackVerified": False,
             "privateVerifiedAt": None,
             "publicVerifiedAt": None,
@@ -212,6 +214,7 @@ def _ensure_youtube_defaults(record: dict) -> dict:
         "thumbnailSetSucceeded": False,
         "processingVerified": False,
         "metadataVerified": False,
+        "syntheticMediaDisclosureVerified": False,
         "playbackVerified": False,
         "privateVerifiedAt": None,
         "publicVerifiedAt": None,
@@ -235,6 +238,8 @@ def _verify_expected_video(video: dict, video_id: str, title: str, description: 
     )
     if not metadata_ok:
         raise RuntimeError("YouTube metadata verification failed: " + "; ".join(metadata_reasons))
+    if not verify_synthetic_media_disclosure(video):
+        raise RuntimeError("YouTube synthetic-media disclosure verification failed")
 
 
 def publish_episode(
@@ -302,6 +307,7 @@ def publish_episode(
                 raise RuntimeError("previously verified staging video is no longer private")
             if not verify_playback(current):
                 raise RuntimeError("previously verified staging video no longer has verified playback eligibility")
+            yt_existing["syntheticMediaDisclosureVerified"] = True
             yt_existing["playbackVerified"] = True
             atomic_write_publication_record(record_path, existing)
             return existing
@@ -312,6 +318,7 @@ def publish_episode(
                 raise RuntimeError("previously published video is no longer public")
             if not verify_playback(current):
                 raise RuntimeError("previously published video no longer has verified playback eligibility")
+            yt_existing["syntheticMediaDisclosureVerified"] = True
             yt_existing["playbackVerified"] = True
             atomic_write_publication_record(record_path, existing)
             return existing
@@ -364,6 +371,7 @@ def publish_episode(
 
     yt["processingVerified"] = True
     yt["metadataVerified"] = True
+    yt["syntheticMediaDisclosureVerified"] = True
     yt["playbackVerified"] = True
 
     current_privacy = (processed.get("status") or {}).get("privacyStatus")

@@ -6,6 +6,7 @@ from youtube_uploader.verifier import (
     promote_public,
     verify_playback,
     verify_metadata,
+    verify_synthetic_media_disclosure,
     verify_thumbnail_state,
     wait_until_processed,
 )
@@ -90,6 +91,11 @@ class VerifierTests(TestCase):
             verify_thumbnail_state({"snippet": {"thumbnails": {}}}, thumbnail_set_succeeded=True)
         )
 
+    def test_verify_synthetic_media_disclosure_requires_true_api_status(self):
+        self.assertTrue(verify_synthetic_media_disclosure({"status": {"containsSyntheticMedia": True}}))
+        self.assertFalse(verify_synthetic_media_disclosure({"status": {"containsSyntheticMedia": False}}))
+        self.assertFalse(verify_synthetic_media_disclosure({"status": {}}))
+
     def test_verify_playback_requires_processed_embeddable_video(self):
         playable = {
             "status": {"uploadStatus": "processed", "embeddable": True},
@@ -113,6 +119,7 @@ class VerifierTests(TestCase):
                 "uploadStatus": "processed",
                 "privacyStatus": "private",
                 "selfDeclaredMadeForKids": False,
+                "containsSyntheticMedia": True,
                 "embeddable": True,
                 "license": "youtube",
                 "publicStatsViewable": True,
@@ -132,3 +139,4 @@ class VerifierTests(TestCase):
         self.assertEqual(kwargs["body"]["status"]["privacyStatus"], "public")
         self.assertNotIn("uploadStatus", kwargs["body"]["status"])
         self.assertEqual(kwargs["body"]["status"]["license"], "youtube")
+        self.assertTrue(kwargs["body"]["status"]["containsSyntheticMedia"])

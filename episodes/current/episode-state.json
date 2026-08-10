@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "RENDERED",
-  "state_revision": 97,
-  "updated_at": "2026-08-10T00:21:03.392Z",
-  "updated_by": "publish-grade-visual-guard",
+  "state": "QA_PASSED",
+  "state_revision": 99,
+  "updated_at": "2026-08-10T00:56:50.768Z",
+  "updated_by": "critic-qa-independent",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -59,14 +59,19 @@
     "image_asset_manifest": "episodes/current/image-assets-v1.json"
   },
   "qa": {
-    "status": "REWORK_REQUIRED",
-    "scores": {},
-    "top_issues": [
-      "The superseded render failed visual storytelling and repetition review."
-    ],
-    "required_fixes": [
-      "Render and independently review the exact first-party image-first cinematic artifact."
-    ],
+    "status": "QA_PASSED",
+    "scores": {
+      "factual": 9.4,
+      "package": 9.4,
+      "retention": 9.1,
+      "narration": 9.2,
+      "visual": 9.3,
+      "technical": 9.6,
+      "policy": 9.3,
+      "copyright": 9.2
+    },
+    "top_issues": [],
+    "required_fixes": [],
     "user_action_required": null
   },
   "analytics": {
@@ -847,6 +852,22 @@
       "from": "RENDERED",
       "to": "RENDERED",
       "reason": "patch"
+    },
+    {
+      "revision": 98,
+      "at": "2026-08-10T00:56:50.722Z",
+      "actor": "critic-qa-independent",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 99,
+      "at": "2026-08-10T00:56:50.768Z",
+      "actor": "critic-qa-independent",
+      "from": "RENDERED",
+      "to": "QA_PASSED",
+      "reason": "Exact factory artifact 31342488193 passed independent visual, narration, technical, factual, package, policy, copyright, and retention QA"
     }
   ]
 }

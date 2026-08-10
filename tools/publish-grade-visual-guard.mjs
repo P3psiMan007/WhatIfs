@@ -37,18 +37,18 @@ export function clampSrtToDuration(text,durationSeconds) {
   return kept.map((cue,index)=>`${index+1}\n${stamp(cue.start)} --> ${stamp(cue.end)}\n${cue.body}`).join('\n\n')+(kept.length?'\n':'');
 }
 
-function clampRenderedCaptions() {
-  const videoPath='dist/episode.mp4'; const srtPath='public/narration.srt';
-  if(!fs.existsSync(videoPath)||!fs.existsSync(srtPath))return;
-  const probe=spawnSync('ffprobe',['-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',videoPath],{encoding:'utf8'});
-  if(probe.status!==0)throw new Error('caption clamp could not probe rendered episode duration');
-  const duration=Number(String(probe.stdout||'').trim());
-  const before=fs.readFileSync(srtPath,'utf8'); const after=clampSrtToDuration(before,duration);
-  fs.writeFileSync(srtPath,after);
-  console.log(`CAPTION_CLAMP_OK duration=${duration.toFixed(3)}`);
+function isProofBoundDoodleInput(input) {
+  if(input?.visualGrade!=='publish-grade')return false;
+  if(!['doodle-explainer-v1','doodle-explainer-v2'].includes(input?.visualSystem))return false;
+  const proof=input?.rendererProof;
+  if(!Number.isInteger(Number(proof?.workflowRunId))||Number(proof.workflowRunId)<=0)return false;
+  if(!/^sha256:[0-9a-f]{64}$/i.test(String(proof?.artifactDigest||'')))return false;
+  const scenes=Array.isArray(input?.scenes)?input.scenes:[];
+  if(scenes.length<5)return false;
+  return scenes.every((scene)=>Boolean(scene?.id&&scene?.headline&&scene?.narration));
 }
 
-export function isPublishGradeVisualInput(input) {
+function isLegacyImageFirstInput(input) {
   try {
     if (input?.visualGrade !== 'publish-grade' || input?.imageFirstAssetRevision !== EPISODE1_IMAGE_ASSET_REVISION || input?.imageAssetManifest !== 'episodes/current/image-assets-v1.json') return false;
     assertEpisode1ImageAssetCoverage((input.scenes || []).map((scene) => scene?.id));
@@ -61,21 +61,45 @@ export function isPublishGradeVisualInput(input) {
   }
 }
 
+export function isPublishGradeVisualInput(input) {
+  return isProofBoundDoodleInput(input)||isLegacyImageFirstInput(input);
+}
+
+function verifiedManifestPatch(input){
+  if(isProofBoundDoodleInput(input))return {
+    visualGrade:'publish-grade',
+    visualSystem:input.visualSystem,
+    rendererProofRunId:Number(input.rendererProof.workflowRunId),
+    rendererProofDigest:input.rendererProof.artifactDigest,
+    qaInputsReady:true,
+    technicalPreview:false,
+    publishBlocker:null,
+  };
+  return {visualGrade:'publish-grade', imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION, qaInputsReady:true, technicalPreview:false, publishBlocker:null};
+}
+
 export function visualGuardDecision({state, input, manifest}) {
   if (state?.state !== 'RENDERED') return {kind:'NOOP', reason:'not_rendered'};
   const publishGrade = isPublishGradeVisualInput(input);
   if (publishGrade) {
+    const expected=verifiedManifestPatch(input);
+    const proofStale=isProofBoundDoodleInput(input)&&(
+      manifest?.visualSystem!==input.visualSystem
+      || manifest?.rendererProofRunId!==Number(input.rendererProof.workflowRunId)
+      || manifest?.rendererProofDigest!==input.rendererProof.artifactDigest
+    );
     const staleBlocker = state?.qa?.user_action_required === BLOCKER
       || manifest?.qaInputsReady === false
       || manifest?.technicalPreview === true
       || manifest?.publishBlocker === BLOCKER
-      || manifest?.visualGrade !== 'publish-grade';
+      || manifest?.visualGrade !== 'publish-grade'
+      || proofStale;
     if (staleBlocker) {
       return {
         kind:'CLEAR',
         reason:'publish_grade_visuals_verified',
         patch:{production:{qa_inputs_ready:true}, qa:{user_action_required:null}},
-        manifestPatch:{visualGrade:'publish-grade', imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION, qaInputsReady:true, technicalPreview:false, publishBlocker:null},
+        manifestPatch:expected,
       };
     }
     return {kind:'READY', reason:'publish_grade_visuals_verified'};
@@ -112,6 +136,17 @@ function main() {
   runState(['patch', String(state.state_revision), state.episode_id, 'publish-grade-visual-guard', JSON.stringify(decision.patch)]);
   if (manifest) writeJson(manifestPath, {...manifest, ...decision.manifestPatch});
   if (decision.kind === 'BLOCK') console.error(`VISUAL_GUARD_BLOCKED ${decision.reason}`); else console.log(`VISUAL_GUARD_CLEAR ${decision.reason}`);
+}
+
+function clampRenderedCaptions() {
+  const videoPath='dist/episode.mp4'; const srtPath='public/narration.srt';
+  if(!fs.existsSync(videoPath)||!fs.existsSync(srtPath))return;
+  const probe=spawnSync('ffprobe',['-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',videoPath],{encoding:'utf8'});
+  if(probe.status!==0)throw new Error('caption clamp could not probe rendered episode duration');
+  const duration=Number(String(probe.stdout||'').trim());
+  const before=fs.readFileSync(srtPath,'utf8'); const after=clampSrtToDuration(before,duration);
+  fs.writeFileSync(srtPath,after);
+  console.log(`CAPTION_CLAMP_OK duration=${duration.toFixed(3)}`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -4,29 +4,36 @@ import fs from 'node:fs';
 
 const episode = fs.readFileSync('video/src/what-if-episode.jsx','utf8');
 const cinematic = fs.readFileSync('video/src/cinematic-full-episode.jsx','utf8');
+const solar = fs.readFileSync('video/src/solar-storm-explainer.jsx','utf8');
 const narratorRepair = fs.readFileSync('tools/narration-provider-repair.mjs','utf8');
 const narrator = fs.readFileSync('tools/edge-tts','utf8');
 const workflow = fs.readFileSync('.github/workflows/episode-factory.yml','utf8');
 
-test('episode has exactly one cinematic visual owner per beat and does not mount rejected SVG renderer', () => {
+test('finished Episode 1 remains owned by the isolated cinematic renderer', () => {
   assert.match(episode, /CinematicEpisodeScene/);
-  assert.match(episode, /data-visual-owner="cinematic-single"/);
+  assert.match(episode, /LEGACY_CINEMATIC_EPISODE_ID\s*=\s*['"]20260807-episode['"]/);
+  assert.match(episode, /cinematic-image-first-v5/);
   assert.doesNotMatch(episode, /SleepAssetScene|SleepScene\b|HookHoursContrastOverlay/);
   assert.match(cinematic, /data-visual-owner="cinematic-single"/);
   assert.doesNotMatch(cinematic, /visualAsset|\.svg/);
 });
 
-test('finished Episode 1 stays cinematic while future episodes default to the pro doodle renderer', () => {
-  assert.match(episode, /LEGACY_CINEMATIC_EPISODE_ID\s*=\s*['"]20260807-episode['"]/);
-  assert.match(episode, /props\.episodeId===LEGACY_CINEMATIC_EPISODE_ID/);
+test('Episode 2 has an explicit semantic solar-storm owner while later episodes retain the pro doodle fallback', () => {
+  assert.match(episode, /SOLAR_STORM_EPISODE_ID\s*=\s*['"]20260810-episode['"]/);
+  assert.match(episode, /SolarStormExplainerScene/);
+  assert.match(episode, /solar-storm-semantic-v1/);
   assert.match(episode, /doodle-explainer-v2/);
   assert.match(episode, /DoodleExplainerScenePro/);
+  assert.match(solar, /SolarStormExplainerScene/);
+  assert.match(solar, /aurora-grid-payoff/);
+  assert.match(solar, /grid-current/);
 });
 
-test('future thumbnails use package text and doodle art instead of the sleep-specific 8 HOURS BACK plate', () => {
+test('future thumbnails use package text; Episode 2 gets semantic topic art and Episode 1 keeps its legacy plate', () => {
   assert.match(episode, /props\.thumbnailText/);
-  assert.match(episode, /DoodleExplainerScenePro/);
   assert.match(episode, /legacyEpisode/);
+  assert.match(episode, /visualType:'aurora-grid-payoff'/);
+  assert.match(episode, /DoodleExplainerScenePro/);
 });
 
 test('factory restores the exact approved af_heart narrator with continuous-v2 flow and no silent fallback', () => {

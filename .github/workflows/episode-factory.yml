@@ -216,9 +216,10 @@ jobs:
         run: |
           git config user.name "whatifs-episode-factory"
           git config user.email "whatifs-episode-factory@users.noreply.github.com"
-          git add episodes/current/episode-state.json queue/topics.json queue/runner-status.json
-          [ -f episodes/current/production-input.json ] && git add episodes/current/production-input.json
-          [ -f episodes/current/render-manifest.json ] && git add episodes/current/render-manifest.json
+          # Persist the complete current-episode handoff atomically. `-A` is intentional:
+          # rollover deletes stale current files and creates an archive, and both must survive
+          # the workflow commit or the next run can accidentally pick up the previous episode.
+          git add -A episodes/current episodes/archive queue/topics.json queue/runner-status.json
           if git diff --cached --quiet; then
             echo "No state changes to persist."
             exit 0

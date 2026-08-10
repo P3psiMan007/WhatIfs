@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
-  "state": "SELECTED",
-  "state_revision": 2,
-  "updated_at": "2026-08-10T17:11:08.000Z",
-  "updated_by": "automation-topic-gate",
+  "state": "RENDERED",
+  "state_revision": 9,
+  "updated_at": "2026-08-10T21:44:38.854Z",
+  "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -23,7 +23,26 @@
       "Use the phone-does-not-explode myth break as a mid-video curiosity reset.",
       "End by snapping back to the beautiful-sky opening image."
     ],
-    "packages": {},
+    "packages": {
+      "default": {
+        "id": "A",
+        "title": "What If an Extreme Solar Storm Hit Earth Tomorrow?",
+        "thumbnailText": "THE SKY ATTACKS",
+        "thumbnailConcept": "Beautiful aurora above a dark city while the power grid below glows with induced current."
+      },
+      "b": {
+        "id": "B",
+        "title": "What Would an Extreme Solar Storm Actually Do?",
+        "thumbnailText": "WHAT FAILS FIRST?",
+        "thumbnailConcept": "Earth between an incoming solar eruption and icons for satellites, GPS and power infrastructure."
+      },
+      "c": {
+        "id": "C",
+        "title": "A Solar Superstorm Wouldn't Fry Everything — Here's What Breaks",
+        "thumbnailText": "NOT AN EMP",
+        "thumbnailConcept": "Split image: intact phone on one side, stressed satellite and high-voltage grid on the other."
+      }
+    },
     "research_questions": [],
     "fact_risks": [
       "Do not describe the event as a universal EMP.",
@@ -35,15 +54,28 @@
     "topic_source": "growth-research-2026-08-08"
   },
   "production": {
-    "script_words": 0,
-    "estimated_duration_min": null,
-    "pronunciation_dictionary": [],
+    "script_words": 1403,
+    "estimated_duration_min": 9.05,
+    "pronunciation_dictionary": [
+      {
+        "term": "CME",
+        "sayAs": "C M E"
+      },
+      {
+        "term": "Hydro-Québec",
+        "sayAs": "Hydro Quebec"
+      },
+      {
+        "term": "geomagnetically",
+        "sayAs": "geo-magnetically"
+      }
+    ],
     "voice_candidates": [
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": null,
-    "render_asset": null,
+    "voice_asset": "github-actions://run/31432950026/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31432950026/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": false
   },
   "qa": {
@@ -51,7 +83,7 @@
     "scores": {},
     "top_issues": [],
     "required_fixes": [],
-    "user_action_required": null
+    "user_action_required": "publish_grade_visual_assets_missing"
   },
   "analytics": {
     "last_checked_at": null,
@@ -78,6 +110,62 @@
       "actor": "episode-factory",
       "from": "SELECTED",
       "to": "SELECTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 3,
+      "at": "2026-08-10T21:21:17.647Z",
+      "actor": "episode-producer",
+      "from": "SELECTED",
+      "to": "SCRIPTED",
+      "reason": "validated production input"
+    },
+    {
+      "revision": 4,
+      "at": "2026-08-10T21:21:17.678Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 5,
+      "at": "2026-08-10T21:26:29.133Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "SCRIPTED",
+      "reason": "patch"
+    },
+    {
+      "revision": 6,
+      "at": "2026-08-10T21:26:29.163Z",
+      "actor": "episode-producer",
+      "from": "SCRIPTED",
+      "to": "VOICE_READY",
+      "reason": "per-scene narration generated, concatenated, and probed"
+    },
+    {
+      "revision": 7,
+      "at": "2026-08-10T21:44:38.328Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 8,
+      "at": "2026-08-10T21:44:38.358Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 9,
+      "at": "2026-08-10T21:44:38.854Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
       "reason": "patch"
     }
   ]

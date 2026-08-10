@@ -1,12 +1,10 @@
 {
-  "revision": 33,
-  "updatedAt": "2026-08-10T20:22:00.000Z",
-  "kind": "RUN_NOW_RETRY_REQUESTED",
+  "revision": 34,
+  "updatedAt": "2026-08-10T21:44:38.373Z",
+  "kind": "PRODUCER_RAN",
   "reason": null,
-  "details": "Run Episode 2 immediately from the clean isolated current slot. Current production input matches episode 20260810-episode and must advance through script validation, locked af_heart narration, doodle render, and QA artifact generation.",
+  "details": null,
   "episodeId": "20260810-episode",
-  "state": "SELECTED",
-  "stateRevision": 2,
-  "topicId": "super-solar-storm",
-  "exitCode": null
+  "state": "RENDERED",
+  "stateRevision": 8
 }

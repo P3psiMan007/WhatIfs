@@ -1,0 +1,47 @@
+name: Doodle Renderer Benchmark
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "video/**"
+      - ".github/workflows/doodle-renderer-benchmark.yml"
+  push:
+    branches: [main]
+    paths:
+      - "video/**"
+      - ".github/workflows/doodle-renderer-benchmark.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Render 20-second representative doodle benchmark
+        run: |
+          mkdir -p dist/benchmark
+          npx remotion render video/src/index.jsx WhatIfEpisode dist/benchmark/doodle-renderer-benchmark.mp4 \
+            --codec=h264 --crf=20 --pixel-format=yuv420p \
+            --props=video/fixtures/doodle-renderer-benchmark.json
+      - name: Build benchmark contact sheet
+        run: |
+          ffmpeg -y -v error -i dist/benchmark/doodle-renderer-benchmark.mp4 \
+            -vf "fps=1/2,scale=480:-2,tile=5x2:padding=8:margin=8" \
+            -frames:v 1 dist/benchmark/doodle-renderer-benchmark-contact-sheet.jpg
+          test -s dist/benchmark/doodle-renderer-benchmark.mp4
+          test -s dist/benchmark/doodle-renderer-benchmark-contact-sheet.jpg
+      - name: Upload benchmark evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: doodle-renderer-benchmark
+          path: dist/benchmark/**
+          retention-days: 14

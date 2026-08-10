@@ -1,9 +1,9 @@
 {
-  "revision": 28,
-  "updatedAt": "2026-08-10T12:24:51.652Z",
+  "revision": 29,
+  "updatedAt": "2026-08-10T13:44:45.020Z",
   "kind": "BLOCKED",
-  "reason": "missing_production_input",
-  "details": "PRODUCER_BLOCKED missing_production_input",
+  "reason": "invalid_production_input",
+  "details": "PRODUCER_BLOCKED invalid_production_input: episode mismatch: input 20260807-episode state 20260810-episode",
   "episodeId": "20260810-episode",
   "state": "SELECTED",
   "stateRevision": 2,

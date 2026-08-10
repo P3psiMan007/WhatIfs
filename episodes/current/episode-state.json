@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260807-episode",
-  "state": "VOICE_READY",
-  "state_revision": 93,
-  "updated_at": "2026-08-09T23:11:53.612Z",
-  "updated_by": "episode1-image-first-rebuild",
+  "state": "RENDERED",
+  "state_revision": 97,
+  "updated_at": "2026-08-10T00:21:03.392Z",
+  "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -52,9 +52,9 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31325045813/artifact/episode-render/narration.mp3",
-    "render_asset": null,
-    "qa_inputs_ready": false,
+    "voice_asset": "github-actions://run/31342488193/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31342488193/artifact/episode-render/episode.mp4",
+    "qa_inputs_ready": true,
     "image_first_asset_revision": "image-first-cinematic-v5",
     "image_asset_manifest": "episodes/current/image-assets-v1.json"
   },
@@ -814,6 +814,38 @@
       "actor": "episode1-image-first-rebuild",
       "from": "VOICE_READY",
       "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 94,
+      "at": "2026-08-09T23:46:59.250Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 95,
+      "at": "2026-08-10T00:21:02.927Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 96,
+      "at": "2026-08-10T00:21:02.956Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 97,
+      "at": "2026-08-10T00:21:03.392Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
       "reason": "patch"
     }
   ]

@@ -1,7 +1,7 @@
 {
   "episodeId": "20260807-episode",
-  "generatedAt": "2026-08-09T17:21:12.208Z",
-  "githubRunId": "31325045813",
+  "generatedAt": "2026-08-10T00:21:02.893Z",
+  "githubRunId": "31342488193",
   "artifactName": "episode-render",
   "filename": "episode.mp4",
   "thumbnailFilename": "thumbnail.png",
@@ -46,8 +46,8 @@
     ],
     "format": {
       "duration": "380.864000",
-      "size": "97472375",
-      "bit_rate": "2047394"
+      "size": "377526515",
+      "bit_rate": "7929896"
     }
   },
   "visualQa": {
@@ -57,8 +57,21 @@
     "maxBeatDuration": 5.743,
     "averageBeatDuration": 3.926
   },
+  "narrator": {
+    "provider": "kokoro",
+    "voice": "af_heart",
+    "speed": 0.95,
+    "flowVersion": "continuous-v2",
+    "audioSha256": "65565aa6b0dc94d04d1743cf8791243c71940ce8bd0e686e6ce1e6324ce9a9ab"
+  },
+  "imageAssets": {
+    "path": "episodes/current/image-assets-v1.json",
+    "sha256": "76b2e0ffed5b89c476ea9667aa070e897e9958aeea7c5cf3b5d51a184df1e71b",
+    "assetRevision": "image-first-cinematic-v5"
+  },
   "sourceCount": 7,
   "visualGrade": "publish-grade",
+  "imageFirstAssetRevision": "image-first-cinematic-v5",
   "qaInputsReady": true,
   "technicalPreview": false,
   "publishBlocker": null

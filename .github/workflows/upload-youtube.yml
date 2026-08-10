@@ -203,7 +203,7 @@ jobs:
               raise SystemExit("publication record does not prove private privacy state")
           if yt.get("publicVerifiedAt") or "public" in transitions:
               raise SystemExit("private-only staging unexpectedly became public")
-          if not yt.get("processingVerified") or not yt.get("metadataVerified") or not yt.get("thumbnailSetSucceeded") or not yt.get("playbackVerified"):
+          if not yt.get("processingVerified") or not yt.get("metadataVerified") or not yt.get("syntheticMediaDisclosureVerified") or not yt.get("thumbnailSetSucceeded") or not yt.get("playbackVerified"):
             raise SystemExit("private staging verification is incomplete")
           print(f"Verified private YouTube video: https://www.youtube.com/watch?v={yt['videoId']}")
           PY

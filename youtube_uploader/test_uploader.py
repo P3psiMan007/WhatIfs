@@ -48,6 +48,7 @@ class UploaderTests(TestCase):
         kwargs = youtube.videos.return_value.insert.call_args.kwargs
         self.assertEqual(kwargs["body"]["status"]["privacyStatus"], "private")
         self.assertFalse(kwargs["body"]["status"]["selfDeclaredMadeForKids"])
+        self.assertTrue(kwargs["body"]["status"]["containsSyntheticMedia"])
 
     def test_rejects_non_private_insert_response(self):
         youtube = Mock()

@@ -5,13 +5,22 @@ from unittest import TestCase
 from unittest.mock import Mock, patch
 
 from youtube_uploader.publication_record import load_publication_record
-from youtube_uploader.publisher import publish_episode
+from youtube_uploader.publisher import _verify_expected_video, publish_episode
 
 
 class PublisherTests(TestCase):
     @staticmethod
     def rejected_private_video():
         return {"id": "3EGJqkrn42A", "status": {"privacyStatus": "private"}}
+
+    def test_expected_video_requires_synthetic_media_disclosure(self):
+        video = {
+            "id": "abc",
+            "status": {"privacyStatus": "private"},
+            "snippet": {"title": "What If Test?", "description": "Description"},
+        }
+        with self.assertRaisesRegex(RuntimeError, "synthetic-media disclosure"):
+            _verify_expected_video(video, "abc", "What If Test?", "Description")
 
     def fixture(self, root: Path):
         video = root / "episode.mp4"
@@ -246,7 +255,7 @@ class PublisherTests(TestCase):
         upload_private_mock.return_value = "abc"
         private_video = {
             "id": "abc",
-            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True},
+            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True, "containsSyntheticMedia": True},
             "processingDetails": {"processingStatus": "succeeded"},
             "snippet": {
                 "title": "What If Test?",
@@ -256,7 +265,7 @@ class PublisherTests(TestCase):
         }
         public_video = {
             **private_video,
-            "status": {"privacyStatus": "public", "uploadStatus": "processed", "embeddable": True},
+            "status": {"privacyStatus": "public", "uploadStatus": "processed", "embeddable": True, "containsSyntheticMedia": True},
         }
         wait_mock.return_value = private_video
         promote_mock.return_value = {"id": "abc", "status": {"privacyStatus": "public"}}
@@ -282,6 +291,7 @@ class PublisherTests(TestCase):
             self.assertIsNotNone(record["youtube"]["publicVerifiedAt"])
             self.assertEqual(record["youtube"]["privacyTransitions"], ["private", "public"])
             self.assertTrue(record["youtube"]["playbackVerified"])
+            self.assertTrue(record["youtube"]["syntheticMediaDisclosureVerified"])
             promote_mock.assert_called_once()
             self.assertEqual(promote_mock.call_args.args[1], "abc")
             self.assertEqual(load_publication_record(args[2])["youtube"]["videoId"], "abc")
@@ -303,7 +313,7 @@ class PublisherTests(TestCase):
     ):
         private_video = {
             "id": "abc",
-            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True},
+            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True, "containsSyntheticMedia": True},
             "processingDetails": {"processingStatus": "succeeded"},
             "snippet": {
                 "title": "What If Test?",
@@ -311,7 +321,7 @@ class PublisherTests(TestCase):
                 "thumbnails": {"default": {"url": "x"}},
             },
         }
-        public_video = {**private_video, "status": {"privacyStatus": "public", "uploadStatus": "processed", "embeddable": True}}
+        public_video = {**private_video, "status": {"privacyStatus": "public", "uploadStatus": "processed", "embeddable": True, "containsSyntheticMedia": True}}
         wait_mock.return_value = private_video
         fetch_mock.side_effect = [self.rejected_private_video(), public_video]
         promote_mock.return_value = {"id": "abc", "status": {"privacyStatus": "public"}}

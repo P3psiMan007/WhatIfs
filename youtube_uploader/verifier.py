@@ -70,6 +70,11 @@ def verify_thumbnail_state(video: dict, *, thumbnail_set_succeeded: bool) -> boo
     return thumbnail_set_succeeded is True and bool(thumbnails)
 
 
+def verify_synthetic_media_disclosure(video: dict) -> bool:
+    """Require YouTube to echo the disclosure for photorealistic generated scenes."""
+    return (video.get("status") or {}).get("containsSyntheticMedia") is True
+
+
 def verify_playback(video: dict) -> bool:
     """Confirm the API reports that the private upload can be played when authorized."""
     status = video.get("status") or {}

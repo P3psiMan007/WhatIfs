@@ -112,7 +112,7 @@ class PublisherOAuthResumeTests(TestCase):
         upload_private_mock.return_value = "abc"
         private_video = {
             "id": "abc",
-            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True},
+            "status": {"privacyStatus": "private", "uploadStatus": "processed", "embeddable": True, "containsSyntheticMedia": True},
             "processingDetails": {"processingStatus": "succeeded"},
             "snippet": {
                 "title": "What If Test?",
@@ -140,6 +140,7 @@ class PublisherOAuthResumeTests(TestCase):
             self.assertTrue(record["youtube"]["thumbnailSetSucceeded"])
             self.assertTrue(record["youtube"]["processingVerified"])
             self.assertTrue(record["youtube"]["metadataVerified"])
+            self.assertTrue(record["youtube"]["syntheticMediaDisclosureVerified"])
             self.assertIsNotNone(record["youtube"]["privateVerifiedAt"])
             self.assertIsNone(record["youtube"]["publicVerifiedAt"])
             self.assertIn("re-authorize", record["youtube"]["lastError"])

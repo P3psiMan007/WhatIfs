@@ -5,6 +5,7 @@ import fs from 'node:fs';
 const episode = fs.readFileSync('video/src/what-if-episode.jsx','utf8');
 const cinematic = fs.readFileSync('video/src/cinematic-full-episode.jsx','utf8');
 const solar = fs.readFileSync('video/src/solar-storm-explainer.jsx','utf8');
+const solarV6 = fs.readFileSync('video/src/solar-storm-explainer-v6.jsx','utf8');
 const narratorRepair = fs.readFileSync('tools/narration-provider-repair.mjs','utf8');
 const narrator = fs.readFileSync('tools/edge-tts','utf8');
 const workflow = fs.readFileSync('.github/workflows/episode-factory.yml','utf8');
@@ -27,6 +28,14 @@ test('Episode 2 has an explicit semantic solar-storm owner while later episodes 
   assert.match(solar, /SolarStormExplainerScene/);
   assert.match(solar, /aurora-grid-payoff/);
   assert.match(solar, /grid-current/);
+});
+
+test('solar active beat uses an explicit beat-local frame instead of a dynamic nested Sequence', () => {
+  assert.match(episode, /localFrame\s*=\s*Math\.max\(0,frame-beat\.from\)/);
+  assert.match(episode, /frameOverride=\{localFrame\}/);
+  assert.doesNotMatch(episode, /<Sequence from=\{beat\.from\}/);
+  assert.match(solarV6, /frameOverride/);
+  assert.match(solarV6, /frameOverride\s*\?\?\s*useCurrentFrame\(\)/);
 });
 
 test('future thumbnails use package text; Episode 2 gets dedicated solar topic art and Episode 1 keeps its legacy plate', () => {

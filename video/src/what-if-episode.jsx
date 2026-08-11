@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
+import {AbsoluteFill,Freeze,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {SleepThumbnailArt} from './sleep-scenes.jsx';
 import {CinematicEpisodeScene} from './cinematic-full-episode.jsx';
@@ -57,10 +57,18 @@ const BeatCamera=({children,beat,durationInFrames,mode})=>{
   return <AbsoluteFill style={{transform:`translate3d(${tx}px,${ty}px,0) scale(${scale})`,transformOrigin:'50% 50%',opacity}}>{children}</AbsoluteFill>;
 };
 
+const SolarActiveBeat=({beats,palette})=>{
+  const frame=useCurrentFrame();
+  const beat=(beats||[]).find((b)=>frame>=b.from&&frame<b.from+b.durationInFrames) || (beats||[])[beats.length-1];
+  if(!beat)return null;
+  const localFrame=Math.max(0,Math.min(beat.durationInFrames-1,frame-beat.from));
+  return <Freeze frame={localFrame}><BeatCamera beat={beat} durationInFrames={beat.durationInFrames} mode="solar"><SolarStormExplainerScene beat={beat} durationInFrames={beat.durationInFrames} palette={palette}/></BeatCamera></Freeze>;
+};
+
 const EpisodeLayers=({props,palette,beats,mode,fps})=><>
   <AbsoluteFill style={{background:'radial-gradient(90% 75% at 50% 42%,#10151e 0%,#090c12 76%)'}}/>
-  {beats.map((beat)=>{const from=beat.from;const durationInFrames=beat.durationInFrames;return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.6*fps))}>
-    <BeatCamera beat={beat} durationInFrames={durationInFrames} mode={mode}>{mode==='solar'?<SolarStormExplainerScene beat={beat} durationInFrames={durationInFrames} palette={palette}/>:mode==='doodle'?<DoodleExplainerScenePro beat={beat} durationInFrames={durationInFrames} palette={palette}/>:<CinematicEpisodeScene beat={beat} beatOrdinal={beat.localBeatOrdinal} durationInFrames={durationInFrames} palette={palette}/>}</BeatCamera>
+  {mode==='solar' ? <SolarActiveBeat beats={beats} palette={palette}/> : beats.map((beat)=>{const from=beat.from;const durationInFrames=beat.durationInFrames;return <Sequence key={beat.id} from={from} durationInFrames={durationInFrames} premountFor={Math.min(durationInFrames,Math.round(.6*fps))}>
+    <BeatCamera beat={beat} durationInFrames={durationInFrames} mode={mode}>{mode==='doodle'?<DoodleExplainerScenePro beat={beat} durationInFrames={durationInFrames} palette={palette}/>:<CinematicEpisodeScene beat={beat} beatOrdinal={beat.localBeatOrdinal} durationInFrames={durationInFrames} palette={palette}/>}</BeatCamera>
   </Sequence>;})}
   {mode==='solar'?<SolarAtmosphere palette={palette}/>:null}
   {props.audio?<Audio src={staticFile(props.audio)}/>:null}

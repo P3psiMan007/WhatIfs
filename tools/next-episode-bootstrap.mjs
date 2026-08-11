@@ -5,6 +5,8 @@ import path from 'node:path';
 const readJson=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const writeJson=(p,v)=>{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,JSON.stringify(v,null,2)+'\n');};
 
+export const EPISODE_SCOPED_FILES=['episode-state.json','publication.json','research.md','script.md','production-input.json','qa-review.json','qa-evidence.json','render-manifest.json','image-assets-v1.json'];
+
 export function planNextEpisodeBootstrap({state,publication,topics=[]}){
   const next=topics.find((t)=>t&&t.enabled!==false&&!t.consumedAt);
   if(!next) return {kind:'NOOP',reason:'no_unconsumed_topic'};
@@ -34,8 +36,7 @@ export function archiveFinishedEpisode({currentDir='episodes/current',archiveRoo
   const dest=path.join(archiveRoot,id);
   if(fs.existsSync(dest)) return dest;
   fs.mkdirSync(dest,{recursive:true});
-  const names=['episode-state.json','publication.json','research.md','script.md','production-input.json','qa-review.json','render-manifest.json','image-assets-v1.json'];
-  for(const name of names){const src=path.join(currentDir,name);if(fs.existsSync(src)) fs.copyFileSync(src,path.join(dest,name));}
+  for(const name of EPISODE_SCOPED_FILES){const src=path.join(currentDir,name);if(fs.existsSync(src)) fs.copyFileSync(src,path.join(dest,name));}
   return dest;
 }
 
@@ -49,7 +50,7 @@ function main(){
   const plan=planNextEpisodeBootstrap({state,publication,topics});
   if(plan.kind!=='ROLLOVER'){console.log(`NOOP ${plan.reason}`);return;}
   const archived=archiveFinishedEpisode({currentDir,state});
-  for(const name of ['publication.json','research.md','script.md','production-input.json','qa-review.json','render-manifest.json','image-assets-v1.json']){const p=path.join(currentDir,name);if(fs.existsSync(p))fs.rmSync(p);}
+  for(const name of EPISODE_SCOPED_FILES.filter((name)=>name!=='episode-state.json')){const p=path.join(currentDir,name);if(fs.existsSync(p))fs.rmSync(p);}
   writeJson(statePath,blankEpisodeState());
   console.log(JSON.stringify({kind:'ROLLOVER',archived,previousEpisodeId:state.episode_id,nextTopicId:plan.topic.id}));
 }

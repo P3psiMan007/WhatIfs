@@ -11,6 +11,8 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/next-episode-bootstrap.mjs"
+      - "tools/next-episode-bootstrap.test.mjs"
       - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/render-ownership.test.mjs"
@@ -53,6 +55,8 @@ on:
       - "tools/episode-runner.test.mjs"
       - "tools/episode-producer.mjs"
       - "tools/episode-producer.test.mjs"
+      - "tools/next-episode-bootstrap.mjs"
+      - "tools/next-episode-bootstrap.test.mjs"
       - "tools/edge-tts"
       - "tools/narration-provider-repair.mjs"
       - "tools/render-ownership.test.mjs"
@@ -123,8 +127,8 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin 6a7f52b7af91de1c15318fb57e7ece962aae28e6
           git show 6a7f52b7af91de1c15318fb57e7ece962aae28e6:episodes/current/image-assets-v1.json > episodes/current/image-assets-v1.json
-      - name: Run state, producer, cinematic ownership, timeline, and visual guard tests
-        run: node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs tools/episode1-image-first-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs video/src/cinematic-full-episode.test.mjs video/src/cinematic-benchmark.test.mjs tools/publish-grade-visual-guard.test.mjs
+      - name: Run state, rollover, producer, cinematic ownership, timeline, and visual guard tests
+        run: node --test tools/episode-state.test.mjs tools/next-episode-bootstrap.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/render-ownership.test.mjs tools/episode1-visual-rebuild.test.mjs tools/episode1-thumbnail-rebuild.test.mjs tools/episode1-hook-contrast-rebuild.test.mjs tools/episode1-late-beat-rebuild.test.mjs tools/episode1-illustrated-v3-rebuild.test.mjs tools/episode1-character-payoff-v4-rebuild.test.mjs tools/episode1-image-first-rebuild.test.mjs video/src/visual-timeline.test.mjs video/src/thumbnail-layout.test.mjs video/src/hook-contrast.test.mjs video/src/sleep-beat-phase.test.mjs video/src/sleep-visual-registry.test.mjs video/src/cinematic-full-episode.test.mjs video/src/cinematic-benchmark.test.mjs tools/publish-grade-visual-guard.test.mjs
       - name: Validate semantic rerender planner
         run: node --check tools/episode2-semantic-visual-rebuild.mjs
       - name: Remotion episode smoke test
@@ -226,9 +230,6 @@ jobs:
         run: |
           git config user.name "whatifs-episode-factory"
           git config user.email "whatifs-episode-factory@users.noreply.github.com"
-          # Persist the complete current-episode handoff atomically. `-A` is intentional:
-          # rollover deletes stale current files and creates an archive, and both must survive
-          # the workflow commit or the next run can accidentally pick up the previous episode.
           git add -A episodes/current episodes/archive queue/topics.json queue/runner-status.json
           if git diff --cached --quiet; then
             echo "No state changes to persist."

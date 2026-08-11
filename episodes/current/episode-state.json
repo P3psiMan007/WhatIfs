@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
-  "state": "VOICE_READY",
-  "state_revision": 23,
-  "updated_at": "2026-08-11T00:22:38.139Z",
-  "updated_by": "episode2-semantic-visual-rebuild",
+  "state": "RENDERED",
+  "state_revision": 27,
+  "updated_at": "2026-08-11T02:37:55.196Z",
+  "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -74,8 +74,8 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31442495936/artifact/episode-render/narration.mp3",
-    "render_asset": null,
+    "voice_asset": "github-actions://run/31451672406/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31451672406/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": false,
     "semantic_visual_revision": "solar-storm-semantic-v4"
   },
@@ -88,7 +88,7 @@
     "required_fixes": [
       "Render and inspect semantic solar-storm visual revision v4 with tighter beat routing, less repeated fallback imagery, and a deliberate opening-to-ending visual snapback."
     ],
-    "user_action_required": null
+    "user_action_required": "publish_grade_visual_assets_missing"
   },
   "analytics": {
     "last_checked_at": null,
@@ -284,6 +284,38 @@
       "from": "RENDERED",
       "to": "VOICE_READY",
       "reason": "rerender solar-storm episode with semantic v4 beat sequencing"
+    },
+    {
+      "revision": 24,
+      "at": "2026-08-11T02:20:54.799Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 25,
+      "at": "2026-08-11T02:37:54.650Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 26,
+      "at": "2026-08-11T02:37:54.682Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 27,
+      "at": "2026-08-11T02:37:55.196Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
     }
   ]
 }

@@ -36,3 +36,5 @@ function main(){
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){try{main();}catch(error){console.error(`SEMANTIC_VISUAL_REBUILD_ERROR ${error?.stack||String(error)}`);process.exitCode=1;}}
+
+// Production trigger: rerun semantic v6 after the active-beat runtime fix landed.

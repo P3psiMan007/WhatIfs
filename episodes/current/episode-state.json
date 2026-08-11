@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
   "state": "RENDERED",
-  "state_revision": 27,
-  "updated_at": "2026-08-11T02:37:55.196Z",
+  "state_revision": 33,
+  "updated_at": "2026-08-11T03:52:35.318Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -74,19 +74,19 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31451672406/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31451672406/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31455091138/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31455091138/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": false,
-    "semantic_visual_revision": "solar-storm-semantic-v4"
+    "semantic_visual_revision": "solar-storm-semantic-v5"
   },
   "qa": {
     "status": "REWORK_REQUIRED",
     "scores": {},
     "top_issues": [
-      "Semantic v3 still repeated sparse diagram families across long stretches and weakened the ending payoff."
+      "Semantic v4 remained visually sparse and presentation-like in actual contact-sheet inspection despite improved beat routing."
     ],
     "required_fixes": [
-      "Render and inspect semantic solar-storm visual revision v4 with tighter beat routing, less repeated fallback imagery, and a deliberate opening-to-ending visual snapback."
+      "Render and inspect semantic solar-storm visual revision v5 with cinematic camera drift, ambient depth, less slide-like caption treatment, and a stronger dedicated thumbnail composition."
     ],
     "user_action_required": "publish_grade_visual_assets_missing"
   },
@@ -312,6 +312,54 @@
     {
       "revision": 27,
       "at": "2026-08-11T02:37:55.196Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 28,
+      "at": "2026-08-11T03:23:47.179Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 29,
+      "at": "2026-08-11T03:23:47.212Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender solar-storm episode with semantic v5 cinematic motion grammar"
+    },
+    {
+      "revision": 30,
+      "at": "2026-08-11T03:28:56.515Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 31,
+      "at": "2026-08-11T03:52:34.758Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 32,
+      "at": "2026-08-11T03:52:34.790Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 33,
+      "at": "2026-08-11T03:52:35.318Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

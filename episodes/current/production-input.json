@@ -63,31 +63,45 @@
   "sources": [
     {
       "url": "https://science.nasa.gov/sun/solar-storms-and-flares/",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     },
     {
       "url": "https://www.swpc.noaa.gov/node/1085",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     },
     {
       "url": "https://www.usgs.gov/programs/geomagnetism/science/overview-0",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     },
     {
       "url": "https://pubs.usgs.gov/publication/fs20243036/full",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     },
     {
       "url": "https://svs.gsfc.nasa.gov/5193",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     },
     {
       "url": "https://science.nasa.gov/science-research/planetary-science/23jul_superstorm/",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     },
     {
       "url": "https://science.nasa.gov/blogs/science-news/2026/07/15/new-nasa-study-says-possibly-no-limit-to-solar-storm-effects/",
-      "claims": ["Verified in durable solar-storm claim ledger."]
+      "claims": [
+        "Verified in durable solar-storm claim ledger."
+      ]
     }
   ],
   "scenes": [
@@ -162,6 +176,6 @@
       "narration": "So if an extreme solar storm hit Earth tomorrow, the first thing most of us noticed might be beautiful. A sky glowing in places that almost never see aurora. Behind that view, satellite teams would be changing plans, radio operators would be fighting interference, navigation systems could lose precision, and grid operators would be watching invisible currents move through infrastructure built for electricity coming from somewhere else. The storm would not automatically end civilization. It would expose which parts of civilization were designed to bend, and which were designed assuming the sky would stay quiet. Sometimes the most beautiful thing in the sky is also a stress test for the world underneath it."
     }
   ],
-  "semanticVisualRevision": "solar-storm-semantic-v4",
+  "semanticVisualRevision": "solar-storm-semantic-v5",
   "visualGrade": "heuristic-placeholder"
 }

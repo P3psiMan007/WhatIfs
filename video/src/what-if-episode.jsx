@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill,Freeze,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
+import {AbsoluteFill,Sequence,interpolate,staticFile,useCurrentFrame,useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {SleepThumbnailArt} from './sleep-scenes.jsx';
 import {CinematicEpisodeScene} from './cinematic-full-episode.jsx';
@@ -61,8 +61,11 @@ const SolarActiveBeat=({beats,palette})=>{
   const frame=useCurrentFrame();
   const beat=(beats||[]).find((b)=>frame>=b.from&&frame<b.from+b.durationInFrames) || (beats||[])[beats.length-1];
   if(!beat)return null;
-  const localFrame=Math.max(0,Math.min(beat.durationInFrames-1,frame-beat.from));
-  return <Freeze frame={localFrame}><BeatCamera beat={beat} durationInFrames={beat.durationInFrames} mode="solar"><SolarStormExplainerScene beat={beat} durationInFrames={beat.durationInFrames} palette={palette}/></BeatCamera></Freeze>;
+  return <Sequence from={beat.from} durationInFrames={beat.durationInFrames} layout="none">
+    <BeatCamera beat={beat} durationInFrames={beat.durationInFrames} mode="solar">
+      <SolarStormExplainerScene beat={beat} durationInFrames={beat.durationInFrames} palette={palette}/>
+    </BeatCamera>
+  </Sequence>;
 };
 
 const EpisodeLayers=({props,palette,beats,mode,fps})=><>

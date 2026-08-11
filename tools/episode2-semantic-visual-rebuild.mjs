@@ -6,6 +6,7 @@ import {pathToFileURL} from 'node:url';
 const EPISODE_ID='20260810-episode';
 const VISUAL_SYSTEM='solar-storm-explainer-v1';
 const REVISION='solar-storm-semantic-v6';
+const RUNTIME_REVISION='active-sequence-v1';
 const readJson=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const writeJson=(p,v)=>fs.writeFileSync(p,JSON.stringify(v,null,2)+'\n');
 
@@ -13,9 +14,10 @@ export function planSemanticRebuild({state,input}) {
   if(state?.episode_id!==EPISODE_ID||input?.episodeId!==EPISODE_ID)return {kind:'NOOP',reason:'another_episode'};
   if(['QA_PASSED','AUTO_PUBLISH_READY','PUBLISHED'].includes(state?.state))return {kind:'NOOP',reason:`publisher_owned_${state.state}`};
   const explicitRerender=Boolean(input?.rerenderRequest);
-  if(input?.semanticVisualRevision===REVISION&&state?.production?.semantic_visual_revision===REVISION&&!explicitRerender)return {kind:'NOOP',reason:'semantic_visual_render_already_requested'};
+  const rendererCurrent=input?.rendererRuntimeRevision===RUNTIME_REVISION;
+  if(input?.semanticVisualRevision===REVISION&&state?.production?.semantic_visual_revision===REVISION&&rendererCurrent&&!explicitRerender)return {kind:'NOOP',reason:'semantic_visual_render_already_requested'};
   if(!['RENDERED','VOICE_READY'].includes(state?.state))return {kind:'NOOP',reason:`state_${state?.state||'unknown'}`};
-  const inputPatch={...input,visualSystem:VISUAL_SYSTEM,semanticVisualRevision:REVISION,visualGrade:'heuristic-placeholder',rendererProof:{...(input?.rendererProof||{}),required:true,composition:'WhatIfDoodleRendererProof'}};
+  const inputPatch={...input,visualSystem:VISUAL_SYSTEM,semanticVisualRevision:REVISION,rendererRuntimeRevision:RUNTIME_REVISION,visualGrade:'heuristic-placeholder',rendererProof:{...(input?.rendererProof||{}),required:true,composition:'WhatIfDoodleRendererProof'}};
   delete inputPatch.rerenderRequest;
   const productionPatch={render_asset:null,qa_inputs_ready:false,semantic_visual_revision:REVISION};
   return {kind:state.state==='RENDERED'?'REBUILD':'REFRESH_VISUALS',expectedRevision:Number(state.state_revision),episodeId:EPISODE_ID,inputPatch,productionPatch,transitionTo:'VOICE_READY'};

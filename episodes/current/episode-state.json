@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
   "state": "RENDERED",
-  "state_revision": 57,
-  "updated_at": "2026-08-11T13:13:52.756Z",
+  "state_revision": 63,
+  "updated_at": "2026-08-11T15:14:14.027Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -74,8 +74,8 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31490705308/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31490705308/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31500885789/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31500885789/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": false,
     "semantic_visual_revision": "solar-storm-semantic-v6"
   },
@@ -86,7 +86,7 @@
       "Latest inspected artifact still showed only ambient atmosphere and captions; semantic beat art remained absent."
     ],
     "required_fixes": [
-      "Rerender semantic v6 with the direct active-beat runtime, then inspect real contact sheets and sampled frames before allowing QA."
+      "Rerender semantic v6 with full-frame SVG sizing and explicit beat-local Freeze timing, then inspect real contact sheets and sampled frames before allowing QA."
     ],
     "user_action_required": "publish_grade_visual_assets_missing"
   },
@@ -552,6 +552,54 @@
     {
       "revision": 57,
       "at": "2026-08-11T13:13:52.756Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 58,
+      "at": "2026-08-11T14:22:13.123Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 59,
+      "at": "2026-08-11T14:22:13.153Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender solar-storm episode with full-frame SVG sizing and beat-local Freeze timing"
+    },
+    {
+      "revision": 60,
+      "at": "2026-08-11T14:27:22.280Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 61,
+      "at": "2026-08-11T15:14:13.436Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 62,
+      "at": "2026-08-11T15:14:13.467Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 63,
+      "at": "2026-08-11T15:14:14.027Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

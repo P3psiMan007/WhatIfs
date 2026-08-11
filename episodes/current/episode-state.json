@@ -1,10 +1,10 @@
 {
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
-  "state": "RENDERED",
-  "state_revision": 21,
-  "updated_at": "2026-08-11T00:08:53.156Z",
-  "updated_by": "publish-grade-visual-guard",
+  "state": "VOICE_READY",
+  "state_revision": 23,
+  "updated_at": "2026-08-11T00:22:38.139Z",
+  "updated_by": "episode2-semantic-visual-rebuild",
   "lock": {
     "active": false,
     "locked_at": null,
@@ -75,20 +75,20 @@
     ],
     "selected_voice": "af_heart",
     "voice_asset": "github-actions://run/31442495936/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31442495936/artifact/episode-render/episode.mp4",
+    "render_asset": null,
     "qa_inputs_ready": false,
-    "semantic_visual_revision": "solar-storm-semantic-v3"
+    "semantic_visual_revision": "solar-storm-semantic-v4"
   },
   "qa": {
     "status": "REWORK_REQUIRED",
     "scores": {},
     "top_issues": [
-      "Previous semantic renders remained too repetitive and diagram-poor for publish grade."
+      "Semantic v3 still repeated sparse diagram families across long stretches and weakened the ending payoff."
     ],
     "required_fixes": [
-      "Render and inspect semantic solar-storm visual revision v3 with expanded scene grammar before independent QA."
+      "Render and inspect semantic solar-storm visual revision v4 with tighter beat routing, less repeated fallback imagery, and a deliberate opening-to-ending visual snapback."
     ],
-    "user_action_required": "publish_grade_visual_assets_missing"
+    "user_action_required": null
   },
   "analytics": {
     "last_checked_at": null,
@@ -268,6 +268,22 @@
       "from": "RENDERED",
       "to": "RENDERED",
       "reason": "patch"
+    },
+    {
+      "revision": 22,
+      "at": "2026-08-11T00:22:38.106Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 23,
+      "at": "2026-08-11T00:22:38.139Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender solar-storm episode with semantic v4 beat sequencing"
     }
   ]
 }

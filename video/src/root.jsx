@@ -4,6 +4,7 @@ import {WhatIfEpisode,WhatIfThumbnail} from './what-if-episode.jsx';
 import {WhatIfCinematicBenchmark} from './cinematic-benchmark.jsx';
 import {WhatIfEditorialBenchmark} from './editorial-benchmark.jsx';
 import {WhatIfDoodleRendererProof} from './doodle-renderer-proof.jsx';
+import './solar-storm-runtime.css';
 
 const palette={background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
 const defaultProps={

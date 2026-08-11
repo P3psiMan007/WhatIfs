@@ -1,0 +1,1 @@
+Episode 2 semantic-v6 rerender trigger after full-frame SVG sizing + beat-local Freeze runtime fix.

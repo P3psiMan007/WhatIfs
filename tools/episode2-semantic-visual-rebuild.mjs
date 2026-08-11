@@ -5,7 +5,7 @@ import {pathToFileURL} from 'node:url';
 
 const EPISODE_ID='20260810-episode';
 const VISUAL_SYSTEM='solar-storm-explainer-v1';
-const REVISION='solar-storm-semantic-v5';
+const REVISION='solar-storm-semantic-v6';
 const readJson=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const writeJson=(p,v)=>fs.writeFileSync(p,JSON.stringify(v,null,2)+'\n');
 
@@ -28,8 +28,8 @@ function main(){
   const state=readJson(statePath),input=readJson(inputPath);const plan=planSemanticRebuild({state,input});
   if(!['REBUILD','REFRESH_VISUALS'].includes(plan.kind)){console.log(`SEMANTIC_VISUAL_REBUILD_${plan.kind} ${plan.reason}`);return;}
   writeJson(inputPath,plan.inputPatch);
-  const patched=runState(['patch',String(plan.expectedRevision),plan.episodeId,'episode2-semantic-visual-rebuild',JSON.stringify({production:plan.productionPatch,qa:{status:'REWORK_REQUIRED',scores:{},top_issues:['Semantic v4 remained visually sparse and presentation-like in actual contact-sheet inspection despite improved beat routing.'],required_fixes:['Render and inspect semantic solar-storm visual revision v5 with cinematic camera drift, ambient depth, less slide-like caption treatment, and a stronger dedicated thumbnail composition.'],user_action_required:null}})]);
-  if(plan.kind==='REBUILD')runState(['transition',String(patched.state_revision),plan.episodeId,plan.transitionTo,'episode2-semantic-visual-rebuild','rerender solar-storm episode with semantic v5 cinematic motion grammar']);
+  const patched=runState(['patch',String(plan.expectedRevision),plan.episodeId,'episode2-semantic-visual-rebuild',JSON.stringify({production:plan.productionPatch,qa:{status:'REWORK_REQUIRED',scores:{},top_issues:['Actual semantic v5 contact-sheet inspection still showed sparse, presentation-like compositions and insufficient cinematic subject scale.'],required_fixes:['Render and inspect semantic solar-storm visual revision v6 with full-frame cinematic infographic compositions, stronger depth, larger subjects, and clearer scene-specific motion.'],user_action_required:null}})]);
+  if(plan.kind==='REBUILD')runState(['transition',String(patched.state_revision),plan.episodeId,plan.transitionTo,'episode2-semantic-visual-rebuild','rerender solar-storm episode with semantic v6 cinematic infographic grammar']);
   console.log(`SEMANTIC_VISUAL_REBUILD_${plan.kind}_READY ${plan.episodeId}`);
 }
 

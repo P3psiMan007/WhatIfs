@@ -23,7 +23,8 @@
   "resumeAfterRolloverRepair": true,
   "rerenderRequest": {
     "revision": "solar-storm-semantic-v4",
-    "reason": "external trigger for canonical v4 render after semantic sequencing rework"
+    "reason": "external trigger for canonical v4 render after semantic sequencing rework",
+    "requestToken": "20260811T0745IST"
   },
   "packages": [
     {
@@ -62,45 +63,31 @@
   "sources": [
     {
       "url": "https://science.nasa.gov/sun/solar-storms-and-flares/",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     },
     {
       "url": "https://www.swpc.noaa.gov/node/1085",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     },
     {
       "url": "https://www.usgs.gov/programs/geomagnetism/science/overview-0",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     },
     {
       "url": "https://pubs.usgs.gov/publication/fs20243036/full",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     },
     {
       "url": "https://svs.gsfc.nasa.gov/5193",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     },
     {
       "url": "https://science.nasa.gov/science-research/planetary-science/23jul_superstorm/",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     },
     {
       "url": "https://science.nasa.gov/blogs/science-news/2026/07/15/new-nasa-study-says-possibly-no-limit-to-solar-storm-effects/",
-      "claims": [
-        "Verified in durable solar-storm claim ledger."
-      ]
+      "claims": ["Verified in durable solar-storm claim ledger."]
     }
   ],
   "scenes": [

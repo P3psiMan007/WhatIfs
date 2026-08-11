@@ -1,9 +1,10 @@
 {
-  "revision": 43,
-  "updatedAt": "2026-08-11T10:20:33.728Z",
-  "kind": "BLOCKED",
-  "reason": "publish_grade_visual_assets_missing",
+  "revision": 44,
+  "updatedAt": "2026-08-11T12:07:26.161Z",
+  "kind": "PRODUCER_RAN",
+  "reason": null,
+  "details": null,
   "episodeId": "20260810-episode",
   "state": "RENDERED",
-  "stateRevision": 45
+  "stateRevision": 50
 }

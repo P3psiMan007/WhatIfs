@@ -172,5 +172,6 @@
     }
   ],
   "semanticVisualRevision": "solar-storm-semantic-v6",
-  "visualGrade": "heuristic-placeholder"
+  "visualGrade": "heuristic-placeholder",
+  "rendererRuntimeRevision": "active-sequence-v1"
 }

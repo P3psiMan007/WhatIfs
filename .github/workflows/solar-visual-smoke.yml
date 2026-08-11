@@ -1,0 +1,37 @@
+name: Solar Visual Smoke
+
+on:
+  pull_request:
+    paths:
+      - "video/**"
+      - ".github/workflows/solar-visual-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Render aurora semantic smoke frame
+        run: npx remotion still video/src/index.jsx WhatIfEpisode /tmp/solar-smoke.png --frame=90 --props=video/fixtures/solar-smoke.json
+      - name: Require nontrivial smoke artifact
+        run: |
+          test -s /tmp/solar-smoke.png
+          bytes=$(wc -c < /tmp/solar-smoke.png)
+          echo "solar smoke bytes=$bytes"
+          test "$bytes" -gt 180000
+      - name: Upload solar smoke frame
+        uses: actions/upload-artifact@v4
+        with:
+          name: solar-visual-smoke
+          path: /tmp/solar-smoke.png
+          retention-days: 7

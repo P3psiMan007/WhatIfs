@@ -1,0 +1,12 @@
+{
+  "episodeId": "20260810-episode",
+  "title": "Solar visual smoke",
+  "durationSeconds": 8,
+  "audio": null,
+  "palette": {"background":"#0b0d12","foreground":"#eae7e1","accent":"#ffb340"},
+  "captions": [],
+  "beats": [
+    {"id":"smoke-aurora","start":0,"duration":4,"sceneId":"scene-01","sceneHeadline":"THE BEAUTIFUL WARNING","text":"Tonight, the sky changes color. Green and red auroras spread far beyond the places that normally see them."},
+    {"id":"smoke-grid","start":4,"duration":4,"sceneId":"scene-05","sceneHeadline":"THE EARTH BECOMES PART OF THE CIRCUIT","text":"Changing magnetic fields induce current in long transmission lines."}
+  ]
+}

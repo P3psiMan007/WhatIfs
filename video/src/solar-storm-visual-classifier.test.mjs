@@ -32,8 +32,16 @@ test('beat semantics override broad section headings',()=>{
   assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'The problem left the Sun hours ago.'}),'sun-earth');
 });
 
-test('section headings provide useful fallbacks without generic cards',()=>{
+test('section headings provide useful varied fallbacks without generic cards',()=>{
   assert.equal(classifySolarStormVisual({sceneHeadline:'TWO DIFFERENT ATTACKS FROM THE SAME ERUPTION',text:'Now compare the two.'}),'flare-cme-split');
-  assert.equal(classifySolarStormVisual({sceneHeadline:'THE EARTH BECOMES PART OF THE CIRCUIT',text:'Now the mechanism matters.'}),'induction-circuit');
+  assert.equal(classifySolarStormVisual({sceneHeadline:'THE EARTH BECOMES PART OF THE CIRCUIT',text:'Now the mechanism matters.'}),'grid-current');
+  assert.equal(classifySolarStormVisual({sceneHeadline:'THE SECOND-ORDER FAILURES ARE THE REAL STORY',text:'The disruption is uneven.'}),'outage-map');
   assert.equal(classifySolarStormVisual({text:'A consequence we have not classified yet'}),'sun-earth');
+});
+
+test('payoff heading forces a visual snapback instead of ending on GPS or grid diagrams',()=>{
+  const heading='THE PAYOFF';
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'A sky glowing in places that almost never see aurora.'}),'aurora-grid-payoff');
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'Navigation systems could lose precision and grid operators would watch invisible currents.'}),'dependency-stack');
+  assert.equal(classifySolarStormVisual({sceneHeadline:heading,text:'Sometimes the most beautiful thing in the sky is also a stress test for the world underneath it.'}),'aurora-grid-payoff');
 });

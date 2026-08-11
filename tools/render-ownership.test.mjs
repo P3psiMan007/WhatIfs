@@ -29,10 +29,11 @@ test('Episode 2 has an explicit semantic solar-storm owner while later episodes 
   assert.match(solar, /grid-current/);
 });
 
-test('future thumbnails use package text; Episode 2 gets semantic topic art and Episode 1 keeps its legacy plate', () => {
+test('future thumbnails use package text; Episode 2 gets dedicated solar topic art and Episode 1 keeps its legacy plate', () => {
   assert.match(episode, /props\.thumbnailText/);
   assert.match(episode, /legacyEpisode/);
-  assert.match(episode, /visualType:'aurora-grid-payoff'/);
+  assert.match(episode, /SolarStormThumbnail/);
+  assert.match(episode, /aurThumb/);
   assert.match(episode, /DoodleExplainerScenePro/);
 });
 

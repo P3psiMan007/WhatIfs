@@ -29,6 +29,13 @@ test('Episode 2 has an explicit semantic solar-storm owner while later episodes 
   assert.match(solar, /grid-current/);
 });
 
+test('solar active beat is rendered directly and receives explicit beat-local camera time', () => {
+  assert.match(episode, /localFrame\s*=\s*Math\.max\(0,frame-beat\.from\)/);
+  assert.match(episode, /frameOverride=\{localFrame\}/);
+  assert.doesNotMatch(episode, /<Sequence from=\{beat\.from\}/);
+  assert.match(episode, /<SolarStormExplainerScene beat=\{beat\}/);
+});
+
 test('future thumbnails use package text; Episode 2 gets dedicated solar topic art and Episode 1 keeps its legacy plate', () => {
   assert.match(episode, /props\.thumbnailText/);
   assert.match(episode, /legacyEpisode/);

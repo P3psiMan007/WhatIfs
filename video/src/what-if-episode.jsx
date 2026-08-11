@@ -45,8 +45,9 @@ const SolarAtmosphere=({palette})=>{
   </AbsoluteFill>;
 };
 
-const BeatCamera=({children,beat,durationInFrames,mode})=>{
-  const frame=useCurrentFrame();
+const BeatCamera=({children,beat,durationInFrames,mode,frameOverride})=>{
+  const contextFrame=useCurrentFrame();
+  const frame=frameOverride??contextFrame;
   if(mode!=='solar')return children;
   const p=interpolate(frame,[0,Math.max(1,durationInFrames-1)],[0,1],clamp);
   const idx=(Number(beat?.localBeatOrdinal||1)+String(beat?.sceneId||'').length)%4;
@@ -61,11 +62,10 @@ const SolarActiveBeat=({beats,palette})=>{
   const frame=useCurrentFrame();
   const beat=(beats||[]).find((b)=>frame>=b.from&&frame<b.from+b.durationInFrames) || (beats||[])[beats.length-1];
   if(!beat)return null;
-  return <Sequence from={beat.from} durationInFrames={beat.durationInFrames} layout="none">
-    <BeatCamera beat={beat} durationInFrames={beat.durationInFrames} mode="solar">
-      <SolarStormExplainerScene beat={beat} durationInFrames={beat.durationInFrames} palette={palette}/>
-    </BeatCamera>
-  </Sequence>;
+  const localFrame=Math.max(0,frame-beat.from);
+  return <BeatCamera beat={beat} durationInFrames={beat.durationInFrames} mode="solar" frameOverride={localFrame}>
+    <SolarStormExplainerScene beat={beat} durationInFrames={beat.durationInFrames} palette={palette} frameOverride={localFrame}/>
+  </BeatCamera>;
 };
 
 const EpisodeLayers=({props,palette,beats,mode,fps})=><>

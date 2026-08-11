@@ -1,0 +1,8 @@
+[data-visual-owner="solar-storm-semantic-v1"] svg {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: visible;
+}

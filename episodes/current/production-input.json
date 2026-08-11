@@ -21,11 +21,6 @@
   },
   "experimentAssignment": "solar-storm-baseline-v1",
   "resumeAfterRolloverRepair": true,
-  "rerenderRequest": {
-    "revision": "solar-storm-semantic-v4",
-    "reason": "external trigger for canonical v4 render after semantic sequencing rework",
-    "requestToken": "20260811T0745IST"
-  },
   "packages": [
     {
       "id": "A",

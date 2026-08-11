@@ -2,8 +2,8 @@
   "pipeline_version": "2.1",
   "episode_id": "20260810-episode",
   "state": "RENDERED",
-  "state_revision": 39,
-  "updated_at": "2026-08-11T06:13:05.850Z",
+  "state_revision": 45,
+  "updated_at": "2026-08-11T08:06:24.699Z",
   "updated_by": "publish-grade-visual-guard",
   "lock": {
     "active": false,
@@ -74,8 +74,8 @@
       "af_heart"
     ],
     "selected_voice": "af_heart",
-    "voice_asset": "github-actions://run/31461333330/artifact/episode-render/narration.mp3",
-    "render_asset": "github-actions://run/31461333330/artifact/episode-render/episode.mp4",
+    "voice_asset": "github-actions://run/31468096160/artifact/episode-render/narration.mp3",
+    "render_asset": "github-actions://run/31468096160/artifact/episode-render/episode.mp4",
     "qa_inputs_ready": false,
     "semantic_visual_revision": "solar-storm-semantic-v6"
   },
@@ -83,10 +83,10 @@
     "status": "REWORK_REQUIRED",
     "scores": {},
     "top_issues": [
-      "Actual semantic v5 contact-sheet inspection still showed sparse, presentation-like compositions and insufficient cinematic subject scale."
+      "Actual semantic v6 inspection found that the semantic beat art layer was not appearing in rendered frames."
     ],
     "required_fixes": [
-      "Render and inspect semantic solar-storm visual revision v6 with full-frame cinematic infographic compositions, stronger depth, larger subjects, and clearer scene-specific motion."
+      "Rerender semantic v6 after the active-beat runtime fix, then inspect real contact sheets and sampled frames before allowing QA."
     ],
     "user_action_required": "publish_grade_visual_assets_missing"
   },
@@ -408,6 +408,54 @@
     {
       "revision": 39,
       "at": "2026-08-11T06:13:05.850Z",
+      "actor": "publish-grade-visual-guard",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 40,
+      "at": "2026-08-11T07:16:43.224Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "RENDERED",
+      "reason": "patch"
+    },
+    {
+      "revision": 41,
+      "at": "2026-08-11T07:16:43.260Z",
+      "actor": "episode2-semantic-visual-rebuild",
+      "from": "RENDERED",
+      "to": "VOICE_READY",
+      "reason": "rerender solar-storm episode after active-beat runtime repair"
+    },
+    {
+      "revision": 42,
+      "at": "2026-08-11T07:21:53.741Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 43,
+      "at": "2026-08-11T08:06:24.120Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "VOICE_READY",
+      "reason": "patch"
+    },
+    {
+      "revision": 44,
+      "at": "2026-08-11T08:06:24.152Z",
+      "actor": "episode-producer",
+      "from": "VOICE_READY",
+      "to": "RENDERED",
+      "reason": "1080p synchronized render, thumbnail, and contact sheets verified"
+    },
+    {
+      "revision": 45,
+      "at": "2026-08-11T08:06:24.699Z",
       "actor": "publish-grade-visual-guard",
       "from": "RENDERED",
       "to": "RENDERED",

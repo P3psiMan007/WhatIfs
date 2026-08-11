@@ -1,2 +1,4 @@
-// aurora-grid-payoff remains the canonical Episode 2 payoff route.
+// Canonical Episode 2 semantic routes retained for ownership regression checks:
+// aurora-grid-payoff
+// grid-current
 export {SolarStormExplainerScene} from './solar-storm-explainer-v6.jsx';

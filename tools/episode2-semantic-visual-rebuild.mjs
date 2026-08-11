@@ -6,7 +6,7 @@ import {pathToFileURL} from 'node:url';
 const EPISODE_ID='20260810-episode';
 const VISUAL_SYSTEM='solar-storm-explainer-v1';
 const REVISION='solar-storm-semantic-v6';
-const RUNTIME_REVISION='active-sequence-v1';
+const RUNTIME_REVISION='direct-active-beat-v2';
 const readJson=(p)=>JSON.parse(fs.readFileSync(p,'utf8'));
 const writeJson=(p,v)=>fs.writeFileSync(p,JSON.stringify(v,null,2)+'\n');
 
@@ -32,12 +32,11 @@ function main(){
   const state=readJson(statePath),input=readJson(inputPath);const plan=planSemanticRebuild({state,input});
   if(!['REBUILD','REFRESH_VISUALS'].includes(plan.kind)){console.log(`SEMANTIC_VISUAL_REBUILD_${plan.kind} ${plan.reason}`);return;}
   writeJson(inputPath,plan.inputPatch);
-  const patched=runState(['patch',String(plan.expectedRevision),plan.episodeId,'episode2-semantic-visual-rebuild',JSON.stringify({production:plan.productionPatch,qa:{status:'REWORK_REQUIRED',scores:{},top_issues:['Actual semantic v6 inspection found that the semantic beat art layer was not appearing in rendered frames.'],required_fixes:['Rerender semantic v6 after the active-beat runtime fix, then inspect real contact sheets and sampled frames before allowing QA.'],user_action_required:null}})]);
-  if(plan.kind==='REBUILD')runState(['transition',String(patched.state_revision),plan.episodeId,plan.transitionTo,'episode2-semantic-visual-rebuild','rerender solar-storm episode after active-beat runtime repair']);
+  const patched=runState(['patch',String(plan.expectedRevision),plan.episodeId,'episode2-semantic-visual-rebuild',JSON.stringify({production:plan.productionPatch,qa:{status:'REWORK_REQUIRED',scores:{},top_issues:['Latest inspected artifact still showed only ambient atmosphere and captions; semantic beat art remained absent.'],required_fixes:['Rerender semantic v6 with the direct active-beat runtime, then inspect real contact sheets and sampled frames before allowing QA.'],user_action_required:null}})]);
+  if(plan.kind==='REBUILD')runState(['transition',String(patched.state_revision),plan.episodeId,plan.transitionTo,'episode2-semantic-visual-rebuild','rerender solar-storm episode with direct active-beat runtime']);
   console.log(`SEMANTIC_VISUAL_REBUILD_${plan.kind}_READY ${plan.episodeId}`);
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){try{main();}catch(error){console.error(`SEMANTIC_VISUAL_REBUILD_ERROR ${error?.stack||String(error)}`);process.exitCode=1;}}
 
-// Production trigger: rerun semantic v6 after the active-beat runtime fix landed.
-// Production trigger 2: ensure the runtime-revision-tracked path gets a fresh canonical render.
+// Production trigger: rerun semantic v6 after the direct active-beat runtime fix landed.

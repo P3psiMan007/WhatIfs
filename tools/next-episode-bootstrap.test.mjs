@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {planNextEpisodeBootstrap,blankEpisodeState} from './next-episode-bootstrap.mjs';
+import {planNextEpisodeBootstrap,blankEpisodeState,EPISODE_SCOPED_FILES} from './next-episode-bootstrap.mjs';
 
 const state={state:'QA_PASSED',episode_id:'ep1'};
 const publication={episodeId:'ep1',youtube:{videoId:'abc123',privateVerifiedAt:'2026-08-10T07:38:35Z',processingVerified:true,playbackVerified:true,metadataVerified:true,thumbnailSetSucceeded:true}};
@@ -31,4 +31,8 @@ test('fresh state is isolated and starts idle with locked narrator preference',(
   assert.deepEqual(fresh.production.voice_candidates,['af_heart']);
   assert.equal(fresh.production.render_asset,null);
   assert.equal(fresh.qa.status,null);
+});
+
+test('rollover treats QA evidence as episode-scoped state',()=>{
+  assert.equal(EPISODE_SCOPED_FILES.includes('qa-evidence.json'),true);
 });

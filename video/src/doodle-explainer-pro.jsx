@@ -1,6 +1,8 @@
 import React from 'react';
 import {AbsoluteFill,interpolate,spring,useCurrentFrame,useVideoConfig} from 'remotion';
 import {DoodleExplainerScenePlus,classifyDoodleVisualPlus} from './doodle-explainer-plus.jsx';
+import {SemanticStoryboardScene} from './semantic-storyboard-scene.jsx';
+import {planSemanticShot} from './semantic-shot-planner.mjs';
 
 const clamp={extrapolateLeft:'clamp',extrapolateRight:'clamp'};
 const DEFAULT={background:'#0b0d12',foreground:'#eae7e1',accent:'#ffb340'};
@@ -44,7 +46,14 @@ const classifyPro=(beat={})=>{
   return classifyDoodleVisualPlus(beat);
 };
 
+function beatIndex(beat={}){
+  const match=String(beat.id||'').match(/(\d+)$/);
+  return match?Math.max(0,Number(match[1])-1):0;
+}
+
 export const DoodleExplainerScenePro=({beat,durationInFrames,palette=DEFAULT})=>{
+  const semanticBeat=beat?.shot?.version==='semantic-shot-v2' ? beat : {...beat,shot:planSemanticShot({text:beat?.text||'',sceneHeadline:beat?.sceneHeadline||'',index:beatIndex(beat)})};
+  if(semanticBeat.shot?.subject?.key!=='generic' || semanticBeat.shot?.kind!=='object-focus') return <SemanticStoryboardScene beat={semanticBeat} durationInFrames={durationInFrames} palette={palette}/>;
   const kind=beat.visualType||classifyPro(beat);
   if(kind==='people') return <PeopleScene beat={beat} durationInFrames={durationInFrames} palette={palette}/>;
   return <DoodleExplainerScenePlus beat={{...beat,visualType:kind}} durationInFrames={durationInFrames} palette={palette}/>;

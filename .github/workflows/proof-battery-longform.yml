@@ -1,0 +1,110 @@
+name: Battery Longform Proof
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/proof-battery-longform.yml"
+      - "proof/battery-longform-script.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  render-narration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install narration dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
+      - name: Render natural long-form narration and timings
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          import numpy as np
+          import soundfile as sf
+          from kokoro import KPipeline
+
+          SR = 24000
+          text = Path('proof/battery-longform-script.txt').read_text(encoding='utf-8').strip()
+          paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
+          pipe = KPipeline(lang_code='a')
+          full = []
+          timing = []
+          cursor = 0.0
+          scene_index = 0
+
+          def render(txt):
+              chunks = [np.asarray(audio, dtype=np.float32) for _, _, audio in pipe(txt, voice='af_heart', speed=0.95)]
+              if not chunks:
+                  raise RuntimeError('Kokoro produced no audio')
+              audio = np.concatenate(chunks)
+              active = np.flatnonzero(np.abs(audio) > 0.002)
+              if active.size:
+                  pad = int(0.04 * SR)
+                  lo = max(0, int(active[0]) - pad)
+                  hi = min(len(audio), int(active[-1]) + pad + 1)
+                  audio = audio[lo:hi]
+              return audio
+
+          for pi, para in enumerate(paragraphs):
+              audio = render(para)
+              duration = len(audio) / SR
+              sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', para) if s.strip()]
+              weights = [max(1, len(s.split())) for s in sentences]
+              total = sum(weights)
+              local = 0.0
+              for si, (sentence, weight) in enumerate(zip(sentences, weights)):
+                  end = duration if si == len(sentences)-1 else local + duration * weight / total
+                  timing.append({
+                      'index': scene_index,
+                      'paragraph': pi,
+                      'text': sentence,
+                      'start': cursor + local,
+                      'end': cursor + end,
+                      'duration': end - local
+                  })
+                  scene_index += 1
+                  local = end
+              full.append(audio)
+              if pi != len(paragraphs)-1:
+                  gap = np.zeros(int(0.14 * SR), dtype=np.float32)
+                  full.append(gap)
+                  cursor += duration + len(gap)/SR
+              else:
+                  cursor += duration
+
+          narration = np.concatenate(full)
+          sf.write('battery-longform-raw.wav', narration, SR)
+          Path('battery-longform-timing.json').write_text(json.dumps({'duration': len(narration)/SR, 'scenes': timing}, indent=2), encoding='utf-8')
+
+          def stamp(seconds):
+              ms = round(seconds*1000)
+              h, ms = divmod(ms, 3600000); m, ms = divmod(ms, 60000); s, ms = divmod(ms, 1000)
+              return f'{h:02}:{m:02}:{s:02},{ms:03}'
+          cues=[]
+          for i, scene in enumerate(timing,1):
+              cues.append(f"{i}\n{stamp(scene['start'])} --> {stamp(scene['end'])}\n{scene['text']}")
+          Path('battery-longform.srt').write_text('\n\n'.join(cues)+'\n', encoding='utf-8')
+          print('SCENES', len(timing), 'DURATION', len(narration)/SR)
+          PY
+      - name: Normalize spoken-word audio
+        run: |
+          ffmpeg -y -v error -i battery-longform-raw.wav -af "loudnorm=I=-18:TP=-1.5:LRA=7" -c:a pcm_s16le battery-longform-narration.wav
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 battery-longform-narration.wav
+      - name: Upload narration package
+        uses: actions/upload-artifact@v4
+        with:
+          name: battery-longform-narration
+          path: |
+            battery-longform-narration.wav
+            battery-longform-timing.json
+            battery-longform.srt
+          retention-days: 1

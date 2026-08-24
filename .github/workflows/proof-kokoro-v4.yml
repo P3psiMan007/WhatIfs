@@ -1,0 +1,43 @@
+name: Kokoro V4 Voice Proof
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/proof-kokoro-v4.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  render-voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Kokoro
+        run: python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
+      - name: Render af_heart narration
+        run: |
+          python - <<'PY'
+          import numpy as np
+          import soundfile as sf
+          from kokoro import KPipeline
+
+          text = "That one percent isn't a measurement. Your phone estimates charge from voltage, temperature, age and load — so one percent can last surprisingly long."
+          pipeline = KPipeline(lang_code='a')
+          chunks = [np.asarray(audio, dtype=np.float32) for _, _, audio in pipeline(text, voice='af_heart', speed=0.95)]
+          if not chunks:
+              raise SystemExit('Kokoro produced no audio')
+          audio = np.concatenate(chunks)
+          sf.write('battery-v4-af-heart.wav', audio, 24000)
+          print('samples', len(audio), 'seconds', len(audio)/24000)
+          PY
+      - name: Upload voice artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: battery-v4-af-heart
+          path: battery-v4-af-heart.wav
+          retention-days: 1

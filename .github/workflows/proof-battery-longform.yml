@@ -57,9 +57,11 @@ jobs:
           echo "raw_duration=$raw_duration tempo=$tempo"
           ffmpeg -y -v error -i public/battery-longform/raw.wav -af "atempo=$tempo,loudnorm=I=-18:TP=-1.5:LRA=8" public/battery-longform/narration.wav
           ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 public/battery-longform/narration.wav
-      - name: Static checks
+      - name: Compile and verify Remotion compositions
         run: |
-          node --check video/src/battery-longform.jsx
+          npx remotion compositions video/src/index.jsx | tee /tmp/compositions.txt
+          grep -q "BatteryLongformEpisode" /tmp/compositions.txt
+          grep -q "BatteryLongformThumbnail" /tmp/compositions.txt
       - name: Render thumbnail
         run: npx remotion still video/src/index.jsx BatteryLongformThumbnail dist/battery-thumbnail.png
       - name: Render longform MP4

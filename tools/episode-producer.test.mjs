@@ -67,11 +67,12 @@ test('publish-grade visual readiness requires the canonical full-section image m
   assert.equal(isPublishGradeVisualInput({...canonical, scenes:canonical.scenes.slice(0,8)}), false);
 });
 
-test('render provenance pins the exact checked-in image manifest bytes', () => {
-  const input = {imageAssetManifest:'episodes/current/image-assets-v1.json', imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION};
+test('render provenance pins exact checked-in manifest bytes without depending on the active episode slot', () => {
+  const fixturePath = 'tools/fixtures/provenance-image-manifest.json';
+  const input = {imageAssetManifest:fixturePath, imageFirstAssetRevision:EPISODE1_IMAGE_ASSET_REVISION};
   const provenance = describeImageAssetManifest(input);
   assert.deepEqual(Object.keys(provenance).sort(), ['assetRevision','path','sha256']);
-  assert.equal(provenance.path, 'episodes/current/image-assets-v1.json');
+  assert.equal(provenance.path, fixturePath);
   assert.equal(provenance.assetRevision, EPISODE1_IMAGE_ASSET_REVISION);
   assert.match(provenance.sha256, /^[0-9a-f]{64}$/);
   assert.throws(() => describeImageAssetManifest({...input,imageAssetManifest:'../outside.json'}), /invalid image asset manifest path/);

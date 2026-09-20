@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { planShortsProposal, approveProposal, buildPromptPackage, proposalDigest } from './shorts-director.mjs';
+import {
+  planShortsProposal,
+  approveProposal,
+  buildPromptPackage,
+  proposalDigest,
+  missingSetup,
+  ASPECT_RATIOS,
+  THEMES_AVAILABLE,
+} from './shorts-director.mjs';
 import { readState, atomicWrite, transition, statePath } from './shorts-state.mjs';
 
 export const DEFAULT_SHORTS_DIR = 'shorts/current';
@@ -30,6 +38,11 @@ const shortIdFor = (title) =>
   `${new Date().toISOString().slice(0, 10).replaceAll('-', '')}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 32)}`;
 
 export function planCommand({ copyPath, aspectRatio, theme, title, actor }) {
+  // The upstream contract refuses to pick a ratio or style silently, and says
+  // urgency or cost does not waive that, so both are required up front and
+  // every missing item is reported in one message.
+  const missing = missingSetup({ aspectRatio, theme });
+  if (missing.length) fail(`setup incomplete; supply: ${missing.join('; ')}`);
   const copy = fs.readFileSync(copyPath, 'utf8');
   const proposal = planShortsProposal({ copy, aspectRatio, theme, title });
   writeJson(PROPOSAL_FILE, proposal);
@@ -71,7 +84,7 @@ const usage = () => {
   console.error(
     [
       'Usage:',
-      '  node tools/shorts-runner.mjs plan --copy <file> [--aspect 9:16] [--theme dark] [--title "..."] --actor <name>',
+      `  node tools/shorts-runner.mjs plan --copy <file> --aspect <${ASPECT_RATIOS.join('|')}> --theme <${THEMES_AVAILABLE.join('|')}> [--title "..."] --actor <name>`,
       '  node tools/shorts-runner.mjs approve --actor <name>',
       '  node tools/shorts-runner.mjs prompts --actor <name>',
       '',
@@ -100,8 +113,8 @@ if (isMain) {
       if (!flags.copy) usage();
       const { proposal, state } = planCommand({
         copyPath: flags.copy,
-        aspectRatio: flags.aspect || '9:16',
-        theme: flags.theme || 'dark',
+        aspectRatio: flags.aspect,
+        theme: flags.theme,
         title: flags.title || '',
         actor: flags.actor,
       });

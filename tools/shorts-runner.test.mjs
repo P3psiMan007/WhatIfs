@@ -79,3 +79,19 @@ test('a title override flows into the short id', async () => {
   const { state } = runner.planCommand({ copyPath, aspectRatio: '1:1', theme: 'light', title: 'Grid Down', actor: 'operator' });
   assert.match(state.short_id, /grid-down$/);
 });
+
+test('plan refuses to choose an aspect ratio or theme silently', async () => {
+  const { dir, copyPath, runner } = await sandbox();
+  assert.throws(() => runner.planCommand({ copyPath, title: '', actor: 'operator' }), /aspectRatio.*theme/s);
+  assert.equal(fs.existsSync(path.join(dir, 'proposal.json')), false);
+});
+
+test('the prompt package records the continuity and stitching material', async () => {
+  const { dir, copyPath, runner } = await sandbox();
+  runner.planCommand({ copyPath, aspectRatio: '9:16', theme: 'dark', title: '', actor: 'operator' });
+  runner.approveCommand({ actor: 'reviewer' });
+  const { promptPackage } = runner.promptsCommand({ actor: 'operator' });
+  assert.equal(promptPackage.stitchingGuide.length, 5);
+  assert.ok(promptPackage.globalContinuity.character.includes('hollow circular head'));
+  assert.deepEqual(readJson(dir, 'prompt-package.json'), promptPackage);
+});

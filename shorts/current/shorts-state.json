@@ -1,0 +1,22 @@
+{
+  "pipeline_version": "shorts-1.0",
+  "short_id": null,
+  "state": "IDLE",
+  "state_revision": 0,
+  "updated_at": "2026-09-20T00:00:00.000Z",
+  "updated_by": "shorts-pipeline-bootstrap",
+  "proposal": {
+    "digest": null,
+    "approvedBy": null,
+    "approvedAt": null
+  },
+  "render": {
+    "clipCount": 0,
+    "stitchedFile": null
+  },
+  "publication": {
+    "videoId": null,
+    "privacyStatus": null
+  },
+  "history": []
+}

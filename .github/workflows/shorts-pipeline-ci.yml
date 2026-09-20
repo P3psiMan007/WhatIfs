@@ -1,0 +1,31 @@
+name: Shorts Pipeline CI
+
+on:
+  pull_request:
+    paths:
+      - "tools/shorts-*.mjs"
+      - "config/shorts-autonomy.json"
+      - "shorts/**"
+      - "video/src/semantic-shot-planner.mjs"
+      - ".github/workflows/shorts-pipeline-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/shorts-*.mjs"
+      - "config/shorts-autonomy.json"
+      - "shorts/**"
+      - "video/src/semantic-shot-planner.mjs"
+      - ".github/workflows/shorts-pipeline-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Unit tests
+        run: npm run test:shorts
+      - name: Approval gate holds end to end
+        run: bash shorts/ci-approval-gate.sh

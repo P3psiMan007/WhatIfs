@@ -13,8 +13,8 @@ API v3. Nothing is ever published publicly by this pipeline.
    - Opens a browser to Google's consent screen requesting three scopes:
      `youtube.upload` (upload videos, set metadata, set thumbnails),
      `youtube.readonly` (used only for the one-time verification call
-     below), and `yt-analytics.readonly` (reserved for future analytics
-     features - not currently used by the uploader).
+     below), and `yt-analytics.readonly` (read by the post-publication
+     analytics reader, `youtube_uploader/analytics.py`).
    - Saves the resulting refresh token to a local, gitignored file outside
      the repo (`~/.whatifs-youtube-secrets/youtube_token.json`).
 3. `python scripts/verify_token.py` confirmed the refresh token works via a
@@ -55,8 +55,14 @@ optional thumbnail path and tags.
 
 - Scopes granted to the refresh token: `youtube.upload` (functional -
   everything the uploader does), `youtube.readonly` (verification only),
-  `yt-analytics.readonly` (reserved for future analytics work). The
+  `yt-analytics.readonly` (post-publication analytics reader). The
   uploader module itself only ever calls `youtube.upload`-scoped endpoints.
+- `youtube_uploader/analytics.py` (run by the "YouTube Analytics
+  Checkpoints" workflow every 6h) reads the published video's metrics at the
+  24h / 72h / 7d checkpoints into `analytics.snapshots` in the episode state.
+  It only reads videos with a verified public publication record, records
+  missing metrics as unavailable, and never writes KEEP/CHANGE/AVOID
+  decisions - those stay with the Critic + Analytics role.
 - `youtube_uploader/uploader.py` hard-codes `privacyStatus: "private"` -
   it is not exposed as a caller-overridable parameter, by design.
 - Credentials come from `YOUTUBE_CLIENT_ID` / `YOUTUBE_CLIENT_SECRET` /

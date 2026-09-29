@@ -1,0 +1,85 @@
+name: YouTube private upload preflight
+
+# Read-only diagnostic. No media uploads, permission changes, or publication.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/youtube-private-preflight.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install HTTP client
+        run: python -m pip install --disable-pip-version-check 'requests>=2.32,<3'
+      - name: Refresh original grant and read channel without exposing tokens
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          """Read-only test of the original OAuth grant. Never uploads or changes videos."""
+          import json
+          import os
+
+          def check(env, post, get):
+              names = ('YOUTUBE_CLIENT_ID', 'YOUTUBE_CLIENT_SECRET', 'YOUTUBE_REFRESH_TOKEN')
+              if any(not env.get(name) for name in names):
+                  return {'status': 'MISSING_CREDENTIALS'}
+              try:
+                  response = post('https://oauth2.googleapis.com/token', data={
+                      'client_id': env[names[0]], 'client_secret': env[names[1]],
+                      'refresh_token': env[names[2]], 'grant_type': 'refresh_token',
+                  }, timeout=30, allow_redirects=False)
+                  data = response.json()
+              except Exception:
+                  return {'status': 'OAUTH_TRANSPORT_FAILED'}
+              if response.status_code != 200:
+                  allowed = {'invalid_grant', 'invalid_client', 'invalid_scope',
+                             'unauthorized_client', 'access_denied', 'temporarily_unavailable'}
+                  error = data.get('error') if isinstance(data, dict) else None
+                  code = error if error in allowed else 'unknown_error'
+                  return {'status': 'OAUTH_' + code.upper(), 'http_status': response.status_code}
+              token = data.get('access_token')
+              if not isinstance(token, str) or not token:
+                  return {'status': 'ACCESS_TOKEN_MISSING'}
+              scopes = set(str(data.get('scope', '')).split())
+              root = 'https://www.googleapis.com/auth/'
+              manage = bool(scopes & {root+'youtube', root+'youtube.force-ssl'})
+              upload = manage or root+'youtube.upload' in scopes
+              read = manage or root+'youtube.readonly' in scopes
+              if not upload or not read:
+                  return {'status': 'PRIVATE_UPLOAD_SCOPE_MISSING',
+                          'upload_scope': upload, 'read_scope': read}
+              try:
+                  response = get('https://www.googleapis.com/youtube/v3/channels',
+                                 params={'part': 'snippet', 'mine': 'true'},
+                                 headers={'Authorization': 'Bearer ' + token},
+                                 timeout=30, allow_redirects=False)
+                  if response.status_code != 200:
+                      return {'status': 'CHANNEL_READ_FAILED', 'http_status': response.status_code}
+                  items = response.json().get('items', [])
+                  if len(items) != 1:
+                      return {'status': 'CHANNEL_RESOLUTION_AMBIGUOUS', 'channel_count': len(items)}
+                  channel = items[0]
+                  return {'status': 'PRIVATE_UPLOAD_AUTH_READY', 'upload_scope': True,
+                          'read_scope': True, 'channel_id': channel['id'],
+                          'channel_title': channel.get('snippet', {}).get('title', '')}
+              except Exception:
+                  return {'status': 'CHANNEL_READ_FAILED'}
+
+          import requests
+          result = check(os.environ, requests.post, requests.get)
+          print('PRIVATE_PREFLIGHT_RESULT=' + json.dumps(result, ensure_ascii=True))
+          raise SystemExit(0 if result['status'] == 'PRIVATE_UPLOAD_AUTH_READY' else 1)
+          PY

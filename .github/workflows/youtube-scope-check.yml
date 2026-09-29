@@ -1,5 +1,6 @@
 name: YouTube Scope Check
 
+# Connection recheck requested; this workflow does not upload or publish media.
 on:
   workflow_dispatch:
   push:

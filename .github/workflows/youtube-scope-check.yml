@@ -1,12 +1,13 @@
 name: YouTube Scope Check
 
-# Connection recheck requested; this workflow does not upload or publish media.
+# Read-only credential diagnostics. This workflow never uploads or publishes media.
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - ".github/workflows/youtube-scope-check.yml"
+      - "scripts/verify_token.py"
 
 permissions:
   contents: write
@@ -45,22 +46,34 @@ jobs:
           }), encoding='utf-8')
           path.chmod(0o600)
           PY
-      - name: Check public-management scope and write non-secret result
+      - name: Check private staging and public-promotion scopes
         shell: bash
         run: |
           set +e
+          python scripts/verify_token.py --token-file /tmp/youtube_token.json --private-only
+          private_rc=$?
           python scripts/verify_token.py --token-file /tmp/youtube_token.json
-          rc=$?
+          promotion_rc=$?
           set -e
-          python - "$rc" <<'PY'
+          python - "$private_rc" "$promotion_rc" <<'PY'
           import json, sys
           from datetime import datetime, timezone
           from pathlib import Path
-          rc = int(sys.argv[1])
+          private_rc = int(sys.argv[1])
+          promotion_rc = int(sys.argv[2])
+          private_ok = private_rc == 0
+          promotion_ok = promotion_rc == 0
+          if private_ok and promotion_ok:
+              status = "private_and_promotion_scopes_present"
+          elif private_ok:
+              status = "private_scope_present_promotion_scope_missing"
+          else:
+              status = "private_scope_absent_or_invalid"
           Path('queue/youtube-scope-status.json').write_text(json.dumps({
               'checkedAt': datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
-              'promotionScope': rc == 0,
-              'status': 'management_scope_present' if rc == 0 else 'management_scope_absent_or_invalid',
+              'privateUploadScope': private_ok,
+              'promotionScope': promotion_ok,
+              'status': status,
               'secretMaterialPersisted': False,
           }, indent=2) + '\n', encoding='utf-8')
           PY

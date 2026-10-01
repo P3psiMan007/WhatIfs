@@ -1,0 +1,46 @@
+name: YouTube Analytics Checkpoints
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: youtube-analytics
+  cancel-in-progress: false
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: Read due analytics checkpoints
+        id: read
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -m youtube_uploader.analytics
+      - name: Commit analytics state
+        if: always()
+        run: |
+          if git diff --quiet -- episodes/current/episode-state.json; then
+            echo "No analytics change."
+            exit 0
+          fi
+          git config user.name "whatifs-analytics-reader"
+          git config user.email "whatifs-analytics-reader@users.noreply.github.com"
+          git add episodes/current/episode-state.json
+          git commit -m "chore: record YouTube analytics checkpoint"
+          git push origin HEAD:main

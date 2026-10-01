@@ -1,0 +1,52 @@
+name: Longform Battery V1 Proof
+
+on:
+  pull_request:
+    paths:
+      - "proof/longform-battery-v1/**"
+      - ".github/workflows/proof-longform-battery-v1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  render-narration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install voice dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
+          chmod +x tools/edge-tts
+      - name: Render locked af_heart narration scenes
+        run: |
+          mkdir -p proof/longform-battery-v1/voice-parts
+          python tools/edge-tts --batch-json proof/longform-battery-v1/narration-batch.json --output-dir proof/longform-battery-v1/voice-parts
+      - name: Concatenate narration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files = sorted(Path('proof/longform-battery-v1/voice-parts').glob('scene-*.mp3'))
+          if not files:
+              raise SystemExit('no voice parts')
+          Path('/tmp/concat.txt').write_text(''.join(f"file '{p.resolve()}'\n" for p in files))
+          PY
+          ffmpeg -y -v error -f concat -safe 0 -i /tmp/concat.txt -c:a libmp3lame -b:a 160k proof/longform-battery-v1/narration.mp3
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 proof/longform-battery-v1/narration.mp3 | tee proof/longform-battery-v1/duration.txt
+      - name: Upload narration package
+        uses: actions/upload-artifact@v4
+        with:
+          name: longform-battery-v1-voice
+          path: |
+            proof/longform-battery-v1/narration.mp3
+            proof/longform-battery-v1/duration.txt
+            proof/longform-battery-v1/narration-batch.json
+            proof/longform-battery-v1/voice-parts/*.mp3
+            proof/longform-battery-v1/voice-parts/*.srt
+          retention-days: 2

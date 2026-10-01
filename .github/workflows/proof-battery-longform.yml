@@ -1,0 +1,82 @@
+name: Battery Longform Pilot Render
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/proof-battery-longform.yml"
+      - "video/src/battery-longform.jsx"
+      - "video/src/root.jsx"
+      - "content/battery-longform/script.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-longform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          npm ci --no-audit --no-fund
+          python -m pip install --disable-pip-version-check kokoro==0.9.4 soundfile numpy
+      - name: Render Kokoro narration and fit to timeline
+        run: |
+          mkdir -p public/battery-longform dist
+          python - <<'PY'
+          import numpy as np
+          import soundfile as sf
+          from pathlib import Path
+          from kokoro import KPipeline
+          text = Path('content/battery-longform/script.txt').read_text(encoding='utf-8')
+          pipeline = KPipeline(lang_code='a')
+          chunks = [np.asarray(audio, dtype=np.float32) for _, _, audio in pipeline(text, voice='af_heart', speed=0.95)]
+          if not chunks:
+              raise SystemExit('Kokoro produced no audio')
+          audio = np.concatenate(chunks)
+          sf.write('public/battery-longform/raw.wav', audio, 24000)
+          print('raw_seconds', len(audio)/24000)
+          PY
+          raw_duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 public/battery-longform/raw.wav)
+          target=520
+          tempo=$(python - <<PY
+          raw=float('$raw_duration'); target=float('$target')
+          print(max(0.5, min(2.0, raw/target)))
+          PY
+          )
+          echo "raw_duration=$raw_duration tempo=$tempo"
+          ffmpeg -y -v error -i public/battery-longform/raw.wav -af "atempo=$tempo,loudnorm=I=-18:TP=-1.5:LRA=8" public/battery-longform/narration.wav
+          ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 public/battery-longform/narration.wav
+      - name: Compile and verify Remotion compositions
+        run: |
+          npx remotion compositions video/src/index.jsx | tee /tmp/compositions.txt
+          grep -q "BatteryLongformEpisode" /tmp/compositions.txt
+          grep -q "BatteryLongformThumbnail" /tmp/compositions.txt
+      - name: Render thumbnail
+        run: npx remotion still video/src/index.jsx BatteryLongformThumbnail dist/battery-thumbnail.png
+      - name: Render longform MP4
+        run: npx remotion render video/src/index.jsx BatteryLongformEpisode dist/battery-longform.mp4 --codec=h264 --crf=22 --pixel-format=yuv420p
+      - name: Create contact sheet
+        run: |
+          ffmpeg -y -v error -i dist/battery-longform.mp4 -vf "fps=1/30,scale=320:-1,tile=5x4" -frames:v 1 dist/battery-contact.jpg
+      - name: Upload pilot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: battery-longform-pilot
+          path: |
+            dist/battery-longform.mp4
+            dist/battery-thumbnail.png
+            dist/battery-contact.jpg
+            public/battery-longform/narration.wav
+            content/battery-longform/script.txt
+          retention-days: 2

@@ -3,8 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs",
-    "render:episode": "remotion render video/src/index.jsx WhatIfEpisode dist/episode.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p"
+    "test": "node --test tools/episode-state.test.mjs tools/episode-runner.test.mjs tools/episode-producer.test.mjs tools/shorts-director.test.mjs tools/shorts-state.test.mjs tools/shorts-runner.test.mjs",
+    "render:episode": "remotion render video/src/index.jsx WhatIfEpisode dist/episode.mp4 --codec=h264 --crf=18 --pixel-format=yuv420p",
+    "test:shorts": "node --test tools/shorts-director.test.mjs tools/shorts-state.test.mjs tools/shorts-runner.test.mjs",
+    "shorts": "node tools/shorts-runner.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.506",

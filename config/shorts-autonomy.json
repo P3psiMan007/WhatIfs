@@ -1,0 +1,27 @@
+{
+  "autonomy_version": "shorts-1.0",
+  "revision": 1,
+  "autoPublishEnabled": false,
+  "requireHumanProposalApproval": true,
+  "requiredGates": [
+    "factual",
+    "package",
+    "narration",
+    "visual",
+    "technical",
+    "policy",
+    "copyright"
+  ],
+  "generation": {
+    "target": "gemini-omni-flash",
+    "sceneCount": 6,
+    "sceneSeconds": 10,
+    "aspectRatios": ["9:16", "16:9", "1:1"],
+    "promptsRequireApprovedProposalDigest": true
+  },
+  "publication": {
+    "failClosedOnUncertainty": true,
+    "privateOnlyUntilUserApproval": true
+  },
+  "notes": "Separate from config/autonomy.json. The shorts pipeline shares no state, render path, or publish quota with the long-form episode factory, and must not be used to advance an episode while docs/PRODUCTION_REBUILD_ACTIVE.md exists."
+}
